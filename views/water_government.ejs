@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Infrastructure | Government Dashboard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-light: #7dd3fc;
+            --primary-dark: #0284c7;
+            --secondary: #38bdf8;
+            --water-deep: #0c4a6e;
+            --water-surface: #e0f2fe;
+            --water-soft: #bae6fd;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-dark: #0f172a;
+            --text-light: #475569;
+            --border: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #e6f7ff 0%, #c7e9ff 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Water-themed animated background (no waves) */
+        .water-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* Gentle water ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.05);
+            animation: rippleExpand 8s infinite ease-out;
+        }
+
+        .ripple1 {
+            width: 500px;
+            height: 500px;
+            top: -100px;
+            right: -100px;
+            animation-duration: 12s;
+        }
+
+        .ripple2 {
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            left: -200px;
+            background: rgba(2, 132, 199, 0.05);
+            animation-duration: 15s;
+            animation-delay: -4s;
+        }
+
+        .ripple3 {
+            width: 400px;
+            height: 400px;
+            top: 40%;
+            left: 30%;
+            background: rgba(125, 211, 252, 0.05);
+            animation-duration: 10s;
+            animation-delay: -2s;
+        }
+
+        @keyframes rippleExpand {
+            0% { transform: scale(0.8); opacity: 0.1; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(0.8); opacity: 0.1; }
+        }
+
+        /* Floating water droplets */
+        .droplet {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: dropletFloat 15s infinite ease-in-out;
+        }
+
+        .droplet1 {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 5%;
+            animation-duration: 18s;
+        }
+
+        .droplet2 {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            right: 10%;
+            animation-duration: 14s;
+            animation-delay: -5s;
+        }
+
+        .droplet3 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 15%;
+            animation-duration: 20s;
+            animation-delay: -8s;
+        }
+
+        @keyframes dropletFloat {
+            0% { transform: translateY(0) scale(1); opacity: 0.1; }
+            50% { transform: translateY(-40px) scale(1.1); opacity: 0.2; }
+            100% { transform: translateY(0) scale(1); opacity: 0.1; }
+        }
+
+        /* Header */
+        .govt-header {
+            background: linear-gradient(135deg, var(--water-deep), var(--primary-dark));
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .govt-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            animation: dropWater 3s infinite;
+        }
+
+        @keyframes dropWater {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .govt-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .govt-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .logout-btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .logout-btn-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            border-radius: 30px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            animation: cardFloat 6s infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0); box-shadow: var(--shadow-lg); }
+            100% { transform: translateY(-8px); box-shadow: 0 25px 30px -10px rgba(2, 132, 199, 0.4); }
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .welcome-content h2 i {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .welcome-content p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            animation: statSlide 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes statSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-md);
+            animation: slideRight 0.7s ease;
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .filter-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .filter-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+            outline: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-cancel {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Complaints Section */
+        .complaints-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-md);
+            animation: slideLeft 0.7s ease;
+        }
+
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0;
+        }
+
+        .section-header h2 i {
+            animation: bounce 2s infinite;
+        }
+
+        .section-header h2 small {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Table Container */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .table-header th {
+            background: var(--water-surface);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--water-deep);
+            border-bottom: 2px solid var(--primary-light);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .table-row {
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+            animation: rowFade 0.5s ease;
+        }
+
+        @keyframes rowFade {
+            from { opacity: 0; background: rgba(14, 165, 233, 0.1); }
+            to { opacity: 1; background: transparent; }
+        }
+
+        .table-row:hover {
+            background: var(--water-surface);
+            transform: scale(1.001);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-row td {
+            padding: 1rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .complaint-id {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .complaint-desc {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-dark);
+        }
+
+        .complaint-location {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 90px;
+            animation: badgePop 0.3s ease;
+        }
+
+        @keyframes badgePop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .status-new {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .status-inprogress {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: white;
+        }
+
+        .status-resolved {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn-small {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideUp 0.4s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--water-deep), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .detail-section {
+            background: var(--water-surface);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+            animation: slideRight 0.5s ease;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-save:hover {
+            background: #0d9488;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(150%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 3000;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container { padding: 0 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .header-container { 
+                flex-direction: column; 
+                text-align: center; 
+            }
+            .logo-section { 
+                flex-direction: column; 
+            }
+            .govt-title h1 { 
+                font-size: 1.2rem; 
+            }
+            
+            .welcome-content h2 { 
+                font-size: 1.5rem; 
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .welcome-content p { 
+                font-size: 1rem; 
+                text-align: center;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-body .row { 
+                gap: 1rem; 
+            }
+            
+            .input-group { 
+                flex-direction: column;
+            }
+            
+            .input-group .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .action-buttons { 
+                justify-content: flex-start;
+            }
+            
+            /* Mobile table view */
+            .complaints-table thead { 
+                display: none; 
+            }
+            
+            .complaints-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 1rem;
+                background: white;
+            }
+            
+            .complaints-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem;
+                border-bottom: 1px dashed var(--border);
+            }
+            
+            .complaints-table td:last-child { 
+                border-bottom: none; 
+            }
+            
+            .complaints-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--primary-dark);
+                width: 120px;
+                flex-shrink: 0;
+            }
+            
+            .complaint-desc { 
+                max-width: 100%; 
+                white-space: normal;
+            }
+            
+            .complaint-location {
+                max-width: 100%;
+                white-space: normal;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container { 
+                padding: 0.5rem; 
+            }
+            .welcome-card { 
+                padding: 1.5rem; 
+            }
+            .stat-value { 
+                font-size: 2rem; 
+            }
+            .modal-content { 
+                margin: 0.5rem; 
+            }
+            .detail-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .filter-body { 
+                padding: 1rem; 
+            }
+            .pagination { 
+                flex-wrap: wrap; 
+                gap: 0.5rem;
+            }
+            .page-btn { 
+                font-size: 0.8rem; 
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        a { text-decoration: none; }
+    </style>
+</head>
+<body>
+    <!-- Water-themed animated background (no waves) -->
+    <div class="water-bg">
+        <div class="ripple ripple1"></div>
+        <div class="ripple ripple2"></div>
+        <div class="ripple ripple3"></div>
+        <div class="droplet droplet1"></div>
+        <div class="droplet droplet2"></div>
+        <div class="droplet droplet3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="govt-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="govt-logo">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="govt-title">
+                    <h1>Water Infrastructure</h1>
+                    <p class="govt-subtitle">Complaint Management Dashboard</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="/login/logout" class="logout-btn-header">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h2>
+                    <i class="fas fa-tint"></i>
+                    Water Complaints Management
+                </h2>
+                <p>Monitor and manage water supply complaints from citizens across the city</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalComplaints">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pendingComplaints">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="inProgressComplaints">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="resolvedComplaints">0</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3><i class="fas fa-filter"></i> Filter Water Complaints</h3>
+            </div>
+            <div class="filter-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="New">New</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select" id="dateFilter">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Search</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search by ID, description, citizen...">
+                            <button class="action-btn btn-view" onclick="filterComplaints()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="action-btn btn-cancel" onclick="clearFilters()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <section class="complaints-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-list"></i>
+                    Water Complaints List
+                    <small id="tableCount">(0)</small>
+                </h2>
+                <button class="action-btn btn-view" onclick="loadComplaints()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="complaints-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaintsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 3rem;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3">Loading water complaints...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>
+                    <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tint"></i> Water Complaint Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="complaintDetails"></div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Update Complaint</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="updateForm"></div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="saveUpdate()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <div class="fw-bold" id="toastTitle">Success</div>
+            <div class="text-muted" id="toastMessage">Operation completed</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allComplaints = [];
+        let filteredComplaints = [];
+        let currentPage = 1;
+        let currentComplaintId = '';
+        const itemsPerPage = 10;
+
+        // Load complaints on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComplaints();
+            
+            document.getElementById('statusFilter').addEventListener('change', filterComplaints);
+            document.getElementById('dateFilter').addEventListener('change', filterComplaints);
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') filterComplaints();
+            });
+        });
+
+        // Mock data
+        function getMockWaterComplaints() {
+            return [
+                {
+                    _id: "1",
+                    complaintId: "WTR-001",
+                    description: "No water supply for 3 days in Ward 5, Sector 12. Multiple households affected.",
+                    location: "Ward 5, Sector 12",
+                    status: "In Progress",
+                    citizenName: "John Doe",
+                    phone: "+91 9876543210",
+                    email: "john@example.com",
+                    address: "House 123, Sector 12",
+                    issueDate: "2024-02-01",
+                    issueTime: "10:30 AM",
+                    duration: "3 days",
+                    issueType: "No Water Supply",
+                    priority: "High",
+                    createdAt: "2024-02-01T10:30:00Z"
+                },
+                {
+                    _id: "2",
+                    complaintId: "WTR-002",
+                    description: "Low water pressure in apartments, Residential Block A. 4th floor facing issues.",
+                    location: "Block A, Residential Complex",
+                    status: "New",
+                    citizenName: "Sarah Smith",
+                    phone: "+91 9876543211",
+                    email: "sarah@example.com",
+                    address: "Flat 405, Block A",
+                    issueDate: "2024-02-02",
+                    issueTime: "02:15 PM",
+                    duration: "1 day",
+                    issueType: "Low Pressure",
+                    priority: "Medium",
+                    createdAt: "2024-02-02T14:30:00Z"
+                },
+                {
+                    _id: "3",
+                    complaintId: "WTR-003",
+                    description: "Pipeline leakage near Market Street causing water wastage.",
+                    location: "Market Street",
+                    status: "In Progress",
+                    citizenName: "Robert Johnson",
+                    phone: "+91 9876543212",
+                    email: "robert@example.com",
+                    address: "Shop 45, Market Street",
+                    issueDate: "2024-01-30",
+                    issueTime: "09:00 AM",
+                    duration: "5 days",
+                    issueType: "Pipeline Leakage",
+                    priority: "High",
+                    createdAt: "2024-01-30T09:15:00Z"
+                },
+                {
+                    _id: "4",
+                    complaintId: "WTR-004",
+                    description: "Dirty water supply in Green Park Colony. Brown colored water.",
+                    location: "Green Park Colony",
+                    status: "Resolved",
+                    citizenName: "Maria Garcia",
+                    phone: "+91 9876543213",
+                    email: "maria@example.com",
+                    address: "House 78, Green Park",
+                    issueDate: "2024-01-28",
+                    issueTime: "11:45 AM",
+                    duration: "2 days",
+                    issueType: "Dirty Water",
+                    priority: "Medium",
+                    createdAt: "2024-01-28T12:00:00Z"
+                }
+            ];
+        }
+
+        function _capWords(str) {
+            return String(str || '')
+                .split(' ')
+                .filter(Boolean)
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        function mapWaterComplaint(raw) {
+            const location =
+                raw.location ||
+                (raw.locationMethod === 'gps'
+                    ? (raw.gpsAddress || 'GPS location')
+                    : [
+                        raw.address?.houseNo,
+                        raw.address?.street,
+                        raw.address?.ward,
+                        raw.address?.city,
+                        raw.address?.pincode
+                    ].filter(Boolean).join(', ')
+                );
+
+            return {
+                ...raw,
+                complaintId: raw.complaintId || raw.complainId || raw._id,
+                citizenName: raw.citizenName || raw.fullName || 'Citizen',
+                issueType: raw.issueType || raw.issue?.issueType || 'N/A',
+                priority: raw.priority || 'Medium',
+                location: location || 'Not provided',
+                status: _capWords(raw.status || 'Pending'),
+                createdAt: raw.createdAt || new Date().toISOString()
+            };
+        }
+
+        async function loadComplaints() {
+            try {
+                document.getElementById('complaintsTableBody').innerHTML = `
+                    <tr><td colspan="5" style="text-align: center; padding: 3rem;"><div class="spinner-border text-primary"></div><p class="mt-3">Loading...</p></td></tr>
+                `;
+
+                const basePath = window.location.pathname.replace(/\/$/, '');
+                const response = await fetch(basePath, {
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+                const data = await response.json();
+                const complaints = (data.complaints || []).map(mapWaterComplaint);
+
+                allComplaints = complaints;
+                filteredComplaints = [...allComplaints];
+
+                updateStats();
+                renderTable();
+                showToast('Data loaded successfully', 'success');
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to load complaints (showing demo data)', 'error');
+                allComplaints = getMockWaterComplaints();
+                filteredComplaints = [...allComplaints];
+                updateStats();
+                renderTable();
+            }
+        }
+
+        function updateStats() {
+            const total = allComplaints.length;
+            const pending = allComplaints.filter(c => c.status === 'New').length;
+            const inProgress = allComplaints.filter(c => c.status === 'In Progress').length;
+            const resolved = allComplaints.filter(c => c.status === 'Resolved').length;
+
+            document.getElementById('totalComplaints').textContent = total;
+            document.getElementById('pendingComplaints').textContent = pending;
+            document.getElementById('inProgressComplaints').textContent = inProgress;
+            document.getElementById('resolvedComplaints').textContent = resolved;
+        }
+
+        function filterComplaints() {
+            const status = document.getElementById('statusFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredComplaints = allComplaints.filter(c => {
+                if (status !== 'all' && c.status !== status) return false;
+                
+                if (dateFilter !== 'all') {
+                    const now = new Date();
+                    const complaintDate = new Date(c.createdAt);
+                    if (dateFilter === 'today' && complaintDate.toDateString() !== now.toDateString()) return false;
+                    if (dateFilter === 'week') {
+                        const weekAgo = new Date(now - 7*24*60*60*1000);
+                        if (complaintDate < weekAgo) return false;
+                    }
+                    if (dateFilter === 'month') {
+                        const monthAgo = new Date(now.getFullYear(), now.getMonth()-1, now.getDate());
+                        if (complaintDate < monthAgo) return false;
+                    }
+                }
+                
+                if (search) {
+                    return c.description?.toLowerCase().includes(search) ||
+                           c.complaintId?.toLowerCase().includes(search) ||
+                           c.citizenName?.toLowerCase().includes(search);
+                }
+                return true;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function clearFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('dateFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            filteredComplaints = [...allComplaints];
+            currentPage = 1;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('complaintsTableBody');
+            const totalPages = Math.ceil(filteredComplaints.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageComplaints = filteredComplaints.slice(start, end);
+
+            document.getElementById('tableCount').textContent = `(${filteredComplaints.length})`;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+
+            if (pageComplaints.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-tint fa-3x mb-3" style="color: #94a3b8;"></i>
+                    <p>No complaints found</p></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pageComplaints.map(c => `
+                <tr class="table-row">
+                    <td data-label="ID" class="complaint-id">${c.complaintId}</td>
+                    <td data-label="Description" class="complaint-desc" title="${c.description}">${c.description.substring(0, 60)}...</td>
+                    <td data-label="Location" class="complaint-location">${c.location}</td>
+                    <td data-label="Status"><span class="status-badge status-${c.status.toLowerCase().replace(' ', '')}">${c.status}</span></td>
+                    <td data-label="Actions">
+                        <div class="action-buttons">
+                            <button class="action-btn-small btn-view" onclick="viewComplaint('${c._id}')"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn-small btn-view" onclick="updateComplaint('${c._id}')"><i class="fas fa-edit"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredComplaints.length / itemsPerPage);
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTable();
+            }
+        }
+
+        function viewComplaint(id) {
+            const complaint = allComplaints.find(c => c._id === id);
+            if (!complaint) return;
+
+            const details = `
+                <div class="detail-section">
+                    <h4><i class="fas fa-info-circle"></i> Complaint Details</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">ID:</span> ${complaint.complaintId}</div>
+                        <div><span class="detail-label">Status:</span> <span class="status-badge status-${complaint.status.toLowerCase().replace(' ', '')}">${complaint.status}</span></div>
+                        <div><span class="detail-label">Priority:</span> ${complaint.priority}</div>
+                        <div><span class="detail-label">Type:</span> ${complaint.issueType}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-user"></i> Citizen Info</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">Name:</span> ${complaint.citizenName}</div>
+                        <div><span class="detail-label">Phone:</span> ${complaint.phone}</div>
+                        <div><span class="detail-label">Email:</span> ${complaint.email}</div>
+                        <div><span class="detail-label">Address:</span> ${complaint.address}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-calendar"></i> Issue Details</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">Date:</span> ${complaint.issueDate}</div>
+                        <div><span class="detail-label">Time:</span> ${complaint.issueTime}</div>
+                        <div><span class="detail-label">Duration:</span> ${complaint.duration}</div>
+                        <div><span class="detail-label">Location:</span> ${complaint.location}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-align-left"></i> Description</h4>
+                    <p>${complaint.description}</p>
+                </div>
+            `;
+
+            document.getElementById('complaintDetails').innerHTML = details;
+            document.getElementById('viewModal').classList.add('active');
+        }
+
+        function updateComplaint(id) {
+            const complaint = allComplaints.find(c => c._id === id);
+            if (!complaint) return;
+
+            currentComplaintId = id;
+
+            const form = `
+                <div class="form-group mb-3">
+                    <label class="form-label">Complaint ID</label>
+                    <input type="text" class="form-control" value="${complaint.complaintId}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Citizen Name</label>
+                    <input type="text" class="form-control" value="${complaint.citizenName}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="statusSelect">
+                        <option value="New" ${complaint.status === 'New' ? 'selected' : ''}>New</option>
+                        <option value="In Progress" ${complaint.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Resolved" ${complaint.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Assign To</label>
+                    <select class="form-select" id="assignedTo">
+                        <option value="Team A">Team A</option>
+                        <option value="Team B">Team B</option>
+                        <option value="Team C">Team C</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Priority</label>
+                    <select class="form-select" id="prioritySelect">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-control" id="govtNotes" rows="3"></textarea>
+                </div>
+            `;
+
+            document.getElementById('updateForm').innerHTML = form;
+            document.getElementById('updateModal').classList.add('active');
+        }
+
+        async function saveUpdate() {
+            try {
+                const status = document.getElementById('statusSelect').value;
+                const notes = document.getElementById('govtNotes').value;
+
+                const basePath = window.location.pathname.replace(/\/$/, '');
+
+                // If using demo data, update only locally
+                const isMock = String(currentComplaintId).length < 10;
+                if (isMock) {
+                    const index = allComplaints.findIndex(c => c._id === currentComplaintId);
+                    if (index !== -1) {
+                        allComplaints[index].status = status;
+                        allComplaints[index].govtNotes = notes;
+                    }
+                } else {
+                    const response = await fetch(`${basePath}/${currentComplaintId}`, {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ status, govtNotes: notes })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || `Update failed (${response.status})`);
+                    }
+
+                    const updated = mapWaterComplaint(data.complaint);
+                    const index = allComplaints.findIndex(c => String(c._id) === String(currentComplaintId));
+                    if (index !== -1) allComplaints[index] = updated;
+                }
+
+                filteredComplaints = [...allComplaints];
+                updateStats();
+                renderTable();
+                closeModal();
+                showToast('Updated successfully', 'success');
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || 'Failed to update complaint', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('viewModal').classList.remove('active');
+            document.getElementById('updateModal').classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.querySelector('#toastMessage').textContent = message;
+            toast.style.borderLeftColor = type === 'success' ? '#10b981' : '#ef4444';
+            toast.querySelector('i').style.color = type === 'success' ? '#10b981' : '#ef4444';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) closeModal();
+        });
+    </script>
+</body>
+</html>

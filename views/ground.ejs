@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Nearby - Find Playgrounds & Sports Facilities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .playground-finder-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .location-selector {
+            margin-bottom: 30px;
+        }
+        
+        .location-option h3 {
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .city-select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .city-select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+        
+        .selected-city-display {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .selected-city-display.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .city-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .city-detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .city-label {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .city-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 30px;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.4);
+        }
+        
+        .filter-section {
+            margin: 30px 0;
+        }
+        
+        .filter-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .facility-type-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .facility-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .facility-card:hover {
+            border-color: #28a745;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .facility-card.active {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+        
+        .facility-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .facility-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .facility-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .features-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .feature-checkbox:hover {
+            background: #e8f5e9;
+            transform: translateY(-2px);
+        }
+        
+        .feature-checkbox input {
+            width: 20px;
+            height: 20px;
+            accent-color: #28a745;
+        }
+        
+        .feature-label {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .distance-filter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+        
+        .distance-slider {
+            flex: 1;
+        }
+        
+        .distance-label {
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 150px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #cbd5e0;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #28a745;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .distance-value {
+            font-weight: 700;
+            color: #28a745;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        .age-group-filter {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .age-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .age-group input {
+            width: 20px;
+            height: 20px;
+            accent-color: #28a745;
+        }
+        
+        .age-label {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+        
+        .results-title {
+            font-size: 1.8rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .results-count {
+            background: #28a745;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .playgrounds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .playground-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+        }
+        
+        .playground-card:hover {
+            border-color: #28a745;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .playground-image {
+            height: 200px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .playground-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.2), transparent);
+        }
+        
+        .playground-type {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        .playground-distance {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .playground-content {
+            padding: 25px;
+        }
+        
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .playground-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .playground-size {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #28a745;
+            background: #e8f5e9;
+            padding: 5px 15px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        
+        .playground-address {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .playground-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            color: #f6ad55;
+        }
+        
+        .rating-value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .review-count {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .playground-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .feature {
+            background: #e8f5e9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .playground-timing {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .timing-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .timing-slots {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .time-slot {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .age-group-tags {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .age-tag {
+            background: #fff3cd;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #856404;
+        }
+        
+        .playground-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #f7fafc;
+        }
+        
+        .playground-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-open {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-closed {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .visit-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .visit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+        
+        .map-container {
+            height: 400px;
+            background: #e8f5e9;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            font-weight: 600;
+            overflow: hidden;
+        }
+        
+        .map-header {
+            width: 100%;
+            padding: 20px;
+            background: #28a745;
+            color: white;
+            text-align: center;
+        }
+        
+        .map-placeholder {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 40px;
+            color: #718096;
+            font-size: 1.2rem;
+            background: #f7fafc;
+            border-radius: 15px;
+            border: 2px dashed #cbd5e0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #28a745;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 992px) {
+            .playgrounds-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .facility-type-filter {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .playground-finder-card, .results-section {
+                padding: 24px;
+            }
+            
+            .playgrounds-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-filter {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .playground-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .playground-size {
+                align-self: flex-start;
+            }
+            
+            .distance-filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .distance-label {
+                min-width: auto;
+            }
+            
+            .distance-value {
+                text-align: left;
+            }
+        }
+        
+        .grass-animation {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            animation: grassWave 3s infinite linear;
+        }
+        
+        @keyframes grassWave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff6b35;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .capacity-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .city-icon-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ Play Nearby - Find Playgrounds</h1>
+            <p>Discover playgrounds, sports fields, and recreational facilities in your city</p>
+        </div>
+        
+        <div class="playground-finder-card">
+            <div class="location-selector">
+                <div class="location-option">
+                    <h3>🏙️ Select Your City</h3>
+                    <select id="citySelect" class="city-select">
+                        <option value="">-- Choose a City --</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="chennai">Chennai</option>
+                        <option value="hyderabad">Hyderabad</option>
+                        <option value="pune">Pune</option>
+                        <option value="kolkata">Kolkata</option>
+                        <option value="ahmedabad">Ahmedabad</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="selected-city-display" id="cityDisplay">
+                <div class="city-icon-display" id="cityIconDisplay">
+                    🏙️ <span id="cityNameDisplay">City Name</span>
+                </div>
+                <div class="city-info">
+                    <div class="city-detail">
+                        <span class="city-label">Playgrounds Available</span>
+                        <span class="city-value" id="playgroundCount">0</span>
+                    </div>
+                    <div class="city-detail">
+                        <span class="city-label">Average Rating</span>
+                        <span class="city-value" id="avgRating">0.0</span>
+                    </div>
+                    <div class="city-detail">
+                        <span class="city-label">Popular Types</span>
+                        <span class="city-value" id="popularTypes">Sports & Playgrounds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-header">🎯 Select Facility Type</div>
+                <div class="facility-type-filter">
+                    <div class="facility-card active" onclick="selectFacilityType('all')">
+                        <div class="facility-icon">⚽</div>
+                        <div class="facility-name">All Facilities</div>
+                        <div class="facility-desc">All playgrounds & sports fields</div>
+                    </div>
+                    <div class="facility-card" onclick="selectFacilityType('playground')">
+                        <div class="facility-icon">🧒</div>
+                        <div class="facility-name">Children's Playground</div>
+                        <div class="facility-desc">Swings, slides, play equipment</div>
+                    </div>
+                    <div class="facility-card" onclick="selectFacilityType('sports')">
+                        <div class="facility-icon">🏟️</div>
+                        <div class="facility-name">Sports Fields</div>
+                        <div class="facility-desc">Cricket, football, basketball</div>
+                    </div>
+                    <div class="facility-card" onclick="selectFacilityType('fitness')">
+                        <div class="facility-icon">💪</div>
+                        <div class="facility-name">Outdoor Fitness</div>
+                        <div class="facility-desc">Exercise equipment, tracks</div>
+                    </div>
+                    <div class="facility-card" onclick="selectFacilityType('skate')">
+                        <div class="facility-icon">🛹</div>
+                        <div class="facility-name">Skate Parks</div>
+                        <div class="facility-desc">Ramps, bowls for skating</div>
+                    </div>
+                    <div class="facility-card" onclick="selectFacilityType('multi')">
+                        <div class="facility-icon">🎾</div>
+                        <div class="facility-name">Multi-Sport Complex</div>
+                        <div class="facility-desc">Multiple sports facilities</div>
+                    </div>
+                </div>
+                
+                <div class="filter-header">🎯 Filter by Features</div>
+                <div class="features-filter">
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureShade" checked>
+                        <span class="feature-label">🌳 Shaded Areas</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureLighting" checked>
+                        <span class="feature-label">💡 Evening Lighting</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureSeating" checked>
+                        <span class="feature-label">🪑 Benches & Seating</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureParking">
+                        <span class="feature-label">🅿️ Parking Available</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureRestrooms">
+                        <span class="feature-label">🚻 Restrooms</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureWater">
+                        <span class="feature-label">💧 Drinking Water</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureSecurity">
+                        <span class="feature-label">👮 Security Guards</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureDisabled">
+                        <span class="feature-label">♿ Disability Access</span>
+                    </label>
+                </div>
+                
+                <div class="filter-header">👶 Suitable for Age Group</div>
+                <div class="age-group-filter">
+                    <label class="age-group">
+                        <input type="checkbox" id="ageToddlers" checked>
+                        <span class="age-label">👶 Toddlers (1-4)</span>
+                    </label>
+                    <label class="age-group">
+                        <input type="checkbox" id="ageKids" checked>
+                        <span class="age-label">🧒 Kids (5-12)</span>
+                    </label>
+                    <label class="age-group">
+                        <input type="checkbox" id="ageTeens" checked>
+                        <span class="age-label">👦 Teens (13-19)</span>
+                    </label>
+                    <label class="age-group">
+                        <input type="checkbox" id="ageAdults" checked>
+                        <span class="age-label">👨 Adults (20+)</span>
+                    </label>
+                    <label class="age-group">
+                        <input type="checkbox" id="ageSeniors" checked>
+                        <span class="age-label">👴 Seniors (60+)</span>
+                    </label>
+                </div>
+                
+                <div class="distance-filter">
+                    <div class="distance-label">Search Radius (km):</div>
+                    <div class="distance-slider">
+                        <input type="range" id="distanceSlider" min="1" max="10" value="3" oninput="updateDistanceValue()">
+                    </div>
+                    <div class="distance-value" id="distanceValue">3 km</div>
+                </div>
+            </div>
+            
+            <button class="search-button" onclick="searchPlaygrounds()">
+                <span class="icon">🔍</span>
+                Find Playgrounds in <span id="searchCityName">Your City</span>
+            </button>
+        </div>
+        
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="results-title" id="resultsTitle">Playgrounds in <span id="resultsCityName">Your City</span></div>
+                <div class="results-count" id="resultsCount">0 playgrounds found</div>
+            </div>
+            
+            <div id="playgroundsGrid" class="playgrounds-grid">
+                <!-- Playgrounds will be loaded here -->
+            </div>
+            
+            <div class="map-container">
+                <div class="map-header">🗺️ Playgrounds Map</div>
+                <div class="map-placeholder">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">⚽</div>
+                        <div>Interactive map showing playground locations</div>
+                        <div style="font-size: 0.9rem; color: #718096; margin-top: 10px;">Integrated with Google Maps API</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                Finding playgrounds and sports facilities in your city...
+            </div>
+            <div class="no-results" id="noResults" style="display: none;">
+                🚫 No playgrounds found within your search criteria.
+                Try increasing the distance or adjusting filters.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample playground data for different cities
+        const cityPlaygrounds = {
+            mumbai: [
+                { id: 1, name: "Joggers Park Playground", type: "playground", lat: 19.1209, lng: 72.8312,
+                  address: "Juhu Tara Road, Mumbai", rating: 4.5, distance: 0.8, reviews: 178,
+                  size: "2 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens", "adults"],
+                  features: ["shade", "lighting", "seating", "water", "security"],
+                  timing: ["6:00 AM - 10:00 PM"],
+                  description: "Well-maintained playground with jogging track and children's play area",
+                  capacity: "Medium crowd", popular: true },
+                { id: 2, name: "Maharashtra Cricket Association Ground", type: "sports", lat: 19.1098, lng: 72.8303,
+                  address: "Bandra Kurla Complex, Mumbai", rating: 4.7, distance: 2.1, reviews: 234,
+                  size: "15 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security"],
+                  timing: ["7:00 AM - 9:00 PM"],
+                  description: "International standard cricket ground with practice nets",
+                  capacity: "Booking required", popular: true },
+                { id: 3, name: "Sanjay Gandhi National Park Play Area", type: "playground", lat: 19.2147, lng: 72.9106,
+                  address: "Borivali East, Mumbai", rating: 4.6, distance: 3.5, reviews: 345,
+                  size: "5 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens", "adults", "seniors"],
+                  features: ["shade", "seating", "parking", "restrooms", "water", "disabled"],
+                  timing: ["7:30 AM - 6:30 PM"],
+                  description: "Natural playground within national park with adventure activities",
+                  capacity: "Large", popular: true },
+                { id: 4, name: "Powai Lake Jogging Track", type: "fitness", lat: 19.1224, lng: 72.9053,
+                  address: "Powai, Mumbai", rating: 4.4, distance: 2.8, reviews: 189,
+                  size: "3 Km track", status: "open", ageGroups: ["adults", "seniors"],
+                  features: ["lighting", "seating", "water"],
+                  timing: ["5:00 AM - 11:00 PM"],
+                  description: "Scenic jogging track around Powai Lake with fitness stations",
+                  capacity: "Medium crowd", popular: false },
+                { id: 5, name: "Versova Skate Park", type: "skate", lat: 19.1334, lng: 72.8190,
+                  address: "Versova, Andheri West", rating: 4.3, distance: 1.5, reviews: 98,
+                  size: "1.5 Acres", status: "open", ageGroups: ["kids", "teens", "adults"],
+                  features: ["lighting", "seating", "water", "security"],
+                  timing: ["8:00 AM - 8:00 PM"],
+                  description: "Modern skate park with ramps, bowls, and rails",
+                  capacity: "Small", popular: true },
+                { id: 6, name: "NSCI Sports Complex", type: "multi", lat: 19.1079, lng: 72.8298,
+                  address: "Worli, Mumbai", rating: 4.8, distance: 2.3, reviews: 456,
+                  size: "20 Acres", status: "open", ageGroups: ["kids", "teens", "adults"],
+                  features: ["shade", "lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["6:00 AM - 10:00 PM"],
+                  description: "Multi-sport complex with tennis, squash, swimming, and gym",
+                  capacity: "Membership required", popular: true }
+            ],
+            delhi: [
+                { id: 7, name: "Lodhi Garden Children's Park", type: "playground", lat: 28.5925, lng: 77.2243,
+                  address: "Lodhi Road, Delhi", rating: 4.4, distance: 1.2, reviews: 167,
+                  size: "3 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens"],
+                  features: ["shade", "seating", "water", "disabled"],
+                  timing: ["6:00 AM - 8:00 PM"],
+                  description: "Historic garden with modern children's play equipment",
+                  capacity: "Medium crowd", popular: true },
+                { id: 8, name: "Jawaharlal Nehru Stadium", type: "sports", lat: 28.5821, lng: 77.2333,
+                  address: "Lodhi Road, Delhi", rating: 4.6, distance: 2.5, reviews: 289,
+                  size: "100 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["7:00 AM - 9:00 PM"],
+                  description: "Commonwealth Games venue with multiple sports facilities",
+                  capacity: "Large", popular: true },
+                { id: 9, name: "Central Park Fitness Zone", type: "fitness", lat: 28.5355, lng: 77.2155,
+                  address: "Connaught Place, Delhi", rating: 4.2, distance: 1.8, reviews: 123,
+                  size: "2 Acres", status: "open", ageGroups: ["adults", "seniors"],
+                  features: ["shade", "lighting", "seating", "water"],
+                  timing: ["5:00 AM - 10:00 PM"],
+                  description: "Outdoor fitness area with modern exercise equipment",
+                  capacity: "Medium crowd", popular: false }
+            ],
+            bangalore: [
+                { id: 10, name: "Cubbon Park Play Area", type: "playground", lat: 12.9767, lng: 77.5928,
+                  address: "Sampangi Rama Nagar, Bangalore", rating: 4.7, distance: 0.5, reviews: 345,
+                  size: "4 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens", "adults"],
+                  features: ["shade", "seating", "restrooms", "water", "disabled"],
+                  timing: ["6:00 AM - 8:00 PM"],
+                  description: "Iconic park with dedicated children's play zones",
+                  capacity: "Large", popular: true },
+                { id: 11, name: "Kanteerava Stadium Complex", type: "multi", lat: 12.9789, lng: 77.5920,
+                  address: "Cubbon Park, Bangalore", rating: 4.5, distance: 1.2, reviews: 234,
+                  size: "50 Acres", status: "open", ageGroups: ["kids", "teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["6:00 AM - 10:00 PM"],
+                  description: "Multi-sport complex with swimming, athletics, and indoor stadium",
+                  capacity: "Large", popular: true },
+                { id: 12, name: "Lalbagh Joggers Park", type: "fitness", lat: 12.9507, lng: 77.5848,
+                  address: "Lalbagh, Bangalore", rating: 4.4, distance: 2.3, reviews: 189,
+                  size: "5 Km track", status: "open", ageGroups: ["adults", "seniors"],
+                  features: ["shade", "seating", "water"],
+                  timing: ["5:00 AM - 9:00 PM"],
+                  description: "Beautiful jogging track through botanical gardens",
+                  capacity: "Medium crowd", popular: false }
+            ],
+            chennai: [
+                { id: 13, name: "Marina Beach Playground", type: "playground", lat: 13.0544, lng: 80.2837,
+                  address: "Marina Beach Road, Chennai", rating: 4.3, distance: 0.8, reviews: 156,
+                  size: "3 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens"],
+                  features: ["seating", "water"],
+                  timing: ["6:00 AM - 8:00 PM"],
+                  description: "Beachfront playground with sea view and play equipment",
+                  capacity: "Medium crowd", popular: true },
+                { id: 14, name: "Jawaharlal Nehru Stadium", type: "sports", lat: 13.0886, lng: 80.2785,
+                  address: "Periyamet, Chennai", rating: 4.5, distance: 1.5, reviews: 234,
+                  size: "80 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["7:00 AM - 9:00 PM"],
+                  description: "Multi-purpose stadium with athletic tracks and fields",
+                  capacity: "Large", popular: true }
+            ],
+            hyderabad: [
+                { id: 15, name: "Hussain Sagar Play Area", type: "playground", lat: 17.4239, lng: 78.4738,
+                  address: "Tank Bund, Hyderabad", rating: 4.4, distance: 1.2, reviews: 178,
+                  size: "5 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens", "adults"],
+                  features: ["shade", "seating", "parking", "restrooms", "water"],
+                  timing: ["6:00 AM - 9:00 PM"],
+                  description: "Lakeside playground with walking track and play zones",
+                  capacity: "Large", popular: true },
+                { id: 16, name: "Gachibowli Stadium", type: "sports", lat: 17.4401, lng: 78.3489,
+                  address: "Gachibowli, Hyderabad", rating: 4.7, distance: 3.2, reviews: 289,
+                  size: "100 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["7:00 AM - 10:00 PM"],
+                  description: "International cricket stadium with practice facilities",
+                  capacity: "Large", popular: true }
+            ],
+            pune: [
+                { id: 17, name: "Peshwe Park Playground", type: "playground", lat: 18.5082, lng: 73.8268,
+                  address: "Shivaji Nagar, Pune", rating: 4.5, distance: 1.0, reviews: 167,
+                  size: "4 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens"],
+                  features: ["shade", "seating", "restrooms", "water", "disabled"],
+                  timing: ["6:00 AM - 8:00 PM"],
+                  description: "Zoo and park complex with extensive play areas",
+                  capacity: "Medium crowd", popular: true },
+                { id: 18, name: "Balewadi Sports Complex", type: "multi", lat: 18.5820, lng: 73.7707,
+                  address: "Balewadi, Pune", rating: 4.8, distance: 4.5, reviews: 345,
+                  size: "150 Acres", status: "open", ageGroups: ["kids", "teens", "adults"],
+                  features: ["shade", "lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["6:00 AM - 10:00 PM"],
+                  description: "National Games venue with world-class sports facilities",
+                  capacity: "Large", popular: true }
+            ],
+            kolkata: [
+                { id: 19, name: "Victoria Memorial Gardens", type: "playground", lat: 22.5448, lng: 88.3426,
+                  address: "Maidan, Kolkata", rating: 4.6, distance: 0.8, reviews: 234,
+                  size: "8 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens", "adults"],
+                  features: ["shade", "seating", "restrooms", "water", "disabled"],
+                  timing: ["5:30 AM - 7:00 PM"],
+                  description: "Historic gardens with children's play areas",
+                  capacity: "Large", popular: true },
+                { id: 20, name: "Salt Lake Stadium Complex", type: "sports", lat: 22.5695, lng: 88.4093,
+                  address: "Salt Lake, Kolkata", rating: 4.7, distance: 3.2, reviews: 289,
+                  size: "120 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["7:00 AM - 9:00 PM"],
+                  description: "India's largest stadium with multiple sports facilities",
+                  capacity: "Large", popular: true }
+            ],
+            ahmedabad: [
+                { id: 21, name: "Kankaria Lake Playground", type: "playground", lat: 23.0083, lng: 72.5964,
+                  address: "Kankaria, Ahmedabad", rating: 4.4, distance: 1.2, reviews: 178,
+                  size: "6 Acres", status: "open", ageGroups: ["toddlers", "kids", "teens"],
+                  features: ["shade", "seating", "parking", "restrooms", "water"],
+                  timing: ["9:00 AM - 10:00 PM"],
+                  description: "Lakeside amusement park with play areas",
+                  capacity: "Large", popular: true },
+                { id: 22, name: "Sardar Patel Stadium", type: "sports", lat: 23.0291, lng: 72.5602,
+                  address: "Navrangpura, Ahmedabad", rating: 4.6, distance: 2.5, reviews: 234,
+                  size: "90 Acres", status: "open", ageGroups: ["teens", "adults"],
+                  features: ["lighting", "parking", "restrooms", "water", "security", "disabled"],
+                  timing: ["7:00 AM - 9:00 PM"],
+                  description: "World's largest cricket stadium with practice facilities",
+                  capacity: "Large", popular: true }
+            ]
+        };
+
+        // Facility type information
+        const facilityTypeInfo = {
+            playground: { icon: "🧒", name: "Children's Playground", desc: "Swings, slides, play equipment" },
+            sports: { icon: "🏟️", name: "Sports Fields", desc: "Cricket, football, basketball" },
+            fitness: { icon: "💪", name: "Outdoor Fitness", desc: "Exercise equipment, tracks" },
+            skate: { icon: "🛹", name: "Skate Parks", desc: "Ramps, bowls for skating" },
+            multi: { icon: "🎾", name: "Multi-Sport Complex", desc: "Multiple sports facilities" }
+        };
+
+        // Feature icons
+        const featureIcons = {
+            shade: "🌳",
+            lighting: "💡",
+            seating: "🪑",
+            parking: "🅿️",
+            restrooms: "🚻",
+            water: "💧",
+            security: "👮",
+            disabled: "♿"
+        };
+
+        // Age group icons
+        const ageGroupIcons = {
+            toddlers: "👶",
+            kids: "🧒",
+            teens: "👦",
+            adults: "👨",
+            seniors: "👴"
+        };
+
+        // City display names
+        const cityDisplayNames = {
+            mumbai: "Mumbai",
+            delhi: "Delhi",
+            bangalore: "Bangalore",
+            chennai: "Chennai",
+            hyderabad: "Hyderabad",
+            pune: "Pune",
+            kolkata: "Kolkata",
+            ahmedabad: "Ahmedabad"
+        };
+
+        let selectedCity = null;
+        let selectedFacilityType = 'all';
+        let searchRadius = 3; // in kilometers
+
+        // Initialize distance slider
+        function updateDistanceValue() {
+            searchRadius = document.getElementById('distanceSlider').value;
+            document.getElementById('distanceValue').textContent = `${searchRadius} km`;
+        }
+
+        // Handle city selection
+        document.getElementById('citySelect').addEventListener('change', function(e) {
+            selectedCity = e.target.value;
+            
+            if (selectedCity) {
+                const cityDisplay = document.getElementById('cityDisplay');
+                const cityNameDisplay = cityDisplayNames[selectedCity];
+                
+                // Update city name in display
+                document.getElementById('cityNameDisplay').textContent = cityNameDisplay;
+                document.getElementById('searchCityName').textContent = cityNameDisplay;
+                document.getElementById('resultsCityName').textContent = cityNameDisplay;
+                
+                // Calculate playground statistics
+                const playgrounds = cityPlaygrounds[selectedCity] || [];
+                const avgRating = playgrounds.length > 0 
+                    ? (playgrounds.reduce((sum, pg) => sum + pg.rating, 0) / playgrounds.length).toFixed(1)
+                    : "0.0";
+                
+                // Get popular types
+                const typeCount = {};
+                playgrounds.forEach(pg => {
+                    typeCount[pg.type] = (typeCount[pg.type] || 0) + 1;
+                });
+                const popularTypes = Object.entries(typeCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 2)
+                    .map(([type]) => facilityTypeInfo[type].name)
+                    .join(" & ") || "Various";
+                
+                // Update statistics display
+                document.getElementById('playgroundCount').textContent = playgrounds.length;
+                document.getElementById('avgRating').textContent = avgRating;
+                document.getElementById('popularTypes').textContent = popularTypes;
+                
+                // Show city display
+                cityDisplay.classList.add('active');
+            } else {
+                // Hide city display if no city selected
+                document.getElementById('cityDisplay').classList.remove('active');
+                document.getElementById('searchCityName').textContent = "Your City";
+                document.getElementById('resultsCityName').textContent = "Your City";
+            }
+        });
+
+        // Facility type selection
+        function selectFacilityType(type) {
+            selectedFacilityType = type;
+            
+            // Update UI
+            document.querySelectorAll('.facility-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // If results are already shown, filter them
+            if (document.getElementById('resultsSection').classList.contains('active')) {
+                searchPlaygrounds();
+            }
+        }
+
+        // Get selected features
+        function getSelectedFeatures() {
+            const features = [];
+            const checkboxes = [
+                'featureShade', 'featureLighting', 'featureSeating', 'featureParking',
+                'featureRestrooms', 'featureWater', 'featureSecurity', 'featureDisabled'
+            ];
+            
+            checkboxes.forEach(id => {
+                if (document.getElementById(id).checked) {
+                    features.push(id.replace('feature', '').toLowerCase());
+                }
+            });
+            
+            return features;
+        }
+
+        // Get selected age groups
+        function getSelectedAgeGroups() {
+            const ageGroups = [];
+            const checkboxes = [
+                'ageToddlers', 'ageKids', 'ageTeens', 'ageAdults', 'ageSeniors'
+            ];
+            
+            checkboxes.forEach(id => {
+                if (document.getElementById(id).checked) {
+                    const ageGroup = id.replace('age', '').toLowerCase();
+                    ageGroups.push(ageGroup);
+                }
+            });
+            
+            return ageGroups;
+        }
+
+        // Search for playgrounds
+        function searchPlaygrounds() {
+            if (!selectedCity) {
+                alert('Please select a city first.');
+                return;
+            }
+            
+            // Show results section
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('playgroundsGrid').innerHTML = '';
+            
+            // Get playgrounds for selected city
+            const playgrounds = cityPlaygrounds[selectedCity] || [];
+            
+            // Simulate API delay
+            setTimeout(() => {
+                displayPlaygrounds(playgrounds);
+            }, 800);
+        }
+
+        // Display playgrounds
+        function displayPlaygrounds(playgrounds) {
+            const playgroundsGrid = document.getElementById('playgroundsGrid');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('noResults');
+            
+            loading.style.display = 'none';
+            playgroundsGrid.innerHTML = '';
+            
+            // Filter by distance
+            const filteredPlaygrounds = playgrounds.filter(playground => playground.distance <= searchRadius);
+            
+            // Filter by facility type if not 'all'
+            let typeFiltered = filteredPlaygrounds;
+            if (selectedFacilityType !== 'all') {
+                typeFiltered = filteredPlaygrounds.filter(playground => playground.type === selectedFacilityType);
+            }
+            
+            // Filter by features
+            const selectedFeatures = getSelectedFeatures();
+            let featureFiltered = typeFiltered;
+            
+            if (selectedFeatures.length > 0) {
+                featureFiltered = typeFiltered.filter(playground => {
+                    return selectedFeatures.every(feature => playground.features.includes(feature));
+                });
+            }
+            
+            // Filter by age groups
+            const selectedAgeGroups = getSelectedAgeGroups();
+            let ageFiltered = featureFiltered;
+            
+            if (selectedAgeGroups.length > 0) {
+                ageFiltered = featureFiltered.filter(playground => {
+                    return selectedAgeGroups.some(ageGroup => playground.ageGroups.includes(ageGroup));
+                });
+            }
+            
+            if (ageFiltered.length === 0) {
+                noResults.style.display = 'block';
+                document.getElementById('resultsCount').textContent = '0 playgrounds found';
+                return;
+            }
+            
+            document.getElementById('resultsCount').textContent = `${ageFiltered.length} playgrounds found`;
+            
+            // Sort by distance
+            ageFiltered.sort((a, b) => a.distance - b.distance);
+            
+            // Display playgrounds
+            ageFiltered.forEach(playground => {
+                const playgroundCard = createPlaygroundCard(playground);
+                playgroundsGrid.appendChild(playgroundCard);
+            });
+            
+            // Update results title
+            const facilityTypeName = selectedFacilityType === 'all' ? 'Playgrounds & Sports Facilities' : facilityTypeInfo[selectedFacilityType].name;
+            const cityName = cityDisplayNames[selectedCity];
+            document.getElementById('resultsTitle').textContent = `${facilityTypeName} in ${cityName}`;
+            
+            // Add grass animation to playground images
+            document.querySelectorAll('.playground-image').forEach(img => {
+                const grassAnim = document.createElement('div');
+                grassAnim.className = 'grass-animation';
+                img.appendChild(grassAnim);
+            });
+        }
+
+        // Create playground card HTML
+        function createPlaygroundCard(playground) {
+            const card = document.createElement('div');
+            card.className = 'playground-card';
+            
+            // Generate star rating
+            const stars = '★'.repeat(Math.floor(playground.rating)) + '☆'.repeat(5 - Math.floor(playground.rating));
+            
+            // Generate features list
+            const featuresHtml = playground.features.map(feature => {
+                const icon = featureIcons[feature] || '✅';
+                const label = feature.charAt(0).toUpperCase() + feature.slice(1);
+                return `<span class="feature">${icon} ${label}</span>`;
+            }).join('');
+            
+            // Generate timing slots
+            const timingSlots = playground.timing.map(time => 
+                `<span class="time-slot">${time}</span>`
+            ).join('');
+            
+            // Generate age group tags
+            const ageTags = playground.ageGroups.map(ageGroup => 
+                `<span class="age-tag">${ageGroupIcons[ageGroup]} ${ageGroup.toUpperCase()}</span>`
+            ).join('');
+            
+            card.innerHTML = `
+                <div class="playground-image">
+                    ${playground.popular ? '<div class="popular-badge">⭐ Popular</div>' : ''}
+                    <div class="capacity-indicator">👥 ${playground.capacity}</div>
+                    <div class="playground-type">${facilityTypeInfo[playground.type].icon} ${playground.type.toUpperCase()}</div>
+                    <div class="playground-distance">${playground.distance.toFixed(1)} km</div>
+                </div>
+                <div class="playground-content">
+                    <div class="playground-header">
+                        <div>
+                            <div class="playground-name">${playground.name}</div>
+                            <div class="playground-address">📍 ${playground.address}</div>
+                        </div>
+                        <div class="playground-size">${playground.size}</div>
+                    </div>
+                    
+                    <div class="playground-rating">
+                        <span class="stars">${stars}</span>
+                        <span class="rating-value">${playground.rating}</span>
+                        <span class="review-count">(${playground.reviews} reviews)</span>
+                    </div>
+                    
+                    <div style="color: #718096; font-size: 0.95rem; margin-bottom: 15px;">
+                        ${playground.description}
+                    </div>
+                    
+                    <div class="age-group-tags">
+                        ${ageTags}
+                    </div>
+                    
+                    <div class="playground-features">
+                        ${featuresHtml}
+                    </div>
+                    
+                    <div class="playground-timing">
+                        <div class="timing-title">🕒 Available Timings:</div>
+                        <div class="timing-slots">
+                            ${timingSlots}
+                        </div>
+                    </div>
+                    
+                    <div class="playground-footer">
+                        <div class="playground-status">
+                            <span class="${playground.status === 'open' ? 'status-open' : 'status-closed'}">
+                                ● ${playground.status === 'open' ? 'Open Now' : 'Closed'}
+                            </span>
+                        </div>
+                        <button class="visit-button" onclick="visitPlayground(${playground.id})">
+                            <span>📍</span> Get Directions
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Visit playground button click
+        function visitPlayground(playgroundId) {
+            // Find the playground
+            let playground;
+            for (const city in cityPlaygrounds) {
+                const found = cityPlaygrounds[city].find(p => p.id === playgroundId);
+                if (found) {
+                    playground = found;
+                    break;
+                }
+            }
+            
+            if (playground) {
+                alert(`📍 Getting Directions to:\n\n` +
+                      `${playground.name}\n` +
+                      `Type: ${facilityTypeInfo[playground.type].name}\n` +
+                      `Size: ${playground.size}\n` +
+                      `Address: ${playground.address}\n` +
+                      `Rating: ${playground.rating} ⭐\n\n` +
+                      `Opening directions in maps...`);
+                
+                // In a real app, you would open Google Maps with directions
+                // const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${playground.lat},${playground.lng}`;
+                // window.open(mapsUrl, '_blank');
+            }
+        }
+
+        // Initialize
+        updateDistanceValue();
+    </script>
+</body>
+</html>

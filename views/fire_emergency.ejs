@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fire Emergency Services | Smart City Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background: linear-gradient(to right,#fff1f1,#ffffff);
+}
+
+/* Header */
+.header{
+    background: linear-gradient(135deg,#b11226,#e63946);
+    color:white;
+    text-align:center;
+    padding:30px;
+    animation: slideDown 1s ease;
+}
+
+.header h1{
+    font-size:34px;
+}
+
+/* Emergency Note */
+.emergency-note{
+    width:85%;
+    margin:30px auto;
+    background:#ffe0e0;
+    border-left:8px solid #b11226;
+    padding:20px;
+    border-radius:10px;
+    animation:pulse 2s infinite;
+}
+
+.emergency-note span{
+    font-size:32px;
+    font-weight:600;
+    color:#b11226;
+}
+
+/* Container */
+.container{
+    width:90%;
+    margin:auto;
+}
+
+/* Section title */
+.section-title{
+    text-align:center;
+    font-size:28px;
+    margin:40px 0 20px;
+    color:#b11226;
+}
+
+/* Safety Tips */
+.safety-tips{
+    background:#fff4e0;
+    border-left:8px solid #e67e22;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:30px;
+    animation:fadeUp 1s ease;
+}
+
+.safety-tips h2{
+    color:#e67e22;
+    margin-bottom:10px;
+}
+
+.safety-tips ul{
+    line-height:1.6;
+    font-size:15px;
+}
+
+/* Address Form */
+.form-box{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    animation:fadeUp 1s ease;
+}
+
+.form-box label{
+    font-weight:500;
+    display:block;
+    margin-bottom:8px;
+}
+
+.form-box textarea{
+    width:100%;
+    padding:14px;
+    margin-bottom:25px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+.form-box button{
+    width:100%;
+    background:#b11226;
+    color:white;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    font-size:17px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.form-box button:hover{
+    background:#8f0f1f;
+}
+
+/* Status Box */
+.status-box{
+    display:none;
+    margin-top:30px;
+    background:#e6ffe6;
+    border-left:8px solid #2ecc71;
+    padding:25px;
+    border-radius:12px;
+    animation:fadeUp 1s ease;
+}
+
+.status-box h3{
+    color:#2ecc71;
+}
+
+/* Animations */
+@keyframes slideDown{
+    from{transform:translateY(-50px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+
+@keyframes fadeUp{
+    from{transform:translateY(40px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(177,18,38,0.5);}
+    70%{box-shadow:0 0 0 15px rgba(177,18,38,0);}
+    100%{box-shadow:0 0 0 0 rgba(177,18,38,0);}
+}
+
+/* Footer */
+footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:40px;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🔥 Fire Emergency Services</h1>
+    <p>Smart City Emergency Response – India 🇮🇳</p>
+</div>
+
+<div class="emergency-note">
+    <h2>🚨 Fire Emergency Call: <span>101</span></h2>
+    <p>Use this portal to quickly notify the nearest fire station</p>
+</div>
+
+<div class="container">
+
+    <!-- Safety Tips -->
+    <div class="safety-tips">
+        <h2>⚠️ Fire Safety Tips</h2>
+        <ul>
+            <li>Keep a fire extinguisher accessible at home.</li>
+            <li>Do not leave cooking unattended.</li>
+            <li>Keep flammable materials away from heat sources.</li>
+            <li>Install smoke detectors and check them regularly.</li>
+            <li>Have an evacuation plan ready for your family.</li>
+        </ul>
+    </div>
+
+    <h2 class="section-title">📍 Enter Emergency Address</h2>
+
+    <div class="form-box">
+        <form action="/citizen/emergency/fire" method="POST">
+        <label>Complete Address</label>
+        <textarea id="address" name="address" rows="4" placeholder="House No, Street, Area, City, Pincode" required></textarea>
+            
+        <button type="submit">🚒 Request Fire Service</button>
+        </form>
+        <!-- Status -->
+        <div class="status-box" id="statusBox">
+            <h3>✅ Fire Services Dispatched!</h3>
+            <p>Please follow the safety tips above while waiting for assistance.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 Smart City Portal | All Rights Reserved
+</footer>
+
+
+</body>
+</html>

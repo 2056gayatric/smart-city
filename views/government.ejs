@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityZen | Government Complaint Management</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #1a365d;
+            --secondary-blue: #2d3748;
+            --accent-blue: #3182ce;
+            --light-blue: #ebf8ff;
+            --success-green: #38a169;
+            --warning-orange: #ed8936;
+            --danger-red: #e53e3e;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f7fafc;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .govt-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .govt-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .govt-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .govt-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logout-btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .logout-btn-header:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Container - centered single column */
+        .main-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .welcome-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-content p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Complaint Categories Grid */
+        .categories-section {
+            margin-bottom: 2rem;
+            animation: slideUp 0.6s ease 0.2s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-blue);
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .category-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .complaint-count {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background: #f7fafc;
+            color: var(--text-dark);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .category-card:hover .complaint-count {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        /* Category Colors */
+        .water-card .category-icon { background: linear-gradient(135deg, #3182ce, #63b3ed); }
+        .water-card:hover { border-color: #3182ce; }
+
+        .garbage-card .category-icon { background: linear-gradient(135deg, #38a169, #68d391); }
+        .garbage-card:hover { border-color: #38a169; }
+
+        .electricity-card .category-icon { background: linear-gradient(135deg, #ed8936, #f6ad55); }
+        .electricity-card:hover { border-color: #ed8936; }
+
+        .traffic-card .category-icon { background: linear-gradient(135deg, #e53e3e, #fc8181); }
+        .traffic-card:hover { border-color: #e53e3e; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .govt-header {
+                padding: 1rem;
+            }
+            
+            .welcome-card {
+                padding: 1.5rem;
+            }
+            
+            .category-card {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Government Header -->
+    <header class="govt-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="govt-logo">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <div class="govt-title">
+                    <h1>CityZen Government Portal</h1>
+                    <p class="govt-subtitle">Citizen Complaint Management System</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="/login/logout" class="logout-btn-header">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Centered Content Area -->
+        <main class="content-area">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="welcome-card">
+                    <div class="welcome-content">
+                        <h2>Welcome to Government Portal</h2>
+                        <p>Manage citizen complaints and ensure efficient public service delivery</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #3182ce;">
+                                <%= stats && stats.totalComplaints !== undefined ? stats.totalComplaints : 0 %>
+                            </div>
+                            <div class="stat-label">Total Complaints</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #38a169;">
+                                <%= stats && stats.resolvedComplaints !== undefined ? stats.resolvedComplaints : 0 %>
+                            </div>
+                            <div class="stat-label">Resolved</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #ed8936;">
+                                <%= stats && stats.inProgressComplaints !== undefined ? stats.inProgressComplaints : 0 %>
+                            </div>
+                            <div class="stat-label">In Progress</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaint Categories -->
+            <section class="categories-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-layer-group"></i>
+                        Complaint Categories
+                    </h2>
+                </div>
+                
+                <div class="categories-grid">
+                    <!-- Water Complaints -->
+                    <a href="/government/complaints/water" style="text-decoration: none;">
+                        <div class="category-card water-card">
+                            <div class="category-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <h3 class="category-title">Water Complaints</h3>
+                            <p class="category-desc">
+                                Manage water supply issues, pipeline complaints, and water quality concerns
+                            </p>
+                            <span class="complaint-count">
+                                <%= stats && stats.categories && stats.categories.water
+                                    ? stats.categories.water.active
+                                    : 0 %> Active
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Garbage Complaints -->
+                    <a href="/government/complaints/garbage" style="text-decoration: none;">
+                        <div class="category-card garbage-card">
+                            <div class="category-icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <h3 class="category-title">Garbage Complaints</h3>
+                            <p class="category-desc">
+                                Handle waste management issues and sanitation concerns
+                            </p>
+                            <span class="complaint-count">
+                                <%= stats && stats.categories && stats.categories.garbage
+                                    ? stats.categories.garbage.active
+                                    : 0 %> Active
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Electricity Complaints -->
+                    <a href="/government/complaints/electricity" style="text-decoration: none;">
+                        <div class="category-card electricity-card">
+                            <div class="category-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3 class="category-title">Electricity Complaints</h3>
+                            <p class="category-desc">
+                                Address power outages, electrical faults, and supply interruptions
+                            </p>
+                            <span class="complaint-count">
+                                <%= stats && stats.categories && stats.categories.electricity
+                                    ? stats.categories.electricity.active
+                                    : 0 %> Active
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Traffic Alerts -->
+                    <a href="/government/complaints/road" style="text-decoration: none;">
+                        <div class="category-card traffic-card">
+                            <div class="category-icon">
+                                <i class="fas fa-traffic-light"></i>
+                            </div>
+                            <h3 class="category-title">Road Complaints</h3>
+                            <p class="category-desc">
+                                Monitor traffic congestion, road damages, and parking issues
+                            </p>
+                            <span class="complaint-count">
+                                <%= stats && stats.categories && stats.categories.roads
+                                    ? stats.categories.roads.active
+                                    : 0 %> Active
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+
+</html>

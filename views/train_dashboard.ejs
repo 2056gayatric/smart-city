@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Management | CityZen Transport</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --off-white: #f8f8f6;
+            --off-white-card: #fafaf8;
+            --off-white-border: #e8e8e4;
+            --text-dark: #333;
+            --text-muted: #666;
+        }
+        
+        /* New beautiful background color - soft sage green */
+        body { 
+            background: linear-gradient(145deg, #e2f0e2, #d4e8d4, #c6e0c6, #b8d8b8); 
+            min-height: 100vh; 
+            color: var(--text-dark); 
+            font-family: 'Segoe UI', sans-serif;
+            animation: natureFlow 15s ease infinite;
+            background-size: 300% 300%;
+        }
+
+        @keyframes natureFlow {
+            0% { background-position: 0% 0%; }
+            25% { background-position: 50% 25%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 75%; }
+            100% { background-position: 0% 100%; }
+        }
+
+        /* Floating leaf particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(3px 3px at 10% 20%, rgba(100, 150, 100, 0.15) 100%, transparent),
+                radial-gradient(4px 4px at 30% 70%, rgba(120, 160, 120, 0.12) 100%, transparent),
+                radial-gradient(2px 2px at 50% 30%, rgba(80, 140, 80, 0.18) 100%, transparent),
+                radial-gradient(5px 5px at 80% 50%, rgba(110, 150, 110, 0.1) 100%, transparent),
+                radial-gradient(3px 3px at 90% 80%, rgba(90, 130, 90, 0.14) 100%, transparent);
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            animation: floatLeaves 30s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        @keyframes floatLeaves {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, 20px) rotate(5deg); }
+            66% { transform: translate(20px, -20px) rotate(-5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .dash-header { 
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem 2rem; 
+            border-bottom: 1px solid rgba(150, 180, 150, 0.3); 
+            box-shadow: 0 8px 25px rgba(100, 140, 100, 0.1);
+            animation: headerGlide 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes headerGlide {
+            0% { opacity: 0; transform: translateY(-30px) scaleY(0.9); }
+            100% { opacity: 1; transform: translateY(0) scaleY(1); }
+        }
+        
+        .dash-header a { 
+            color: #5a7a5a; 
+            text-decoration: none;
+            transition: all 0.4s ease;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+        }
+        
+        .dash-header a:hover { 
+            color: #2e4a2e;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateX(5px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(100, 140, 100, 0.2);
+        }
+        
+        .dash-header strong {
+            color: #2e4a2e;
+            animation: softGlow 3s ease-in-out infinite;
+            font-size: 1.2rem;
+        }
+
+        @keyframes softGlow {
+            0%, 100% { text-shadow: 0 0 0 rgba(100, 140, 100, 0.2); }
+            50% { text-shadow: 0 0 15px rgba(120, 160, 120, 0.5); }
+        }
+        
+        .card-gray { 
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(180, 200, 180, 0.3); 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(100, 140, 100, 0.15);
+            animation: cardRise 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-gray::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(150, 200, 150, 0.1) 0%, transparent 70%);
+            animation: rotateGlow 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-gray:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 45px rgba(100, 140, 100, 0.25);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        @keyframes cardRise {
+            0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .card-gray h5 {
+            color: #2e4a2e;
+            position: relative;
+            display: inline-block;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .card-gray h5::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #8ab88a, #5a9);
+            animation: expandLine 0.8s ease-out forwards;
+        }
+
+        @keyframes expandLine {
+            0% { width: 0; }
+            100% { width: 50px; }
+        }
+        
+        .table-gray { 
+            color: var(--text-dark);
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        
+        .table-gray thead { 
+            background: rgba(150, 180, 150, 0.2);
+            color: #2e4a2e; 
+            border-radius: 12px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .table-gray thead th {
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .table-gray thead th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .table-gray thead th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .table-gray thead th:hover {
+            background: rgba(90, 170, 90, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .table-gray tbody tr { 
+            border-color: rgba(200, 220, 200, 0.5);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            animation: rowSlide 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            opacity: 0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-gray tbody tr::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(150, 200, 150, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .table-gray tbody tr:hover::before {
+            left: 100%;
+        }
+
+        .table-gray tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .table-gray tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        .table-gray tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        .table-gray tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        .table-gray tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes rowSlide {
+            0% { opacity: 0; transform: translateX(-30px) scale(0.95); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        .table-gray tbody tr:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 25px rgba(100, 140, 100, 0.15);
+        }
+
+        .table-gray td {
+            border: none;
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .table-gray td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .table-gray td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .table-gray input, .table-gray select { 
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(150, 180, 150, 0.3);
+            border-radius: 8px;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .table-gray input:focus, .table-gray select:focus {
+            border-color: #8ab88a;
+            box-shadow: 0 0 0 4px rgba(138, 184, 138, 0.15);
+            outline: none;
+            transform: scale(1.02);
+            background: white;
+        }
+
+        .table-gray input:hover, .table-gray select:hover {
+            border-color: #5a9;
+            background: white;
+        }
+        
+        .btn-save { 
+            background: linear-gradient(135deg, #6b9, #5a9);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 15px rgba(90, 170, 90, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .btn-save:hover { 
+            background: linear-gradient(135deg, #7cb, #6bb);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(90, 170, 90, 0.4);
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:active {
+            transform: translateY(0) scale(1);
+        }
+        
+        .btn-del { 
+            background: linear-gradient(135deg, #c96, #b85);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 15px rgba(200, 150, 100, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-del::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .btn-del:hover { 
+            background: linear-gradient(135deg, #da7, #c96);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(200, 150, 100, 0.4);
+        }
+
+        .btn-del:hover::before {
+            left: 100%;
+        }
+
+        .btn-del:active {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Loading animation */
+        .text-muted {
+            animation: gentlePulse 1.8s ease-in-out infinite;
+            color: #5a7a5a !important;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Container animation */
+        .container {
+            animation: fadeUp 1s ease-out;
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Button focus effects */
+        .btn-save:focus, .btn-del:focus {
+            outline: none;
+            animation: focusPulse 1.5s ease infinite;
+        }
+
+        @keyframes focusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(90, 170, 90, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(90, 170, 90, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(90, 170, 90, 0); }
+        }
+
+        /* Train icon animation */
+        .fa-train {
+            animation: trainMove 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes trainMove {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-3px) rotate(-3deg); }
+            75% { transform: translateX(3px) rotate(3deg); }
+        }
+
+        /* Back icon animation */
+        .fa-arrow-left {
+            transition: transform 0.3s ease;
+        }
+
+        a:hover .fa-arrow-left {
+            transform: translateX(-5px);
+        }
+
+        /* Floating nature dots */
+        .dash-header::after {
+            content: '✦ ✦ ✦';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(138, 184, 138, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            animation: floatDots 4s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes floatDots {
+            0%, 100% { opacity: 0.2; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(135deg, #e2f0e2, #d4e8d4);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8ab88a, #6b9);
+            border-radius: 5px;
+            border: 2px solid #e2f0e2;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #9ac99a, #7cb);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .dash-header {
+                padding: 1rem;
+            }
+            
+            .dash-header strong {
+                font-size: 1rem;
+            }
+            
+            .card-gray {
+                padding: 1.5rem !important;
+            }
+            
+            .btn-save, .btn-del {
+                padding: 0.4rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .table-gray thead th {
+                font-size: 0.9rem;
+                padding: 0.8rem 0.5rem;
+            }
+
+            .table-gray td {
+                padding: 0.8rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dash-header d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/transport"><i class="fas fa-arrow-left me-2"></i>Back</a>
+            <span class="mx-3 text-muted">|</span>
+            <strong><i class="fas fa-train me-2"></i>Train Management Dashboard</strong>
+        </div>
+        <a href="/login/logout"><i class="fas fa-sign-out-alt"></i></a>
+    </div>
+
+    <div class="container mt-4">
+        <div class="card card-gray p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Train Timetable</h5>
+                <button class="btn btn-save" id="btnAdd"><i class="fas fa-plus me-1"></i>Create Train Route</button>
+            </div>
+
+            <table class="table table-gray table-bordered">
+                <thead>
+                    <tr>
+                        <th>Train No</th>
+                        <th>Coaches</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="routesBody">
+                    <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API = '/transport/api/train/routes';
+        async function load() {
+            try {
+                const r = await fetch(API, { credentials: 'include' });
+                const d = await r.json();
+                const routes = d.routes || [];
+                const tbody = document.getElementById('routesBody');
+                if (routes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No routes. Click "Create Train Route" to add.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = routes.map(r => `
+                    <tr data-id="${r._id}">
+                        <td><input class="form-control form-control-sm trainNo" value="${r.trainNo || ''}"></td>
+                        <td><input type="number" class="form-control form-control-sm coaches" value="${r.coaches ?? ''}"></td>
+                        <td><input type="time" class="form-control form-control-sm departure" value="${r.departure || ''}"></td>
+                        <td><input type="time" class="form-control form-control-sm arrival" value="${r.arrival || ''}"></td>
+                        <td>
+                            <button class="btn btn-save btn-sm me-1 btnUpdate">Save</button>
+                            <button class="btn btn-del btn-sm btnDelete">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+                bindRowEvents();
+            } catch (e) {
+                document.getElementById('routesBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>';
+            }
+        }
+        function bindRowEvents() {
+            document.querySelectorAll('.btnUpdate').forEach(btn => {
+                btn.onclick = async () => {
+                    const row = btn.closest('tr');
+                    const id = row.dataset.id;
+                    const payload = {
+                        trainNo: row.querySelector('.trainNo').value,
+                        coaches: parseInt(row.querySelector('.coaches').value) || 0,
+                        departure: row.querySelector('.departure').value,
+                        arrival: row.querySelector('.arrival').value
+                    };
+                    const r = await fetch(API + '/' + id, { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (r.ok) load();
+                };
+            });
+            document.querySelectorAll('.btnDelete').forEach(btn => {
+                btn.onclick = async () => {
+                    if (!confirm('Delete this route?')) return;
+                    const id = btn.closest('tr').dataset.id;
+                    const r = await fetch(API + '/' + id, { method: 'DELETE', credentials: 'include' });
+                    if (r.ok) load();
+                };
+            });
+        }
+        document.getElementById('btnAdd').onclick = async () => {
+            const trainNo = prompt('Train No (e.g. Train-222):');
+            if (!trainNo) return;
+            const payload = { trainNo, coaches: 0, departure: '', arrival: '' };
+            const r = await fetch(API, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (r.ok) load();
+        };
+        load();
+    </script>
+</body>
+</html>

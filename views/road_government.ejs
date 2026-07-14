@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Infrastructure | Government Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #8B5A2B;
+            --primary-light: #B87C4B;
+            --primary-dark: #5D3A1A;
+            --secondary: #A67B5B;
+            --accent: #D98C4A;
+            --accent-light: #F4A460;
+            --success: #6B8E23;
+            --warning: #CD853F;
+            --danger: #8B3A3A;
+            --light: #FDF5E6;
+            --light-brown: #F5E6D3;
+            --medium-brown: #D2B48C;
+            --dark: #5D3A1A;
+            --grey: #BC8F8F;
+            --text-dark: #4A2C1A;
+            --text-light: #8B6B4D;
+            --border: #DEB887;
+            --shadow-sm: 0 4px 6px rgba(139, 90, 43, 0.1);
+            --shadow-md: 0 6px 12px rgba(139, 90, 43, 0.15);
+            --shadow-lg: 0 15px 25px rgba(139, 90, 43, 0.2);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAF0E6;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background - Road/Earth Theme */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* Road grid pattern */
+        .road-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(139, 90, 43, 0.08) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(139, 90, 43, 0.08) 2px, transparent 2px);
+            background-size: 60px 60px;
+            animation: gridMove 25s linear infinite;
+        }
+
+        /* Floating dust particles */
+        .dust-particle {
+            position: absolute;
+            background: rgba(210, 180, 140, 0.15);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: dustFloat 20s infinite ease-in-out;
+        }
+
+        .dust1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation-duration: 25s;
+        }
+
+        .dust2 {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            left: -150px;
+            background: rgba(160, 120, 80, 0.15);
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+
+        .dust3 {
+            width: 250px;
+            height: 250px;
+            top: 40%;
+            left: 30%;
+            background: rgba(180, 130, 80, 0.15);
+            animation-duration: 22s;
+            animation-delay: -3s;
+        }
+
+        @keyframes dustFloat {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            50% { transform: translate(40px, -40px) scale(1.2); opacity: 0.4; }
+            100% { transform: translate(-20px, 20px) scale(1); opacity: 0.2; }
+        }
+
+        /* Road lines animation */
+        .road-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: repeating-linear-gradient(90deg, 
+                rgba(139, 90, 43, 0.15) 0px, 
+                rgba(139, 90, 43, 0.15) 40px, 
+                transparent 40px, 
+                transparent 80px);
+            animation: lineMove 15s linear infinite;
+        }
+
+        .line1 {
+            top: 20%;
+            animation-duration: 20s;
+        }
+
+        .line2 {
+            top: 50%;
+            animation-duration: 25s;
+            animation-direction: reverse;
+        }
+
+        .line3 {
+            top: 80%;
+            animation-duration: 18s;
+        }
+
+        @keyframes lineMove {
+            0% { transform: translateX(-80px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* Header */
+        .govt-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .govt-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            animation: roadBump 3s infinite ease-in-out;
+        }
+
+        @keyframes roadBump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .govt-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .govt-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logout-btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.25);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn-header:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(93, 58, 26, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            animation: cardFloat 6s infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0); box-shadow: var(--shadow-lg); }
+            100% { transform: translateY(-8px); box-shadow: 0 25px 30px rgba(93, 58, 26, 0.3); }
+        }
+
+        .welcome-content h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .welcome-content h2 i {
+            color: var(--accent-light);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .welcome-content p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            animation: slideUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+            border-color: var(--accent-light);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: white;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(255, 245, 230, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            animation: slideInRight 0.7s ease;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .filter-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem 2rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .filter-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(217, 140, 74, 0.15);
+            outline: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(93, 58, 26, 0.3);
+        }
+
+        .btn-cancel {
+            background: var(--grey);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+        }
+
+        /* Complaints Section */
+        .complaints-section {
+            background: rgba(255, 245, 230, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: slideInLeft 0.7s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0;
+        }
+
+        .section-header h2 i {
+            color: var(--accent-light);
+            animation: bounce 2s infinite;
+        }
+
+        .section-header h2 small {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        .table-header th {
+            background: var(--light-brown);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .table-row {
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+            animation: rowFade 0.5s ease;
+        }
+
+        @keyframes rowFade {
+            from { opacity: 0; background: rgba(217, 140, 74, 0.1); }
+            to { opacity: 1; background: transparent; }
+        }
+
+        .table-row:hover {
+            background: var(--light-brown);
+            transform: scale(1.001);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-row td {
+            padding: 1rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .complaint-id {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .complaint-desc {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-dark);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 90px;
+            animation: badgePop 0.3s ease;
+        }
+
+        @keyframes badgePop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, var(--warning), #CD853F);
+            color: white;
+        }
+
+        .status-inprogress {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .status-resolved {
+            background: linear-gradient(135deg, var(--success), #8FBC8F);
+            color: white;
+        }
+
+        .road-issue-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .issue-potholes {
+            background: #DEB88780;
+            color: #8B4513;
+            border: 1px solid #CD853F;
+        }
+
+        .issue-damaged_road {
+            background: #D2B48C80;
+            color: #8B5A2B;
+            border: 1px solid #B87C4B;
+        }
+
+        .issue-waterlogging {
+            background: #BC8F8F80;
+            color: #5D3A1A;
+            border: 1px solid #A67B5B;
+        }
+
+        .issue-uneven_surface {
+            background: #F4A46080;
+            color: #8B4513;
+            border: 1px solid #D98C4A;
+        }
+
+        .issue-open_manhole {
+            background: #CD853F80;
+            color: #5D3A1A;
+            border: 1px solid #B87C4B;
+        }
+
+        .security-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .security-minor {
+            background: #90EE9080;
+            color: #2E5A2E;
+            border: 1px solid #6B8E23;
+        }
+
+        .security-moderate {
+            background: #F4A46080;
+            color: #8B4513;
+            border: 1px solid #CD853F;
+        }
+
+        .security-dangerous {
+            background: #CD5C5C80;
+            color: #8B3A3A;
+            border: 1px solid #B22222;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn-small {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(93, 58, 26, 0.3);
+            background: var(--primary-dark);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(93, 58, 26, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideUp 0.4s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .detail-section {
+            background: var(--light-brown);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+            animation: slideRight 0.5s ease;
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-save:hover {
+            background: #556B2F;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(107, 142, 35, 0.3);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(150%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 3000;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        .toast-success i { color: var(--success); }
+        .toast-error i { color: var(--danger); }
+        .toast-warning i { color: var(--warning); }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container { padding: 0 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .header-container { 
+                flex-direction: column; 
+                text-align: center; 
+            }
+            .logo-section { 
+                flex-direction: column; 
+            }
+            .govt-title h1 { 
+                font-size: 1.2rem; 
+            }
+            
+            .welcome-content h2 { 
+                font-size: 1.5rem; 
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .welcome-content p { 
+                font-size: 1rem; 
+                text-align: center;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .filter-body .row { 
+                gap: 1rem; 
+            }
+            
+            .input-group { 
+                flex-direction: column;
+            }
+            
+            .input-group .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .action-buttons { 
+                justify-content: flex-start;
+            }
+            
+            /* Mobile table view */
+            .complaints-table thead { 
+                display: none; 
+            }
+            
+            .complaints-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 1rem;
+                background: white;
+            }
+            
+            .complaints-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem;
+                border-bottom: 1px dashed var(--border);
+            }
+            
+            .complaints-table td:last-child { 
+                border-bottom: none; 
+            }
+            
+            .complaints-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--primary);
+                width: 120px;
+                flex-shrink: 0;
+            }
+            
+            .complaint-desc { 
+                max-width: 100%; 
+                white-space: normal;
+            }
+            
+            .complaint-location {
+                max-width: 100%;
+                white-space: normal;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container { 
+                padding: 0.5rem; 
+            }
+            .welcome-card { 
+                padding: 1.5rem; 
+            }
+            .stat-value { 
+                font-size: 2rem; 
+            }
+            .modal-content { 
+                margin: 0.5rem; 
+            }
+            .detail-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .filter-body { 
+                padding: 1rem; 
+            }
+            .pagination { 
+                gap: 0.5rem;
+            }
+            .page-btn { 
+                font-size: 0.8rem; 
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Scrollbar */
+        .table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: var(--light-brown);
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 6px;
+        }
+
+        a { text-decoration: none; }
+    </style>
+</head>
+<body>
+    <!-- Animated Background - Road/Earth Theme -->
+    <div class="animated-bg">
+        <div class="road-grid"></div>
+        <div class="dust-particle dust1"></div>
+        <div class="dust-particle dust2"></div>
+        <div class="dust-particle dust3"></div>
+        <div class="road-line line1"></div>
+        <div class="road-line line2"></div>
+        <div class="road-line line3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="govt-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="govt-logo">
+                    <i class="fas fa-road"></i>
+                </div>
+                <div class="govt-title">
+                    <h1>Road Infrastructure</h1>
+                    <p class="govt-subtitle">Complaint Management Dashboard</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="/login/logout" class="logout-btn-header">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h2>
+                    <i class="fas fa-road"></i>
+                    Road Infrastructure Management
+                </h2>
+                <p>Monitor and manage road infrastructure complaints from citizens across the city</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalComplaints">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pendingComplaints">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="inProgressComplaints">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="resolvedComplaints">0</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3><i class="fas fa-filter"></i> Filter Complaints</h3>
+            </div>
+            <div class="filter-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Issue Type</label>
+                        <select class="form-select" id="issueTypeFilter">
+                            <option value="all">All Types</option>
+                            <option value="potholes">Potholes</option>
+                            <option value="damaged_road">Damaged Road</option>
+                            <option value="waterlogging">Waterlogging</option>
+                            <option value="uneven_surface">Uneven Surface</option>
+                            <option value="open_manhole">Open Manhole</option>
+                            <option value="road_dug">Road Dug Up</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Security Level</label>
+                        <select class="form-select" id="securityFilter">
+                            <option value="all">All Levels</option>
+                            <option value="minor">Minor</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="dangerous">Dangerous</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                            <button class="action-btn btn-view" onclick="filterComplaints()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="action-btn btn-cancel" onclick="clearFilters()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <section class="complaints-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-list"></i>
+                    Road Complaints List
+                    <small id="tableCount">(0)</small>
+                </h2>
+                <button class="action-btn btn-view" onclick="loadComplaints()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="complaints-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Security</th>
+                            <th>Citizen</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaintsTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 3rem;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3">Loading road complaints...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>
+                    <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-road"></i> Complaint Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="complaintDetails"></div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Update Complaint</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="updateForm"></div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="saveUpdate()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <div class="fw-bold" id="toastTitle">Success</div>
+            <div class="text-muted" id="toastMessage">Operation completed</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allComplaints = [];
+        let filteredComplaints = [];
+        let currentPage = 1;
+        let currentComplaintId = '';
+        const itemsPerPage = 10;
+
+        // Load complaints on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComplaints();
+            
+            // Add filter listeners
+            document.getElementById('statusFilter').addEventListener('change', filterComplaints);
+            document.getElementById('issueTypeFilter').addEventListener('change', filterComplaints);
+            document.getElementById('securityFilter').addEventListener('change', filterComplaints);
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') filterComplaints();
+            });
+        });
+
+        function _capWords(str) {
+            return String(str || '')
+                .split(' ')
+                .filter(Boolean)
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        function mapRoadComplaint(raw) {
+            return {
+                ...raw,
+                complaintId: raw.complaintId || raw._id,
+                roadName: raw.roadName || raw.address?.roadName || 'N/A',
+                area: raw.area || raw.address?.area || 'N/A',
+                landmark: raw.landmark || raw.address?.landmark || null,
+                issueType: raw.issueType || raw.issue?.issueType || null,
+                securityLevel: raw.securityLevel || raw.issue?.securityLevel || null,
+                remarks: raw.remarks || raw.issue?.remarks || null,
+                status: _capWords(raw.status || 'Pending'),
+                createdAt: raw.createdAt || new Date().toISOString()
+            };
+        }
+
+        // Load complaints (from dataset)
+        async function loadComplaints() {
+            try {
+                console.log("Loading road complaints...");
+
+                // Show loading state
+                document.getElementById('complaintsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 3rem;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading road complaints...</p>
+                        </td>
+                    </tr>
+                `;
+
+                const basePath = window.location.pathname.replace(/\/$/, '');
+                const response = await fetch(basePath, {
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+                const data = await response.json();
+                const complaints = (data.complaints || []).map(mapRoadComplaint);
+
+                allComplaints = complaints;
+                filteredComplaints = [...allComplaints];
+
+                updateStats();
+                renderTable();
+                showToast('Data loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to load complaints (showing demo data)', 'error');
+                allComplaints = getMockComplaints();
+                filteredComplaints = [...allComplaints];
+                updateStats();
+                renderTable();
+            }
+        }
+
+        // Mock data
+        function getMockComplaints() {
+            return [
+                {
+                    _id: "1",
+                    complaintId: "RC-001",
+                    roadName: "MG Road",
+                    area: "Central",
+                    issueType: "potholes",
+                    securityLevel: "dangerous",
+                    remarks: "Large pothole causing accidents",
+                    fullName: "John Doe",
+                    createdAt: "2024-03-15T10:30:00Z",
+                    status: "Pending",
+                    phone: "9876543210",
+                    landmark: "Near Mall",
+                    affectedArea: "large",
+                    durationValue: "2",
+                    durationUnit: "weeks"
+                },
+                {
+                    _id: "2",
+                    complaintId: "RC-002",
+                    roadName: "Park Street",
+                    area: "North",
+                    issueType: "waterlogging",
+                    securityLevel: "moderate",
+                    remarks: "Water accumulation after rain",
+                    fullName: "Jane Smith",
+                    createdAt: "2024-03-14T15:20:00Z",
+                    status: "In Progress",
+                    phone: "9876543211",
+                    landmark: "Near School"
+                },
+                {
+                    _id: "3",
+                    complaintId: "RC-003",
+                    roadName: "Industrial Area",
+                    area: "South",
+                    issueType: "open_manhole",
+                    securityLevel: "dangerous",
+                    remarks: "Open manhole without cover",
+                    fullName: "Mike Johnson",
+                    createdAt: "2024-03-13T09:15:00Z",
+                    status: "Resolved",
+                    phone: "9876543212",
+                    landmark: "Near Factory"
+                },
+                {
+                    _id: "4",
+                    complaintId: "RC-004",
+                    roadName: "Residential Lane",
+                    area: "East",
+                    issueType: "uneven_surface",
+                    securityLevel: "minor",
+                    remarks: "Uneven road surface",
+                    fullName: "Sarah Wilson",
+                    createdAt: "2024-03-12T11:45:00Z",
+                    status: "Pending",
+                    phone: "9876543213",
+                    landmark: "Near Temple"
+                }
+            ];
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allComplaints.length;
+            const pending = allComplaints.filter(c => c.status === 'Pending').length;
+            const inProgress = allComplaints.filter(c => c.status === 'In Progress').length;
+            const resolved = allComplaints.filter(c => c.status === 'Resolved').length;
+
+            document.getElementById('totalComplaints').textContent = total;
+            document.getElementById('pendingComplaints').textContent = pending;
+            document.getElementById('inProgressComplaints').textContent = inProgress;
+            document.getElementById('resolvedComplaints').textContent = resolved;
+        }
+
+        // Filter complaints
+        function filterComplaints() {
+            const status = document.getElementById('statusFilter').value;
+            const issueType = document.getElementById('issueTypeFilter').value;
+            const security = document.getElementById('securityFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredComplaints = allComplaints.filter(c => {
+                if (status !== 'all' && c.status !== status) return false;
+                if (issueType !== 'all' && c.issueType !== issueType) return false;
+                if (security !== 'all' && c.securityLevel !== security) return false;
+                if (search) {
+                    return c.remarks?.toLowerCase().includes(search) ||
+                           c.fullName?.toLowerCase().includes(search) ||
+                           c.complaintId?.toLowerCase().includes(search);
+                }
+                return true;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('issueTypeFilter').value = 'all';
+            document.getElementById('securityFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            filteredComplaints = [...allComplaints];
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('complaintsTableBody');
+            const totalPages = Math.ceil(filteredComplaints.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageComplaints = filteredComplaints.slice(start, end);
+
+            document.getElementById('tableCount').textContent = `(${filteredComplaints.length})`;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+
+            if (pageComplaints.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-road fa-3x mb-3" style="color: #BC8F8F;"></i>
+                            <p>No complaints found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = pageComplaints.map(c => {
+                const date = new Date(c.createdAt).toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric'
+                });
+
+                return `
+                    <tr class="table-row">
+                        <td data-label="ID" class="complaint-id">${c.complaintId}</td>
+                        <td data-label="Description" class="complaint-desc" title="${c.remarks}">${c.remarks || 'No description'}</td>
+                        <td data-label="Type"><span class="road-issue-badge issue-${c.issueType}">${formatIssueType(c.issueType)}</span></td>
+                        <td data-label="Security"><span class="security-badge security-${c.securityLevel}">${formatSecurity(c.securityLevel)}</span></td>
+                        <td data-label="Citizen">${c.fullName}</td>
+                        <td data-label="Date">${date}</td>
+                        <td data-label="Status"><span class="status-badge status-${c.status.toLowerCase().replace(' ', '')}">${c.status}</span></td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="action-btn-small" onclick="viewComplaint('${c._id}')"><i class="fas fa-eye"></i> View</button>
+                                <button class="action-btn-small" onclick="updateComplaint('${c._id}')"><i class="fas fa-edit"></i> Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Helper functions
+        function formatIssueType(type) {
+            if (!type) return 'Unknown';
+            return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatSecurity(level) {
+            return level ? level.charAt(0).toUpperCase() + level.slice(1) : 'Unknown';
+        }
+
+        // Change page
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredComplaints.length / itemsPerPage);
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTable();
+            }
+        }
+
+        // View complaint
+        async function viewComplaint(id) {
+            const complaint = allComplaints.find(c => c._id === id);
+            if (!complaint) return;
+
+            const details = `
+                <div class="detail-section">
+                    <h4><i class="fas fa-info-circle"></i> Complaint Details</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">ID:</span> ${complaint.complaintId}</div>
+                        <div><span class="detail-label">Status:</span> <span class="status-badge status-${complaint.status.toLowerCase().replace(' ', '')}">${complaint.status}</span></div>
+                        <div><span class="detail-label">Issue Type:</span> ${formatIssueType(complaint.issueType)}</div>
+                        <div><span class="detail-label">Security:</span> ${formatSecurity(complaint.securityLevel)}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-user"></i> Citizen Info</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">Name:</span> ${complaint.fullName}</div>
+                        <div><span class="detail-label">Phone:</span> ${complaint.phone}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-map-marker"></i> Location</h4>
+                    <div class="detail-grid">
+                        <div><span class="detail-label">Road:</span> ${complaint.roadName}</div>
+                        <div><span class="detail-label">Area:</span> ${complaint.area}</div>
+                        <div><span class="detail-label">Landmark:</span> ${complaint.landmark || 'N/A'}</div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4><i class="fas fa-clipboard"></i> Description</h4>
+                    <p>${complaint.remarks || 'No description'}</p>
+                </div>
+            `;
+
+            document.getElementById('complaintDetails').innerHTML = details;
+            document.getElementById('viewModal').classList.add('active');
+        }
+
+        // Update complaint
+        async function updateComplaint(id) {
+            const complaint = allComplaints.find(c => c._id === id);
+            if (!complaint) return;
+
+            currentComplaintId = id;
+
+            const form = `
+                <div class="form-group mb-3">
+                    <label class="form-label">Complaint ID</label>
+                    <input type="text" class="form-control" value="${complaint.complaintId}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Citizen Name</label>
+                    <input type="text" class="form-control" value="${complaint.fullName}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="statusSelect">
+                        <option value="Pending" ${complaint.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="In Progress" ${complaint.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Resolved" ${complaint.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Government Notes</label>
+                    <textarea class="form-control" id="govtNotes" rows="3" placeholder="Add resolution notes...">${complaint.govtNotes || ''}</textarea>
+                </div>
+            `;
+
+            document.getElementById('updateForm').innerHTML = form;
+            document.getElementById('updateModal').classList.add('active');
+        }
+
+        // Save update (persist to dataset)
+        async function saveUpdate() {
+            try {
+                const statusUi = document.getElementById('statusSelect').value;
+                const notes = document.getElementById('govtNotes').value;
+
+                const basePath = window.location.pathname.replace(/\/$/, '');
+                const status = statusUi.toLowerCase(); // road dataset uses lowercase by default
+
+                const isMock = String(currentComplaintId).length < 10;
+                if (isMock) {
+                    const index = allComplaints.findIndex(c => c._id === currentComplaintId);
+                    if (index !== -1) {
+                        allComplaints[index].status = statusUi;
+                        allComplaints[index].govtNotes = notes;
+                        allComplaints[index].updatedAt = new Date().toISOString();
+                    }
+                } else {
+                    const response = await fetch(`${basePath}/${currentComplaintId}`, {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ status, govtNotes: notes })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || `Update failed (${response.status})`);
+                    }
+
+                    const updated = mapRoadComplaint(data.complaint);
+                    const index = allComplaints.findIndex(c => String(c._id) === String(currentComplaintId));
+                    if (index !== -1) allComplaints[index] = updated;
+                }
+
+                filteredComplaints = [...allComplaints];
+                updateStats();
+                renderTable();
+                closeModal();
+                showToast('Updated successfully', 'success');
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || 'Failed to update complaint', 'error');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('viewModal').classList.remove('active');
+            document.getElementById('updateModal').classList.remove('active');
+            currentComplaintId = '';
+        }
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = toast.querySelector('i');
+            const title = document.getElementById('toastTitle');
+            
+            toast.className = 'toast';
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                icon.className = 'fas fa-check-circle';
+                title.textContent = 'Success';
+            } else if (type === 'error') {
+                toast.classList.add('toast-error');
+                icon.className = 'fas fa-exclamation-circle';
+                title.textContent = 'Error';
+            } else {
+                toast.classList.add('toast-warning');
+                icon.className = 'fas fa-exclamation-triangle';
+                title.textContent = 'Warning';
+            }
+            
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Close modal on overlay click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

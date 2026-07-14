@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Care Multispeciality Hospital - Appointment Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* All your CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .hospital-title {
+            color: #0056b3;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hospital-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(to right, #0056b3, #4dabf7);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 86, 179, 0.1);
+            padding: 30px;
+            animation: fadeInUp 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #0056b3, #4dabf7);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            animation: slideInRight 0.8s ease;
+        }
+        
+        .section-title {
+            color: #0056b3;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e6f2ff;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+            margin: 0 10px 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .hospital-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .hospital-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8fbff;
+            border: 2px solid #e1e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .hospital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.1);
+        }
+        
+        .hospital-card.selected {
+            border-color: #0056b3;
+            background-color: #e6f2ff;
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.15);
+        }
+        
+        .hospital-name {
+            font-weight: 700;
+            color: #0056b3;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .hospital-contact {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .hospital-contact i {
+            margin-right: 5px;
+            color: #0056b3;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .time-slot {
+            padding: 12px;
+            border: 2px solid #e1e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8fbff;
+        }
+        
+        .time-slot:hover {
+            background-color: #e6f2ff;
+        }
+        
+        .time-slot.selected {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .appointment-btn {
+            background: linear-gradient(to right, #0056b3, #4dabf7);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.3);
+        }
+        
+        .appointment-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 86, 179, 0.4);
+        }
+        
+        .appointment-btn:active {
+            transform: translateY(0);
+        }
+        
+        .appointment-btn i {
+            margin-left: 8px;
+        }
+        
+        .hospital-info {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .hospital-info.show {
+            display: block;
+        }
+        
+        .hospital-details {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .detail-item {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #e7f7ef;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-icon {
+            color: #28a745;
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+            animation: fadeIn 2s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+            
+            .hospital-title {
+                font-size: 2rem;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="hospital-title">
+                <i class="fas fa-hospital"></i> CITY CARE MULTISPECIALITY HOSPITAL
+            </h1>
+            <p class="subtitle">Patient Appointment Form</p>
+        </header>
+        
+        <div class="form-container">
+            <form id="appointmentForm" method="post" action="/citizen/appointments/hospital">
+                <!-- Hidden inputs for hospital data -->
+                <input type="hidden" id="hospitalNameInput" name="hospitalName">
+                <input type="hidden" id="hospitalAddressInput" name="hospitalAddress">
+                <input type="hidden" id="hospitalContactInput" name="hospitalContact">
+                <input type="hidden" id="timeSlotInput" name="timeSlot">
+                
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-hospital-alt"></i> Hospital Information</h2>
+                    
+                    <div class="hospital-cards">
+                        <div class="hospital-card" data-hospital="city">
+                            <div class="hospital-name">City Hospital</div>
+                            <div class="hospital-contact">
+                                <i class="fas fa-phone"></i> (022) 1234-5678
+                            </div>
+                        </div>
+                        
+                        <div class="hospital-card" data-hospital="ruby">
+                            <div class="hospital-name">Ruby Hospital</div>
+                            <div class="hospital-contact">
+                                <i class="fas fa-phone"></i> (022) 2345-6789
+                            </div>
+                        </div>
+                        
+                        <div class="hospital-card" data-hospital="civil">
+                            <div class="hospital-name">Civil Hospital</div>
+                            <div class="hospital-contact">
+                                <i class="fas fa-phone"></i> (022) 3456-7890
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hospital-info" id="hospitalInfo">
+                        <div class="hospital-details">
+                            <div class="detail-item">
+                                <strong>Hospital Address:</strong> 
+                                <span id="hospitalAddress">Please select a hospital</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Contact No:</strong> 
+                                <span id="hospitalContactDisplay">Please select a hospital</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-user-injured"></i> Patient Details</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientName">Patient Name</label>
+                            <input type="text" id="patientName" name="patientName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" min="0" max="120" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="male" name="gender" value="male" required>
+                                    <label for="male">Male</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="female" name="gender" value="female">
+                                    <label for="female">Female</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="other" name="gender" value="other">
+                                    <label for="other">Other</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="tel" id="contactNumber" name="contactNumber" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-calendar-check"></i> Appointment Details</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="purpose">Purpose of Visit</label>
+                            <input type="text" id="purpose" name="purpose" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date</label>
+                            <input type="date" id="appointmentDate" name="appointmentDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Preferred Time Slot (Hospital Timing: 9:00 AM – 9:00 PM)</label>
+                        <div class="time-slots">
+                            <!-- Time slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button type="submit" class="appointment-btn">
+                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                    </button>
+                </div>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Appointment Booked Successfully!</h3>
+                <p>Your appointment has been scheduled. We have sent a confirmation to your contact number.</p>
+                <p>Please arrive 15 minutes before your scheduled time.</p>
+                <div id="appointmentDetails" style="margin-top: 20px; text-align: left; background: #fff; padding: 15px; border-radius: 8px;"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>City Care Multispeciality Hospital &copy; 2023 | Providing Quality Healthcare Services</p>
+            <p>For emergencies, call: (022) 9111-2222</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hospital data - matching schema field names
+            const hospitals = {
+                city: {
+                    hospitalName: "City Hospital",
+                    hospitalAddress: "123 Medical Street, Downtown, Mumbai - 400001",
+                    hospitalContact: "(022) 1234-5678"
+                },
+                ruby: {
+                    hospitalName: "Ruby Hospital",
+                    hospitalAddress: "456 Health Avenue, Andheri West, Mumbai - 400053",
+                    hospitalContact: "(022) 2345-6789"
+                },
+                civil: {
+                    hospitalName: "Civil Hospital",
+                    hospitalAddress: "789 Care Road, Navi Mumbai, Maharashtra - 400703",
+                    hospitalContact: "(022) 3456-7890"
+                }
+            };
+            
+            // Generate time slots
+            const timeSlotsContainer = document.querySelector('.time-slots');
+            const hospitalTimingStart = 9; // 9 AM
+            const hospitalTimingEnd = 21; // 9 PM
+            
+            for (let hour = hospitalTimingStart; hour < hospitalTimingEnd; hour++) {
+                const startHour = hour > 12 ? hour - 12 : hour;
+                const endHour = hour + 1 > 12 ? hour + 1 - 12 : hour + 1;
+                const amPmStart = hour >= 12 ? 'PM' : 'AM';
+                const amPmEnd = hour + 1 >= 12 ? 'PM' : 'AM';
+                
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = `${startHour}:00 ${amPmStart} – ${endHour}:00 ${amPmEnd}`;
+                timeSlot.dataset.time = `${hour}:00-${hour+1}:00`;
+                
+                timeSlot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(slot => {
+                        slot.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Update hidden input
+                    document.getElementById('timeSlotInput').value = this.textContent;
+                });
+                
+                timeSlotsContainer.appendChild(timeSlot);
+            }
+            
+            // Hospital selection
+            const hospitalCards = document.querySelectorAll('.hospital-card');
+            const hospitalInfo = document.getElementById('hospitalInfo');
+            const hospitalAddress = document.getElementById('hospitalAddress');
+            const hospitalContactDisplay = document.getElementById('hospitalContactDisplay');
+            
+            hospitalCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    hospitalCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Get hospital data
+                    const hospitalKey = this.dataset.hospital;
+                    const hospital = hospitals[hospitalKey];
+                    
+                    // Update hidden inputs with hospital data
+                    document.getElementById('hospitalNameInput').value = hospital.hospitalName;
+                    document.getElementById('hospitalAddressInput').value = hospital.hospitalAddress;
+                    document.getElementById('hospitalContactInput').value = hospital.hospitalContact;
+                    
+                    // Update displayed hospital info
+                    hospitalAddress.textContent = hospital.hospitalAddress;
+                    hospitalContactDisplay.textContent = hospital.hospitalContact;
+                    
+                    // Show hospital info with animation
+                    hospitalInfo.classList.add('show');
+                });
+            });
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = today;
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('appointmentDate').value = tomorrow.toISOString().split('T')[0];
+            
+            // Form submission
+            const appointmentForm = document.getElementById('appointmentForm');
+            const successMessage = document.getElementById('successMessage');
+            const appointmentDetails = document.getElementById('appointmentDetails');
+            
+            // Auto-select first hospital for demo
+            document.querySelector('.hospital-card').click();
+            
+            // Auto-select a time slot for demo (2 PM slot)
+            const timeSlots = document.querySelectorAll('.time-slot');
+            if (timeSlots.length > 5) {
+                timeSlots[5].click(); // Select 2 PM slot
+            }
+            
+            // Add some interactivity to form fields
+            const formInputs = document.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

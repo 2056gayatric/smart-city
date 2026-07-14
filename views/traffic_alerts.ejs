@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Traffic Alerts Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #eef2f7;
+    overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+    background:
+        linear-gradient(-45deg, rgba(0,0,0,0.55), rgba(0,0,0,0.75)),
+        url("https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+    background-size: cover;
+    background-position: center;
+    padding: 90px 20px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    min-height: 300px;
+}
+
+/* Add overlay for better text visibility */
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+}
+
+header h1, header p {
+    position: relative;
+    z-index: 2;
+}
+
+header h1 {
+    font-size: 38px;
+    animation: slideDown 1s ease;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+header p {
+    opacity: 0.9;
+    animation: slideUp 1s ease;
+    font-size: 18px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ===== LOCATION BOX ===== */
+.location-box {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    margin: -40px auto 30px;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+    animation: popIn 0.9s ease;
+    position: relative;
+    z-index: 10;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+select {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #0b3c5d;
+    box-shadow: 0 0 0 3px rgba(11, 60, 93, 0.1);
+}
+
+/* ===== MAIN ===== */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px 0;
+}
+
+/* ===== PLACEHOLDER ===== */
+.placeholder {
+    text-align: center;
+    color: #555;
+    margin-top: 60px;
+    font-size: 16px;
+    animation: pulse 2s infinite;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px dashed #ccc;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+}
+
+/* ===== ALERTS GRID ===== */
+.alerts {
+    display: none;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ===== ALERT CARD ===== */
+.alert-card {
+    background: #fff;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: reveal 0.7s ease forwards;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-left: 5px solid #0b3c5d;
+}
+
+.alert-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+@keyframes reveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-type {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.location {
+    color: #555;
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.time {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.severity {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.low { background: #d4edda; color: #155724; }
+.medium { background: #fff3cd; color: #856404; }
+.high { background: #f8d7da; color: #721c24; }
+
+/* ===== SAFETY ===== */
+.safety {
+    margin: 70px 0;
+    background: #fff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.safety h2 {
+    color: #0b3c5d;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.tip {
+    background: #eef3ff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.tip:hover {
+    background: #dce4ff;
+    border-color: #0b3c5d;
+}
+
+.tip:nth-child(even) {
+    animation-delay: 1.5s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: #0b3c5d;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    margin-top: 50px;
+}
+
+footer p {
+    margin: 5px 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Smart Traffic Alerts Portal</h1>
+    <p>Government Verified Traffic Updates</p>
+</header>
+
+<div class="location-box">
+    <label><strong>Select City</strong></label>
+    <select onchange="loadAlerts(this.value)">
+        <option value="">-- Choose City --</option>
+        <option value="Pune">Pune</option>
+        <option value="Hyderabad">Hyderabad</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+    </select>
+</div>
+
+<div class="container">
+
+    <div class="placeholder" id="placeholder">
+        📍 Please select a city to view active traffic alerts
+    </div>
+
+    <div class="alerts" id="alerts"></div>
+
+    <div class="safety">
+        <h2>🛑 Traffic Rules & Safety Tips</h2>
+        <div class="tips">
+            <div class="tip">🪖 Helmet is mandatory</div>
+            <div class="tip">💺 Always wear seat belt</div>
+            <div class="tip">⚡ Follow speed limits</div>
+            <div class="tip">📵 No mobile while driving</div>
+            <div class="tip">🚶 Pedestrian first</div>
+            <div class="tip">🌧️ Drive slow in rain</div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 Traffic Control Department | Smart City Initiative 🇮🇳</p>
+    <p>Emergency Helpline: 1033 | Traffic Police: 100</p>
+</footer>
+
+<script>
+const data = {
+    Pune: [
+        { type: "🚧 Road Blocked", location: "MG Road", time: "28 Jan 2026, 9:30 AM", severity: "High" },
+        { type: "🚑 Accident Reported", location: "NH-48", time: "28 Jan 2026, 8:45 AM", severity: "High" },
+        { type: "🚦 Signal Not Working", location: "FC Road", time: "28 Jan 2026, 10:15 AM", severity: "Medium" }
+    ],
+    Hyderabad: [
+        { type: "🚦 Signal Not Working", location: "Charminar Junction", time: "28 Jan 2026, 10:10 AM", severity: "Medium" },
+        { type: "🏗️ Road Construction", location: "Gachibowli", time: "28 Jan 2026, 9:00 AM", severity: "Low" },
+        { type: "🚗 Heavy Traffic", location: "Hitech City", time: "28 Jan 2026, 8:30 AM", severity: "High" }
+    ],
+    Bangalore: [
+        { type: "🏗️ Road Construction", location: "Ring Road", time: "27 Jan 2026, 6:00 PM", severity: "Low" },
+        { type: "🚗 Heavy Traffic", location: "Marathahalli", time: "28 Jan 2026, 8:00 AM", severity: "High" },
+        { type: "🚧 Road Blocked", location: "MG Road", time: "28 Jan 2026, 9:00 AM", severity: "Medium" }
+    ],
+    Delhi: [
+        { type: "🚗 Heavy Traffic", location: "Connaught Place", time: "28 Jan 2026, 10:00 AM", severity: "High" },
+        { type: "🚧 Road Blocked", location: "India Gate", time: "28 Jan 2026, 9:45 AM", severity: "High" },
+        { type: "🚑 Accident Reported", location: "Rajpath", time: "28 Jan 2026, 9:15 AM", severity: "High" }
+    ],
+    Mumbai: [
+        { type: "🚗 Heavy Traffic", location: "Marine Drive", time: "28 Jan 2026, 8:30 AM", severity: "High" },
+        { type: "🚧 Road Blocked", location: "Bandra-Worli Sea Link", time: "28 Jan 2026, 10:00 AM", severity: "High" },
+        { type: "🚦 Signal Not Working", location: "Churchgate", time: "28 Jan 2026, 9:20 AM", severity: "Medium" }
+    ]
+};
+
+function loadAlerts(city) {
+    const container = document.getElementById("alerts");
+    const placeholder = document.getElementById("placeholder");
+
+    container.innerHTML = "";
+
+    if (!city) {
+        container.style.display = "none";
+        placeholder.style.display = "block";
+        return;
+    }
+
+    placeholder.style.display = "none";
+    container.style.display = "grid";
+
+    data[city].forEach((a, i) => {
+        const card = document.createElement("div");
+        card.className = "alert-card";
+        card.style.animationDelay = `${i * 0.15}s`;
+
+        card.innerHTML = `
+            <div class="alert-type">${a.type}</div>
+            <div class="location">${a.location}, ${city}</div>
+            <div class="time">Reported: ${a.time}</div>
+            <span class="severity ${a.severity.toLowerCase()}">
+                ${a.severity} Severity
+            </span>
+        `;
+        container.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>

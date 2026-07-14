@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government | Court Appointments Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-court: #8B7355;
+            --secondary-court: #A58A6F;
+            --accent-court: #6B4F3A;
+            --light-court: #F8F4F0;
+            --success-court: #6B8E4C;
+            --warning-court: #C69C6D;
+            --danger-court: #C45A4A;
+            --info-court: #7A9EB3;
+            --gold-court: #B69B7C;
+            --text-dark: #4A3B2C;
+            --text-light: #7E6B5A;
+            --border-color: #E0D6CC;
+            --bg-light: #FDFBF9;
+            --white: #FFFFFF;
+            --shadow-sm: 0 2px 8px rgba(139, 115, 85, 0.08);
+            --shadow-md: 0 4px 12px rgba(139, 115, 85, 0.12);
+            --shadow-lg: 0 8px 24px rgba(139, 115, 85, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .govt-header {
+            background: linear-gradient(135deg, var(--primary-court) 0%, var(--secondary-court) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            border-bottom: 3px solid var(--gold-court);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .govt-logo {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--gold-court);
+        }
+
+        .govt-title h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .govt-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logout-btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn-header:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-court) 100%);
+            color: var(--text-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--gold-court);
+        }
+
+        .welcome-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-court);
+        }
+
+        .welcome-content p {
+            color: var(--text-light);
+            max-width: 600px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            border-top: 4px solid var(--gold-court);
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--gold-court);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-court);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-header {
+            background: var(--light-court);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .filter-header h3 {
+            color: var(--primary-court);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .filter-body {
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .form-label {
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.6rem;
+            width: 100%;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--accent-court);
+            box-shadow: 0 0 0 3px rgba(107, 79, 58, 0.1);
+            outline: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn-view {
+            background: var(--accent-court);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-court);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(107, 79, 58, 0.3);
+        }
+
+        .btn-cancel {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Appointments Section */
+        .appointments-section {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            background: var(--light-court);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-court);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0;
+        }
+
+        .section-header h2 i {
+            color: var(--gold-court);
+        }
+
+        .section-header small {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--white);
+        }
+
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-header {
+            background: var(--light-court);
+        }
+
+        .table-header th {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-court);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .table-row {
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .table-row:hover {
+            background: var(--light-court);
+        }
+
+        .table-row td {
+            padding: 1rem 1.2rem;
+            vertical-align: middle;
+        }
+
+        .appointment-id {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: var(--accent-court);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, var(--warning-court), #d4a373);
+            color: white;
+        }
+
+        .status-approved {
+            background: linear-gradient(135deg, var(--success-court), #8fbc8f);
+            color: white;
+        }
+
+        .status-rejected {
+            background: linear-gradient(135deg, var(--danger-court), #cd7f6b);
+            color: white;
+        }
+
+        .status-rescheduled {
+            background: linear-gradient(135deg, var(--info-court), #9ab7c9);
+            color: white;
+        }
+
+        .case-type-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .type-civil {
+            background: #f0ebe6;
+            color: #8B7355;
+            border: 1px solid #d6c9bd;
+        }
+
+        .type-criminal {
+            background: #f8e9e6;
+            color: #C45A4A;
+            border: 1px solid #e7cbc4;
+        }
+
+        .type-family {
+            background: #f0e9f0;
+            color: #9b7b9b;
+            border: 1px solid #dec9de;
+        }
+
+        .type-commercial {
+            background: #e6f0e6;
+            color: #6B8E4C;
+            border: 1px solid #c9dbc9;
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .time-morning {
+            background: #f8f0e6;
+            color: #C69C6D;
+            border: 1px solid #ecd9c9;
+        }
+
+        .time-afternoon {
+            background: #e9ecf0;
+            color: #7A9EB3;
+            border: 1px solid #c9d4de;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-update {
+            background: var(--white);
+            color: var(--accent-court);
+            border: 2px solid var(--accent-court);
+            padding: 0.4rem 0.8rem;
+        }
+
+        .btn-update:hover {
+            background: var(--accent-court);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            background: var(--success-court);
+            color: white;
+            padding: 0.6rem 1.2rem;
+        }
+
+        .btn-save:hover {
+            background: var(--primary-court);
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(74, 59, 44, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-court) 0%, var(--secondary-court) 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+            border-bottom: 2px solid var(--gold-court);
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            background: var(--white);
+        }
+
+        .modal-footer {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--light-court);
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* Appointment Details */
+        .appointment-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .detail-section {
+            background: var(--light-court);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--gold-court);
+        }
+
+        .detail-section h4 {
+            color: var(--primary-court);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Update Form */
+        .update-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            min-height: 80px;
+            resize: vertical;
+            background: var(--white);
+        }
+
+        .form-textarea:focus {
+            border-color: var(--accent-court);
+            box-shadow: 0 0 0 3px rgba(107, 79, 58, 0.1);
+            outline: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--white);
+        }
+
+        .page-btn {
+            padding: 0.4rem 0.8rem;
+            border: 2px solid var(--border-color);
+            background: var(--white);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--accent-court);
+            color: white;
+            border-color: var(--accent-court);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+            border-left: 4px solid var(--success-court);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            color: var(--success-court);
+            font-size: 1.2rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .govt-header {
+                padding: 1rem;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .filter-body .row {
+                flex-direction: column;
+            }
+
+            .input-group {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.3rem;
+            }
+
+            .table-header th,
+            .table-row td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Government Header -->
+    <header class="govt-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="govt-logo">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <div class="govt-title">
+                    <h1>Judicial Administration Portal</h1>
+                    <p class="govt-subtitle">Court Appointments Management Dashboard</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <a href="/login/logout" class="logout-btn-header">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <h2><i class="fas fa-gavel mr-2"></i> Court Appointments Management</h2>
+                    <p>Manage and monitor court appointments scheduled by citizens across the judicial system</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalAppointments">0</div>
+                        <div class="stat-label">Total Appointments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pendingAppointments">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="approvedAppointments">0</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="rejectedAppointments">0</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3 class="mb-0"><i class="fas fa-filter"></i> Filter Court Appointments</h3>
+            </div>
+            <div class="filter-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Rescheduled">Rescheduled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Case Type</label>
+                        <select class="form-select" id="caseTypeFilter">
+                            <option value="all">All Types</option>
+                            <option value="civil">Civil</option>
+                            <option value="criminal">Criminal</option>
+                            <option value="family">Family</option>
+                            <option value="commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select" id="dateFilter">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput"
+                                placeholder="Search appointments...">
+                            <button class="action-btn btn-view" onclick="filterAppointments()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="action-btn btn-cancel" onclick="clearFilters()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <section class="appointments-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-list-ol"></i>
+                    Court Appointments List
+                    <small class="ms-2" id="tableCount">(0 appointments)</small>
+                </h2>
+                <button class="action-btn btn-view" onclick="loadAppointments()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="appointments-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Citizen Name</th>
+                            <th>Case Type</th>
+                            <th>Appointment Date</th>
+                            <th>Time Slot</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 2rem;">
+                                <div class="spinner-border" style="color: var(--accent-court);" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading court appointments...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- View Appointment Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-gavel mr-2"></i> Court Appointment Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="appointment-details" id="appointmentDetails">
+                    <!-- Details will be loaded here by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Appointment Modal -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit mr-2"></i> Update Court Appointment</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="update-form" id="updateForm">
+                    <!-- Update form will be loaded here by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="action-btn btn-save" onclick="saveUpdate()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Success!</div>
+            <div class="toast-message" id="toastMessage">Status updated successfully</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentAppointmentId = '';
+        let allAppointments = [];
+        let filteredAppointments = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Load appointments on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("✅ Page loaded, fetching court appointments...");
+            loadAppointments();
+
+            // Add event listeners for filter changes
+            document.getElementById('statusFilter').addEventListener('change', filterAppointments);
+            document.getElementById('caseTypeFilter').addEventListener('change', filterAppointments);
+            document.getElementById('dateFilter').addEventListener('change', filterAppointments);
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    filterAppointments();
+                }
+            });
+        });
+
+        // Function to load appointments from backend
+        async function loadAppointments() {
+            try {
+                console.log("🔄 Fetching court appointments from server...");
+
+                // Show loading state
+                document.getElementById('appointmentsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem;">
+                            <div class="spinner-border" style="color: var(--accent-court);" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading court appointments...</p>
+                        </td>
+                    </tr>
+                `;
+
+                // Call the backend API for COURT appointments
+                const response = await fetch('/court/appointments', {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log("📡 Response status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("📦 Received court appointments data:", data);
+
+                if (data.success) {
+                    allAppointments = data.appointments || [];
+                    console.log(`✅ Loaded ${allAppointments.length} court appointments`);
+                } else {
+                    console.warn("⚠️ Server returned success: false");
+                    allAppointments = [];
+                }
+
+                // Initialize with all appointments
+                filteredAppointments = [...allAppointments];
+
+                // Update dashboard and table
+                updateDashboardStats(allAppointments);
+                renderAppointmentsTable();
+
+                // Show success message if we have data
+                if (allAppointments.length > 0) {
+                    showToast(`Loaded ${allAppointments.length} court appointments`, 'success');
+                }
+
+            } catch (error) {
+                console.error('❌ Error loading court appointments:', error);
+
+                // Use mock data based on the court appointment form structure
+                console.log("⚠️ Using mock court data for testing");
+                allAppointments = getMockCourtAppointments();
+                filteredAppointments = [...allAppointments];
+
+                updateDashboardStats(allAppointments);
+                renderAppointmentsTable();
+
+                showToast('Using demo data - Backend connection issue', 'warning');
+            }
+        }
+
+        // Mock data for testing - based on court appointment form
+        function getMockCourtAppointments() {
+            return [
+                {
+                    _id: "mock_ca_1",
+                    appointmentId: "CA-1001",
+                    fullName: "Rahul Sharma",
+                    dob: "1985-06-15",
+                    gender: "male",
+                    idType: "aadhaar",
+                    idNumber: "123456789012",
+                    mobile: "9876543210",
+                    email: "rahul.sharma@email.com",
+                    address: "123, MG Road, Mumbai - 400001",
+                    caseType: "civil",
+                    purpose: ["hearing"],
+                    appointmentDate: "2024-02-15",
+                    timeSlot: "9-10",
+                    status: "Pending",
+                    createdAt: "2024-01-27T10:30:00Z",
+                    updatedAt: "2024-01-27T10:30:00Z"
+                },
+                {
+                    _id: "mock_ca_2",
+                    appointmentId: "CA-1002",
+                    fullName: "Priya Patel",
+                    dob: "1990-03-22",
+                    gender: "female",
+                    idType: "pan",
+                    idNumber: "ABCDE1234F",
+                    mobile: "9876543211",
+                    email: "priya.patel@email.com",
+                    address: "456, Park Street, Mumbai - 400002",
+                    caseType: "criminal",
+                    purpose: ["fileNew"],
+                    appointmentDate: "2024-02-16",
+                    timeSlot: "10-11",
+                    status: "Approved",
+                    createdAt: "2024-01-26T14:30:00Z",
+                    updatedAt: "2024-01-27T11:15:00Z"
+                },
+                {
+                    _id: "mock_ca_3",
+                    appointmentId: "CA-1003",
+                    fullName: "Raj Verma",
+                    dob: "1978-11-05",
+                    gender: "male",
+                    idType: "passport",
+                    idNumber: "P1234567",
+                    mobile: "9876543212",
+                    email: "raj.verma@email.com",
+                    address: "789, Industrial Area, Mumbai - 400003",
+                    caseType: "commercial",
+                    purpose: ["hearing", "fileNew"],
+                    appointmentDate: "2024-02-17",
+                    timeSlot: "2-3",
+                    status: "Rejected",
+                    createdAt: "2024-01-25T11:45:00Z",
+                    updatedAt: "2024-01-27T16:20:00Z"
+                },
+                {
+                    _id: "mock_ca_4",
+                    appointmentId: "CA-1004",
+                    fullName: "Sneha Singh",
+                    dob: "1992-08-30",
+                    gender: "female",
+                    idType: "aadhaar",
+                    idNumber: "987654321098",
+                    mobile: "9876543213",
+                    email: "sneha.singh@email.com",
+                    address: "321, Suburban Lane, Mumbai - 400004",
+                    caseType: "family",
+                    purpose: ["hearing"],
+                    appointmentDate: "2024-02-18",
+                    timeSlot: "3-4",
+                    status: "Rescheduled",
+                    createdAt: "2024-01-28T09:15:00Z",
+                    updatedAt: "2024-01-28T14:30:00Z"
+                },
+                {
+                    _id: "mock_ca_5",
+                    appointmentId: "CA-1005",
+                    fullName: "Amit Kumar",
+                    dob: "1988-04-12",
+                    gender: "male",
+                    idType: "pan",
+                    idNumber: "XYZAB5678C",
+                    mobile: "9876543214",
+                    email: "amit.kumar@email.com",
+                    address: "654, Highway Road, Mumbai - 400005",
+                    caseType: "civil",
+                    purpose: ["fileNew"],
+                    appointmentDate: "2024-02-19",
+                    timeSlot: "4-5",
+                    status: "Pending",
+                    createdAt: "2024-01-24T16:20:00Z",
+                    updatedAt: "2024-01-24T16:20:00Z"
+                }
+            ];
+        }
+
+        // Function to filter appointments
+        function filterAppointments() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const caseTypeFilter = document.getElementById('caseTypeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+
+            // Start with all appointments
+            filteredAppointments = [...allAppointments];
+
+            // Apply status filter
+            if (statusFilter !== 'all') {
+                filteredAppointments = filteredAppointments.filter(appointment =>
+                    appointment.status === statusFilter
+                );
+            }
+
+            // Apply case type filter
+            if (caseTypeFilter !== 'all') {
+                filteredAppointments = filteredAppointments.filter(appointment =>
+                    appointment.caseType &&
+                    appointment.caseType.toLowerCase() === caseTypeFilter.toLowerCase()
+                );
+            }
+
+            // Apply date filter
+            if (dateFilter !== 'all') {
+                const now = new Date();
+                filteredAppointments = filteredAppointments.filter(appointment => {
+                    const appointmentDate = new Date(appointment.appointmentDate);
+
+                    switch (dateFilter) {
+                        case 'today':
+                            return appointmentDate.toDateString() === now.toDateString();
+                        case 'week':
+                            const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                            return appointmentDate >= weekAgo;
+                        case 'month':
+                            const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                            return appointmentDate >= monthAgo;
+                        default:
+                            return true;
+                    }
+                });
+            }
+
+            // Apply search filter
+            if (searchText) {
+                filteredAppointments = filteredAppointments.filter(appointment =>
+                    (appointment.fullName && appointment.fullName.toLowerCase().includes(searchText)) ||
+                    (appointment.appointmentId && appointment.appointmentId.toLowerCase().includes(searchText)) ||
+                    (appointment.mobile && appointment.mobile.includes(searchText)) ||
+                    (appointment.email && appointment.email.toLowerCase().includes(searchText))
+                );
+            }
+
+            // Reset to first page
+            currentPage = 1;
+
+            // Update table
+            renderAppointmentsTable();
+        }
+
+        // Function to clear all filters
+        function clearFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('caseTypeFilter').value = 'all';
+            document.getElementById('dateFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            filterAppointments();
+        }
+
+        // Function to update dashboard statistics
+        function updateDashboardStats(appointments) {
+            const total = appointments.length;
+            const pending = appointments.filter(a => a.status === 'Pending').length;
+            const approved = appointments.filter(a => a.status === 'Approved').length;
+            const rejected = appointments.filter(a => a.status === 'Rejected').length;
+            const rescheduled = appointments.filter(a => a.status === 'Rescheduled').length;
+
+            // Update stats cards
+            document.getElementById('totalAppointments').textContent = total;
+            document.getElementById('pendingAppointments').textContent = pending;
+            document.getElementById('approvedAppointments').textContent = approved;
+            document.getElementById('rejectedAppointments').textContent = rejected;
+
+            // Update sidebar badge (if exists)
+            const badge = document.getElementById('totalAppointmentsBadge');
+            if (badge) badge.textContent = total;
+        }
+
+        // Function to get case type badge class
+        function getCaseTypeClass(type) {
+            switch(type) {
+                case 'civil': return 'type-civil';
+                case 'criminal': return 'type-criminal';
+                case 'family': return 'type-family';
+                case 'commercial': return 'type-commercial';
+                default: return 'type-civil';
+            }
+        }
+
+        // Function to format case type for display
+        function formatCaseType(type) {
+            if (!type) return 'Unknown';
+            return type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        // Function to get time slot badge class
+        function getTimeSlotClass(slot) {
+            if (!slot) return 'time-morning';
+            const hour = parseInt(slot.split('-')[0]);
+            return hour < 12 ? 'time-morning' : 'time-afternoon';
+        }
+
+        // Function to format time slot for display
+        function formatTimeSlot(slot) {
+            if (!slot) return 'Not specified';
+            const [start, end] = slot.split('-');
+            const startHour = parseInt(start);
+            const endHour = parseInt(end);
+            
+            const startPeriod = startHour < 12 ? 'AM' : 'PM';
+            const endPeriod = endHour < 12 ? 'AM' : 'PM';
+            
+            const formattedStart = startHour > 12 ? startHour - 12 : startHour;
+            const formattedEnd = endHour > 12 ? endHour - 12 : endHour;
+            
+            return `${formattedStart}:00 ${startPeriod} - ${formattedEnd}:00 ${endPeriod}`;
+        }
+
+        // Function to format date for display
+        function formatDate(dateString) {
+            if (!dateString) return 'Not specified';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Function to render appointments table
+        function renderAppointmentsTable() {
+            const tbody = document.getElementById('appointmentsTableBody');
+
+            // Calculate pagination
+            const totalItems = filteredAppointments.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            const pageAppointments = filteredAppointments.slice(startIndex, endIndex);
+
+            // Update table count
+            document.getElementById('tableCount').textContent = `(${totalItems} appointments)`;
+
+            if (pageAppointments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-gavel fa-2x mb-2" style="color: var(--text-light);"></i>
+                            <p>No court appointments match your filters</p>
+                            <button class="action-btn btn-view" onclick="clearFilters()">
+                                <i class="fas fa-times"></i> Clear Filters
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                const rows = pageAppointments.map(appointment => {
+                    // Format date
+                    const formattedDate = formatDate(appointment.appointmentDate);
+
+                    // Determine status badge class
+                    let statusClass = '';
+                    let statusText = appointment.status || 'Pending';
+
+                    switch (statusText) {
+                        case 'Pending':
+                            statusClass = 'status-pending';
+                            break;
+                        case 'Approved':
+                            statusClass = 'status-approved';
+                            break;
+                        case 'Rejected':
+                            statusClass = 'status-rejected';
+                            break;
+                        case 'Rescheduled':
+                            statusClass = 'status-rescheduled';
+                            break;
+                        default:
+                            statusClass = 'status-pending';
+                    }
+
+                    // Get case type class and text
+                    const caseType = appointment.caseType || 'civil';
+                    const caseTypeClass = getCaseTypeClass(caseType);
+                    const formattedCaseType = formatCaseType(caseType);
+
+                    // Get time slot class and text
+                    const timeSlot = appointment.timeSlot || '9-10';
+                    const timeSlotClass = getTimeSlotClass(timeSlot);
+                    const formattedTimeSlot = formatTimeSlot(timeSlot);
+
+                    return `
+                        <tr class="table-row">
+                            <td class="appointment-id">${appointment.appointmentId || 'CA-N/A'}</td>
+                            <td>${appointment.fullName || 'Anonymous'}</td>
+                            <td>
+                                <span class="case-type-badge ${caseTypeClass}">
+                                    ${formattedCaseType}
+                                </span>
+                            </td>
+                            <td>${formattedDate}</td>
+                            <td>
+                                <span class="time-badge ${timeSlotClass}">
+                                    ${formattedTimeSlot}
+                                </span>
+                            </td>
+                            <td>${appointment.mobile || 'N/A'}</td>
+                            <td>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn btn-view" onclick="viewAppointment('${appointment._id}')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="action-btn btn-update" onclick="updateAppointment('${appointment._id}')">
+                                        <i class="fas fa-edit"></i> Update
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = rows;
+            }
+
+            // Update pagination info
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+
+            // Update pagination buttons
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Function to change page
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
+            const newPage = currentPage + direction;
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderAppointmentsTable();
+            }
+        }
+
+        // View Appointment Function
+        async function viewAppointment(appointmentId) {
+            try {
+                console.log(`👁️ Viewing court appointment: ${appointmentId}`);
+
+                // Find the appointment
+                const appointment = allAppointments.find(a => a._id === appointmentId) || getMockCourtAppointments().find(a => a._id === appointmentId);
+
+                if (!appointment) {
+                    showToast('Appointment not found', 'error');
+                    return;
+                }
+
+                currentAppointmentId = appointmentId;
+
+                // Format dates
+                const createdAt = new Date(appointment.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const updatedAt = appointment.updatedAt ?
+                    new Date(appointment.updatedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'Not updated yet';
+
+                // Format case type and time slot
+                const formattedCaseType = formatCaseType(appointment.caseType);
+                const formattedTimeSlot = formatTimeSlot(appointment.timeSlot);
+                const caseTypeClass = getCaseTypeClass(appointment.caseType);
+                const timeSlotClass = getTimeSlotClass(appointment.timeSlot);
+
+                // Format purpose
+                const purpose = Array.isArray(appointment.purpose) ? 
+                    appointment.purpose.join(', ').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 
+                    appointment.purpose || 'Not specified';
+
+                // Format ID info
+                let idInfo = '';
+                if (appointment.idType && appointment.idNumber) {
+                    idInfo = `${appointment.idType.toUpperCase()}: ${appointment.idNumber}`;
+                } else {
+                    idInfo = 'Not provided';
+                }
+
+                const detailsHtml = `
+                    <div class="detail-section">
+                        <h4><i class="fas fa-info-circle"></i> Appointment Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Appointment ID</span>
+                                <div class="detail-value">${appointment.appointmentId || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <div class="detail-value">
+                                    <span class="status-badge status-${(appointment.status || 'Pending').toLowerCase()}">
+                                        ${appointment.status || 'Pending'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Case Type</span>
+                                <div class="detail-value">
+                                    <span class="case-type-badge ${caseTypeClass}">
+                                        ${formattedCaseType}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Purpose</span>
+                                <div class="detail-value">${purpose}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="fas fa-user"></i> Citizen Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Full Name</span>
+                                <div class="detail-value">${appointment.fullName || 'Not provided'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date of Birth</span>
+                                <div class="detail-value">${formatDate(appointment.dob) || 'Not provided'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Gender</span>
+                                <div class="detail-value">${appointment.gender ? appointment.gender.charAt(0).toUpperCase() + appointment.gender.slice(1) : 'Not provided'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">ID Information</span>
+                                <div class="detail-value">${idInfo}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="fas fa-address-card"></i> Contact Details</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Mobile</span>
+                                <div class="detail-value">${appointment.mobile || 'Not provided'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email</span>
+                                <div class="detail-value">${appointment.email || 'Not provided'}</div>
+                            </div>
+                            <div class="detail-item" style="grid-column: 1 / -1;">
+                                <span class="detail-label">Address</span>
+                                <div class="detail-value" style="padding: 1rem; background: white; border-radius: 8px; margin-top: 0.5rem;">
+                                    ${appointment.address || 'Not provided'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="fas fa-calendar-alt"></i> Appointment Details</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Appointment Date</span>
+                                <div class="detail-value">${formatDate(appointment.appointmentDate)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Time Slot</span>
+                                <div class="detail-value">
+                                    <span class="time-badge ${timeSlotClass}">
+                                        ${formattedTimeSlot}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Submitted On</span>
+                                <div class="detail-value">${createdAt}</div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Last Updated</span>
+                                <div class="detail-value">${updatedAt}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('appointmentDetails').innerHTML = detailsHtml;
+                document.getElementById('viewModal').classList.add('active');
+
+            } catch (error) {
+                console.error('❌ Error viewing court appointment:', error);
+                showToast('Error loading appointment details', 'error');
+            }
+        }
+
+        // Update Appointment Function
+        async function updateAppointment(appointmentId) {
+            try {
+                console.log(`✏️ Updating court appointment: ${appointmentId}`);
+
+                // Find the appointment
+                const appointment = allAppointments.find(a => a._id === appointmentId) || getMockCourtAppointments().find(a => a._id === appointmentId);
+
+                if (!appointment) {
+                    showToast('Appointment not found', 'error');
+                    return;
+                }
+
+                currentAppointmentId = appointmentId;
+
+                const formHtml = `
+                    <div class="form-group">
+                        <label>Appointment ID</label>
+                        <div class="detail-value" style="padding: 0.5rem; background: var(--light-court); border-radius: 6px;">
+                            ${appointment.appointmentId || 'CA-N/A'}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Citizen Name</label>
+                        <div class="detail-value" style="padding: 0.5rem; background: var(--light-court); border-radius: 6px;">
+                            ${appointment.fullName || 'Not provided'}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Case Type</label>
+                        <div class="detail-value" style="padding: 0.5rem; display: inline-block;">
+                            <span class="case-type-badge ${getCaseTypeClass(appointment.caseType)}">
+                                ${formatCaseType(appointment.caseType)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Status</label>
+                        <div style="padding: 0.5rem; display: inline-block;">
+                            <span class="status-badge status-${(appointment.status || 'Pending').toLowerCase()}">
+                                ${appointment.status || 'Pending'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="statusSelect">Update Status *</label>
+                        <select class="form-select" id="statusSelect" required>
+                            <option value="Pending" ${(appointment.status || 'Pending') === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Approved" ${(appointment.status || 'Pending') === 'Approved' ? 'selected' : ''}>Approved</option>
+                            <option value="Rejected" ${(appointment.status || 'Pending') === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="Rescheduled" ${(appointment.status || 'Pending') === 'Rescheduled' ? 'selected' : ''}>Rescheduled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assignedJudge">Assign Judge</label>
+                        <select class="form-select" id="assignedJudge">
+                            <option value="">Not Assigned</option>
+                            <option value="Hon. Justice Sharma">Hon. Justice Sharma</option>
+                            <option value="Hon. Justice Verma">Hon. Justice Verma</option>
+                            <option value="Hon. Justice Patel">Hon. Justice Patel</option>
+                            <option value="Hon. Justice Singh">Hon. Justice Singh</option>
+                            <option value="Hon. Justice Kumar">Hon. Justice Kumar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courtRoom">Court Room</label>
+                        <select class="form-select" id="courtRoom">
+                            <option value="">Not Assigned</option>
+                            <option value="Court Room 1">Court Room 1</option>
+                            <option value="Court Room 2">Court Room 2</option>
+                            <option value="Court Room 3">Court Room 3</option>
+                            <option value="Court Room 4">Court Room 4</option>
+                            <option value="Court Room 5">Court Room 5</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prioritySelect">Priority Level</label>
+                        <select class="form-select" id="prioritySelect">
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="high">High Priority</option>
+                            <option value="emergency">Emergency</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="judgeNotes">Judge's Notes/Remarks</label>
+                        <textarea class="form-textarea" id="judgeNotes" placeholder="Add notes, remarks, or instructions...">${appointment.judgeNotes || ''}</textarea>
+                        <small class="text-muted">This will be visible to the citizen when status is changed</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newDate">Reschedule Date (if applicable)</label>
+                        <input type="date" class="form-control" id="newDate" value="${appointment.rescheduledDate || ''}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newTime">Reschedule Time (if applicable)</label>
+                        <select class="form-select" id="newTime">
+                            <option value="">Select time</option>
+                            <option value="9-10">9:00 AM – 10:00 AM</option>
+                            <option value="10-11">10:00 AM – 11:00 AM</option>
+                            <option value="11-12">11:00 AM – 12:00 PM</option>
+                            <option value="2-3">2:00 PM – 3:00 PM</option>
+                            <option value="3-4">3:00 PM – 4:00 PM</option>
+                            <option value="4-5">4:00 PM – 5:00 PM</option>
+                        </select>
+                    </div>
+                `;
+
+                document.getElementById('updateForm').innerHTML = formHtml;
+                document.getElementById('updateModal').classList.add('active');
+
+            } catch (error) {
+                console.error('❌ Error loading update form:', error);
+                showToast('Error loading appointment details', 'error');
+            }
+        }
+
+        // Save Update Function
+        async function saveUpdate() {
+            try {
+                const newStatus = document.getElementById("statusSelect").value;
+                const assignedJudge = document.getElementById("assignedJudge").value;
+                const courtRoom = document.getElementById("courtRoom").value;
+                const priority = document.getElementById("prioritySelect").value;
+                const judgeNotes = document.getElementById("judgeNotes").value;
+                const newDate = document.getElementById("newDate").value;
+                const newTime = document.getElementById("newTime").value;
+
+                console.log("📤 Sending court appointment update to backend:", {
+                    status: newStatus,
+                    assignedJudge,
+                    courtRoom,
+                    priority,
+                    judgeNotes,
+                    rescheduledDate: newDate,
+                    rescheduledTime: newTime
+                });
+
+                const response = await fetch(`/court/appointments/${currentAppointmentId}`, {
+                    method: "PUT",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        status: newStatus,
+                        assignedJudge,
+                        courtRoom,
+                        priority,
+                        judgeNotes,
+                        rescheduledDate: newDate,
+                        rescheduledTime: newTime
+                    })
+                });
+
+                const data = await response.json();
+                console.log("📥 Backend response:", data);
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || "Update failed");
+                }
+
+                // ✅ Update local cache so UI refreshes instantly
+                const index = allAppointments.findIndex(a => a._id === currentAppointmentId);
+                if (index !== -1) {
+                    allAppointments[index] = data.appointment;
+                }
+
+                showToast("Court appointment updated successfully!", "success");
+
+                closeModal();
+                filteredAppointments = [...allAppointments];
+                updateDashboardStats(allAppointments);
+                renderAppointmentsTable();
+            } catch (error) {
+                console.error("❌ Update failed:", error);
+                showToast("Failed to update appointment", "error");
+            }
+        }
+
+        // Close Modal Function
+        function closeModal() {
+            document.getElementById('viewModal').classList.remove('active');
+            document.getElementById('updateModal').classList.remove('active');
+            currentAppointmentId = '';
+        }
+
+        // Show Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('i');
+
+            // Set icon and title based on type
+            if (type === 'error') {
+                toast.style.borderLeftColor = 'var(--danger-court)';
+                toastIcon.className = 'fas fa-exclamation-circle';
+                toastIcon.style.color = 'var(--danger-court)';
+                toastTitle.textContent = 'Error!';
+            } else if (type === 'warning') {
+                toast.style.borderLeftColor = 'var(--warning-court)';
+                toastIcon.className = 'fas fa-exclamation-triangle';
+                toastIcon.style.color = 'var(--warning-court)';
+                toastTitle.textContent = 'Warning!';
+            } else {
+                toast.style.borderLeftColor = 'var(--success-court)';
+                toastIcon.className = 'fas fa-check-circle';
+                toastIcon.style.color = 'var(--success-court)';
+                toastTitle.textContent = 'Success!';
+            }
+
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

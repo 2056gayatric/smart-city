@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyBlue Citizen · fully filled object colors</title>
+
+    <!-- Bootstrap 5 + icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #d9ecff 0%, #b8d6f5 100%);
+            margin: 0;
+            padding: 24px 0;
+            color: #022b49;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER WITH LOGO <img> AND DYNAMIC USER NAME ===== */
+        .header-sky {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 0.8rem 1.8rem 0.8rem 1.2rem;
+            box-shadow: 0 15px 30px -8px rgba(0, 80, 130, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cityzen-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ============================================= */
+        /* =====  YOUR CUSTOM LOGO AS <img> TAG ===== */
+        /* Replace src with your logo path and adjust width/height as needed */
+        .logo-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            box-shadow: 0 8px 14px -4px #0284c7;
+            object-fit: contain; /* keeps aspect ratio */
+            background: white; /* optional background in case of transparent */
+        }
+        /* ============================================= */
+
+        .logo-text h2 {
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+            color: #02457a;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            font-size: 0.85rem;
+            color: #1e5b9c;
+            font-weight: 500;
+            background: rgba(255,255,255,0.6);
+            padding: 2px 12px;
+            border-radius: 40px;
+        }
+
+        /* ===== DYNAMIC USER NAME FROM DATABASE ===== */
+        .user-badge {
+            background: white;
+            color: #02457a;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 1px solid #c7dfff;
+            box-shadow: 0 4px 10px rgba(0,60,120,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-badge i {
+            font-size: 1.5rem;
+            color: #0a4d8c;
+        }
+        /* The actual user name is inside a span with class "dynamic-user-name" 
+           so your backend code can easily populate it from the database */
+        .dynamic-user-name {
+            font-weight: 600;
+        }
+
+        /* section titles */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 6px solid #0b79c0;
+            color: #013a63;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(to right, rgba(255,255,255,0.3), transparent);
+            border-radius: 0 30px 30px 0;
+        }
+
+        .section-title i {
+            font-size: 1.7rem;
+            color: #0b79c0;
+        }
+
+        /* card base */
+        .card-sky {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 28px;
+            box-shadow: 0 15px 30px -12px rgba(2, 84, 143, 0.2);
+            transition: all 0.25s ease;
+            height: 100%;
+        }
+
+        .card-sky:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #b6d8ff;
+            box-shadow: 0 30px 40px -14px #0284c7;
+        }
+
+        /* alert cards */
+        .alert-sky-red {
+            border-left: 8px solid #dc2626;
+            background: rgba(254, 226, 226, 0.6);
+        }
+        .alert-sky-yellow {
+            border-left: 8px solid #eab308;
+            background: rgba(254, 240, 138, 0.25);
+        }
+        .alert-sky-green {
+            border-left: 8px solid #16a34a;
+            background: rgba(220, 252, 231, 0.3);
+        }
+
+        /* ===== FULLY FILLED COLOR ICONS (SOLID, NO OUTLINE) WITH ANIMATION ===== */
+        .tile-sky {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.8rem 0.5rem;
+            text-align: center;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 26px;
+            transition: 0.2s;
+            font-weight: 500;
+            color: #02457a;
+        }
+
+        .tile-sky i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            transition: transform 0.2s ease, filter 0.2s;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
+        }
+
+        /* COMPLAINTS: fully filled (solid color, not just outline) */
+        .tile-sky i.bi-droplet { color: #0284c7; }        /* water filled blue */
+        .tile-sky i.bi-trash3 { color: #4b5563; }         /* garbage filled gray */
+        .tile-sky i.bi-lightning { color: #eab308; }      /* electricity filled yellow */
+        .tile-sky i.bi-pin-map { color: #92400e; }        /* roads filled brown */
+
+        /* TRANSPORT filled */
+        .transport-sky i.bi-bus-front { color: #2563eb; }        /* bus filled blue */
+        .transport-sky i.bi-train-front { color: #7e22ce; }      /* train filled purple */
+        .transport-sky i.bi-train-lightrail-front { color: #0891b2; } /* metro filled cyan */
+
+        /* LOCATOR filled (complete object fill) */
+        .locator-sky i.bi-tree { color: #16a34a; }        /* park tree filled green */
+        .locator-sky i.bi-grid-3x3-gap { color: #92400e; } /* ground filled brown */
+        .locator-sky i.bi-water { color: #0284c7; }       /* swimming pool filled blue */
+        .locator-sky i.bi-house-heart { color: #dc2626; }  /* housing filled red */
+
+        /* Hover animation for all icons */
+        .tile-sky:hover i,
+        .transport-sky:hover i,
+        .locator-sky:hover i {
+            transform: scale(1.15) rotate(2deg);
+            filter: drop-shadow(0 8px 12px rgba(2, 84, 143, 0.4));
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+        }
+
+        /* transport & locator cards */
+        .transport-sky, .locator-sky {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            padding: 1.5rem 0.2rem;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: 0.2s;
+        }
+
+        .transport-sky i, .locator-sky i {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 8px;
+            transition: transform 0.2s ease, filter 0.2s;
+        }
+
+        /* emergency button */
+        .btn-emergency-sky {
+            background: #b91c1c;
+            color: white;
+            border: none;
+            padding: 16px 0;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 100%;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 18px -6px #b91c1c;
+            transition: 0.2s;
+        }
+
+        .btn-emergency-sky:hover {
+            background: #991b1b;
+            transform: scale(1.03) translateY(-3px);
+            box-shadow: 0 18px 25px -8px #7f1d1d;
+        }
+
+        /* appointments — only text, no badges */
+        .appointment-sky {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem 1.8rem;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(6px);
+            border-radius: 40px;
+            gap: 16px;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .appointment-sky i {
+            font-size: 2.5rem;
+            transition: transform 0.2s;
+        }
+        .appointment-sky:hover i {
+            transform: scale(1.1);
+        }
+
+        /* logout button */
+        .btn-logout-sky {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid white;
+            border-radius: 60px;
+            padding: 14px 40px;
+            font-weight: 600;
+            color: #02457a;
+            transition: 0.2s;
+            box-shadow: 0 8px 18px -10px #0260a5;
+            font-size: 1.2rem;
+        }
+        .btn-logout-sky:hover {
+            background: white;
+            border-color: #0284c7;
+            color: #022b49;
+            transform: scale(1.02);
+        }
+
+        a { text-decoration: none; color: inherit; display: block; }
+
+        /* responsiveness */
+        @media (max-width: 768px) {
+            .header-sky { flex-direction: column; align-items: start; gap: 12px; }
+            .logo-text h2 { font-size: 1.6rem; }
+        }
+
+        /* floating background bubbles (animation) */
+        .bg-bubble {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bubble-sky {
+            position: absolute;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: floatSoft 18s infinite alternate ease-in-out;
+        }
+        .b1 { width: 280px; height: 280px; top: 5%; left: -40px; }
+        .b2 { width: 400px; height: 400px; bottom: -100px; right: -50px; background: rgba(255,255,255,0.15); animation-delay: -5s; }
+        .b3 { width: 200px; height: 200px; top: 40%; left: 70%; background: rgba(255,255,255,0.2); animation-delay: -2s; }
+
+        @keyframes floatSoft {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, -20px) scale(1.05); }
+        }
+        .dashboard-container { position: relative; z-index: 5; }
+    </style>
+</head>
+<body>
+
+<!-- sky bubbles animated background -->
+<div class="bg-bubble">
+    <div class="bubble-sky b1"></div>
+    <div class="bubble-sky b2"></div>
+    <div class="bubble-sky b3"></div>
+</div>
+
+<div class="container dashboard-container">
+
+    <!-- ========= HEADER: LOGO <img> + DYNAMIC USER NAME FROM DATABASE ========= -->
+    <div class="header-sky">
+        <div class="cityzen-logo">
+            <!-- ===== YOUR CUSTOM LOGO IMAGE TAG ===== -->
+            <!-- Replace the src attribute with the path to your logo image -->
+            <img src="/public/CityZen logo.jpeg" alt="CITYZEN logo" class="logo-image">
+            <!-- ====================================== -->
+            <div class="logo-text">
+                <h2>CITYZEN</h2>
+                <span>smart city · citizen portal</span>
+            </div>
+        </div>
+        
+        <!-- ===== DYNAMIC USER NAME FROM DATABASE ===== -->
+        <!-- The span below is filled from backend with the logged-in citizen's name. -->
+        <div class="user-badge">
+            <i class="bi bi-person-circle"></i>
+            <span class="dynamic-user-name"><%= citizen && citizen.full_name ? citizen.full_name : 'Citizen' %></span>
+        </div>
+    </div>
+
+    <!-- ========= ALERTS ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-megaphone"></i> City alerts
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="/citizen/alerts/traffic">
+                    <div class="card-sky p-4 d-flex align-items-start gap-3 alert-sky-red">
+                        <i class="bi bi-signpost-split fs-1" style="color:#b91c1c;"></i>
+                        <div><h6 class="fw-bold">Traffic alert</h6><p class="mb-0 small text-secondary">Heavy traffic downtown · use ring road</p></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/citizen/alerts/weather">
+                    <div class="card-sky p-4 d-flex align-items-start gap-3 alert-sky-yellow">
+                        <i class="bi bi-cloud-rain-heavy fs-1" style="color:#b45309;"></i>
+                        <div><h6 class="fw-bold">Weather advisory</h6><p class="mb-0 small text-secondary">Moderate rainfall 6–10mm</p></div>
+                    </div>
+                </a>
+            </div>
+           
+
+    <!-- ========= COMPLAINTS — FULLY FILLED ICONS (SOLID COLORS) ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-chat-square-text"></i> Raise a complaint
+        </div>
+        <div class="row g-4">
+            <div class="col-6 col-md-3"><a href="/citizen/complaints/water"><div class="tile-sky card-sky"><i class="bi bi-droplet"></i><span>Water</span></div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/complaints/garbage"><div class="tile-sky card-sky"><i class="bi bi-trash3"></i><span>Garbage</span></div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/complaints/electricity"><div class="tile-sky card-sky"><i class="bi bi-lightning"></i><span>Electricity</span></div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/complaints/roads"><div class="tile-sky card-sky"><i class="bi bi-pin-map"></i><span>Roads</span></div></a></div>
+        </div>
+    </div>
+
+    <!-- ========= APPOINTMENTS — NO BADGES, ONLY ICON + TITLE ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-calendar-check"></i> Appointments
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="/citizen/appointments/hospital">
+                    <div class="appointment-sky card-sky p-3">
+                        <i class="bi bi-hospital fs-2" style="color:#0b79c0;"></i>
+                        <div><strong>City Hospital OPD</strong></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/citizen/appointments/esetu">
+                    <div class="appointment-sky card-sky p-3">
+                        <i class="bi bi-building fs-2" style="color:#b85e00;"></i>
+                        <div><strong>E-Setu office</strong></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/citizen/appointments/court">
+                    <div class="appointment-sky card-sky p-3">
+                        <i class="bi bi-bank2 fs-2" style="color:#2c3e50;"></i>
+                        <div><strong>Court hearing</strong></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= EMERGENCY ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-shield-shaded"></i> Emergency
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4"><a href="/citizen/emergency/police"><button class="btn-emergency-sky"><i class="bi bi-shield-fill me-2"></i>🚓 Police</button></a></div>
+            <div class="col-md-4"><a href="/citizen/emergency/ambulance"><button class="btn-emergency-sky"><i class="bi bi-heart-pulse-fill me-2"></i>🚑 Ambulance</button></a></div>
+            <div class="col-md-4"><a href="/citizen/emergency/fire"><button class="btn-emergency-sky"><i class="bi bi-fire me-2"></i>🚒 Fire</button></a></div>
+        </div>
+    </div>
+
+    <!-- ========= TRANSPORT — FULLY FILLED ICONS ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-bus-front"></i> Transport
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4"><a href="/citizen/transport/bus"><div class="transport-sky card-sky"><i class="bi bi-bus-front"></i> City Bus Ticket</div></a></div>
+            <div class="col-md-4"><a href="/citizen/transport/train"><div class="transport-sky card-sky"><i class="bi bi-train-front"></i> City Train Ticket</div></a></div>
+            <div class="col-md-4"><a href="/citizen/transport/metro"><div class="transport-sky card-sky"><i class="bi bi-train-lightrail-front"></i> Metro Ticket</div></a></div>
+        </div>
+    </div>
+
+    <!-- ========= LOCATOR — FULLY FILLED ICONS ========= -->
+    <div class="mb-5">
+        <div class="section-title">
+            <i class="bi bi-geo-alt"></i> Nearest facility
+        </div>
+        <div class="row g-4">
+            <div class="col-6 col-md-3"><a href="/citizen/locator/park"><div class="locator-sky card-sky"><i class="bi bi-tree"></i> Park</div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/locator/ground"><div class="locator-sky card-sky"><i class="bi bi-grid-3x3-gap"></i> Ground</div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/locator/swimming"><div class="locator-sky card-sky"><i class="bi bi-water"></i> Swimming</div></a></div>
+            <div class="col-6 col-md-3"><a href="/citizen/locator/housing"><div class="locator-sky card-sky"><i class="bi bi-house-heart"></i> Housing</div></a></div>
+        </div>
+    </div>
+
+    <!-- ========= LOGOUT BUTTON ========= -->
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn-logout-sky" onclick="window.location.href='/login/logout'">
+            <i class="bi bi-box-arrow-right me-2"></i>Logout from CITYZEN
+        </button>
+    </div>
+
+</div> <!-- container -->
+</body>
+</html>

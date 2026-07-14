@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityZen | Transport Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --off-white: #f8f8f6;
+            --off-white-card: #fafaf8;
+            --off-white-border: #e8e8e4;
+            --off-white-dark: #f0f0ec;
+            --text-dark: #333;
+            --text-muted: #666;
+            
+            /* Beautiful sky blue colors */
+            --sky-light: #e6f3ff;
+            --sky-soft: #d4eaff;
+            --sky-medium: #b5d8ff;
+            --sky-blue: #7fb9ff;
+            --sky-deep: #4a90e2;
+            --sky-accent: #6ba6ff;
+            --cloud-white: #ffffff;
+            --text-sky: #2c5282;
+            --text-light-sky: #4299e1;
+            --glow-blue: rgba(127, 185, 255, 0.3);
+        }
+        
+        body {
+            background: linear-gradient(145deg, #c9e4ff 0%, #d9ecff 40%, #e6f3ff 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            color: var(--text-sky);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated clouds background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 30%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 35%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 35%),
+                radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 45%);
+            animation: cloudsDrift 35s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Floating clouds particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 35%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 2px, transparent 2px, transparent 15px);
+            animation: skyDrift 30s linear infinite alternate;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        @keyframes cloudsDrift {
+            0% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 0.7;
+                background-position: 0% 0%;
+            }
+            50% { 
+                transform: scale(1.1) rotate(1deg); 
+                opacity: 1;
+                background-position: 100% 100%;
+            }
+            100% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 0.7;
+                background-position: 0% 0%;
+            }
+        }
+
+        @keyframes skyDrift {
+            0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+            50% { transform: rotate(3deg) scale(1.05); opacity: 0.5; }
+            100% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+        }
+
+        /* Floating cloud shapes */
+        .clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .clouds::before,
+        .clouds::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(40px 20px at 15% 20%, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(60px 30px at 25% 45%, rgba(255, 255, 255, 0.4) 100%, transparent),
+                radial-gradient(50px 25px at 45% 15%, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(70px 35px at 65% 55%, rgba(255, 255, 255, 0.3) 100%, transparent),
+                radial-gradient(45px 22px at 80% 25%, rgba(255, 255, 255, 0.4) 100%, transparent),
+                radial-gradient(55px 28px at 95% 70%, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(65px 32px at 35% 85%, rgba(255, 255, 255, 0.35) 100%, transparent),
+                radial-gradient(50px 25px at 75% 90%, rgba(255, 255, 255, 0.4) 100%, transparent);
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            animation: cloudsFloat 50s linear infinite;
+            opacity: 0.6;
+            filter: blur(5px);
+        }
+
+        .clouds::after {
+            background-position: 200px 200px;
+            animation: cloudsFloat 40s linear infinite reverse;
+            opacity: 0.4;
+            filter: blur(8px);
+        }
+
+        @keyframes cloudsFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, 20px) scale(1.05); }
+            50% { transform: translate(-50px, -10px) scale(1.1); }
+            75% { transform: translate(-20px, -30px) scale(1.05); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* Sun rays effect */
+        .sun-rays {
+            position: fixed;
+            top: -30%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 200, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            animation: sunGlow 10s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -3;
+        }
+
+        @keyframes sunGlow {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .transport-header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(127, 185, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1);
+            animation: headerSlideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes headerSlideDown {
+            0% { 
+                opacity: 0; 
+                transform: translateY(-30px) scaleY(0.98);
+                backdrop-filter: blur(0px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scaleY(1);
+                backdrop-filter: blur(12px);
+            }
+        }
+
+        .transport-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1e4a7a, #2c73b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            animation: titleGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(127, 185, 255, 0.6)); }
+        }
+
+        .transport-header h1 i {
+            background: linear-gradient(135deg, #2c73b3, #1e4a7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: busFloat 3s ease-in-out infinite;
+            display: inline-block;
+            font-size: 2.2rem;
+        }
+
+        @keyframes busFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-4px) rotate(-3deg); }
+            75% { transform: translateY(2px) rotate(3deg); }
+        }
+
+        .transport-header a {
+            color: #2c5282;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(127, 185, 255, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transport-header a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(127, 185, 255, 0.5), rgba(74, 144, 226, 0.3));
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: -1;
+        }
+
+        .transport-header a:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(74, 144, 226, 0.6);
+            color: #1a3b5c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.2);
+        }
+
+        .transport-header a:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .transport-header a i {
+            transition: transform 0.3s ease;
+        }
+
+        .transport-header a:hover i {
+            transform: translateX(5px);
+        }
+
+        .container {
+            padding: 4rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            animation: containerFadeIn 1s ease-out forwards;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes containerFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .row {
+            margin: -1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .col-md-4 {
+            padding: 1rem;
+            opacity: 0;
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) forwards;
+        }
+
+        .col-md-4:nth-child(1) { animation-delay: 0.2s; }
+        .col-md-4:nth-child(2) { animation-delay: 0.4s; }
+        .col-md-4:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes cardEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-transport {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(127, 185, 255, 0.3);
+            border-radius: 32px;
+            padding: 2.5rem 1.8rem;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            color: var(--text-sky);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px -15px rgba(74, 144, 226, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+                0 0 30px rgba(127, 185, 255, 0.1);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sky gradient overlay */
+        .card-transport::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(135deg, 
+                rgba(127, 185, 255, 0.15) 0%, 
+                rgba(74, 144, 226, 0.1) 50%, 
+                transparent 100%);
+            border-radius: 32px 32px 50% 50%;
+            pointer-events: none;
+        }
+
+        /* Animated sky blue border glow */
+        .card-transport::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(127, 185, 255, 0.3) 50%, 
+                transparent 70%);
+            border-radius: 34px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            animation: borderGlow 4s linear infinite;
+            background-size: 300% 300%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .card-transport:hover {
+            transform: translateY(-15px) scale(1.02);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 
+                0 30px 50px -15px rgba(74, 144, 226, 0.3),
+                0 0 0 2px rgba(255, 255, 255, 1) inset,
+                0 0 40px rgba(127, 185, 255, 0.2);
+            border-color: rgba(74, 144, 226, 0.4);
+        }
+
+        .card-transport:hover::after {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 10px 15px rgba(74, 144, 226, 0.2));
+            background: linear-gradient(135deg, #2c73b3, #1e4a7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-transport:hover .card-icon {
+            transform: scale(1.2) rotate(8deg) translateY(-5px);
+            filter: drop-shadow(0 15px 25px rgba(74, 144, 226, 0.3));
+            background: linear-gradient(135deg, #3b8fd9, #235d9e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Individual icon animations */
+        .card-transport:nth-child(1) .card-icon {
+            animation: busFloatIcon 4s ease-in-out infinite;
+        }
+
+        @keyframes busFloatIcon {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            25% { transform: translateY(-8px) rotate(-5deg); }
+            75% { transform: translateY(-4px) rotate(5deg); }
+        }
+
+        .card-transport:nth-child(2) .card-icon {
+            animation: trainShake 5s ease-in-out infinite;
+        }
+
+        @keyframes trainShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-2deg); }
+            75% { transform: translateX(5px) rotate(2deg); }
+        }
+
+        .card-transport:nth-child(3) .card-icon {
+            animation: metroPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes metroPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.9; filter: drop-shadow(0 20px 30px rgba(74, 144, 226, 0.3)); }
+        }
+
+        .card-transport .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            background: linear-gradient(135deg, #1e4a7a, #2c73b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card-transport .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #7fb9ff, #4a90e2, #7fb9ff, transparent);
+            transform: translateX(-50%);
+            transition: width 0.4s ease;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .card-transport:hover .card-title::after {
+            width: 80%;
+        }
+
+        .card-transport p {
+            color: #4a6fa5;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 1.2rem 0;
+            transition: all 0.3s ease;
+            padding: 0 0.5rem;
+        }
+
+        .card-transport:hover p {
+            color: #1e4a7a;
+            transform: scale(1.02);
+        }
+
+        .btn-transport {
+            background: linear-gradient(135deg, rgba(127, 185, 255, 0.4), rgba(74, 144, 226, 0.4));
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(74, 144, 226, 0.4);
+            color: #1e4a7a;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.15);
+            text-transform: uppercase;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-transport::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+
+        .btn-transport:hover {
+            background: linear-gradient(135deg, rgba(127, 185, 255, 0.6), rgba(74, 144, 226, 0.6));
+            border-color: rgba(74, 144, 226, 0.8);
+            color: #0f2f4f;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-transport:hover::before {
+            left: 100%;
+        }
+
+        .btn-transport:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        /* Decorative clouds particles */
+        .transport-header::after {
+            content: '☁ ☁ ☁';
+            position: absolute;
+            bottom: 5px;
+            right: 50%;
+            transform: translateX(50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            letter-spacing: 10px;
+            animation: cloudsFloat 4s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes cloudsFloat {
+            0%, 100% { opacity: 0.3; transform: translateX(50%) scale(1); }
+            50% { opacity: 0.6; transform: translateX(50%) scale(1.1); }
+        }
+
+        /* Card pulse animation */
+        .card-transport {
+            animation: cardSkyPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes cardSkyPulse {
+            0%, 100% { box-shadow: 0 20px 40px -15px rgba(74, 144, 226, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.8) inset; }
+            50% { box-shadow: 0 25px 50px -15px rgba(74, 144, 226, 0.3), 0 0 0 1px rgba(127, 185, 255, 0.4) inset; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .transport-header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .transport-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 2rem 1rem;
+            }
+            
+            .card-transport {
+                padding: 2rem 1.2rem;
+            }
+            
+            .card-icon {
+                font-size: 3rem;
+            }
+            
+            .card-transport .card-title {
+                font-size: 1.3rem;
+            }
+            
+            .btn-transport {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Sky blue custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(135deg, #e6f3ff, #d4eaff);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #7fb9ff, #4a90e2);
+            border-radius: 5px;
+            border: 2px solid #e6f3ff;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #9ac7ff, #5d9ee8);
+        }
+    </style>
+</head>
+<body>
+    <div class="sun-rays"></div>
+    <div class="clouds"></div>
+    <div class="transport-header d-flex justify-content-between align-items-center">
+        <h1><i class="fas fa-bus me-2"></i>Transport Home</h1>
+        <a href="/login/logout"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+    </div>
+
+    <div class="container p-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card card-transport">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-bus"></i></div>
+                        <div class="card-title">City Bus</div>
+                        <p>Manage bus routes, timetables, and bookings</p>
+                        <a href="/transport/bus" class="btn btn-transport">Go to Bus Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-transport">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-train"></i></div>
+                        <div class="card-title">Train</div>
+                        <p>Manage train routes, timetables, and bookings</p>
+                        <a href="/transport/train" class="btn btn-transport">Go to Train Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-transport">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-train-subway"></i></div>
+                        <div class="card-title">Metro</div>
+                        <p>Manage metro routes, timetables, and bookings</p>
+                        <a href="/transport/metro" class="btn btn-transport">Go to Metro Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

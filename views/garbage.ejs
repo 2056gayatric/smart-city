@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garbage Complaint | Smart City</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #27ae60;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #27ae60);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Enhanced Garbage Animation */
+        .garbage-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .trash-bag {
+            position: absolute;
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            border-radius: 50% 50% 30% 30%;
+            animation: floatDown 6s infinite ease-in;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform-origin: center;
+        }
+
+        .trash-bag::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 25%;
+            width: 50%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .leaf {
+            position: absolute;
+            background: #27ae60;
+            border-radius: 50% 0 50% 0;
+            animation: leafFall 8s infinite linear;
+            opacity: 0.6;
+        }
+
+        .new-animation {
+            position: absolute;
+            animation: floatAround 15s infinite linear;
+            opacity: 0.7;
+        }
+
+        .bubble {
+            background: rgba(39, 174, 96, 0.3);
+            border-radius: 50%;
+            filter: blur(5px);
+        }
+
+        @keyframes floatDown {
+            0% {
+                transform: translateY(-100px) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes leafFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatAround {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, -50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, -100px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-100px, -50px) rotate(270deg);
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: logoGlow 3s infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            from {
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3),
+                             0 0 20px rgba(39, 174, 96, 0.2);
+            }
+            to {
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3),
+                             0 0 30px rgba(39, 174, 96, 0.4);
+            }
+        }
+
+        .logo i {
+            animation: trashShake 2s infinite ease-in-out;
+        }
+
+        @keyframes trashShake {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-5px) rotate(-10deg); 
+            }
+            75% { 
+                transform: translateY(-5px) rotate(10deg); 
+            }
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: cardFloat 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        /* Form Sections */
+        .form-section {
+            padding: 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            animation: titleSlide 0.5s ease;
+        }
+
+        @keyframes titleSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.2em;
+            animation: iconPulse 2s infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .category-card.active {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.2);
+        }
+
+        .category-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Quantity Cards */
+        .quantity-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quantity-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .quantity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .quantity-card.active {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+        }
+
+        .quantity-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Form Controls */
+        .form-control, .form-select, textarea {
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus, .form-select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 
+                0 0 0 3px rgba(39, 174, 96, 0.1),
+                0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Media Upload */
+        .upload-area {
+            border: 3px dashed #b2bec3;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(39, 174, 96, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #b2bec3;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .media-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 150px;
+        }
+
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .media-item:hover .remove-btn {
+            opacity: 1;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(39, 174, 96, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            animation: popIn 0.5s ease forwards;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes popIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: successPulse 2s infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Floating Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Required Field Indicator */
+        .required::after {
+            content: ' *';
+            color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quantity-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quantity-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .media-preview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Garbage Animation Background -->
+    <div class="garbage-animation" id="garbageAnimation"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-trash-alt"></i>
+            Garbage Complaint
+        </div>
+        <p class="subtitle">Report garbage issues in your area. Help keep our city clean.</p>
+    </div>
+
+    <!-- Main Form -->
+    <div class="form-container">
+        <div class="form-card">
+            <form id="garbageComplaintForm" enctype="multipart/form-data" method="post">
+                <!-- Hidden field for locationMethod (always "address") -->
+                <input type="hidden" name="locationMethod" value="address">
+
+                <!-- Location Details -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Location Details
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-road"></i>
+                                    Street Address
+                                </label>
+                                <input type="text" class="form-control" name="street" 
+                                       placeholder="Enter street address" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-city"></i>
+                                    City
+                                </label>
+                                <input type="text" class="form-control" name="city" 
+                                       placeholder="Enter city" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-map-pin"></i>
+                                    ZIP Code
+                                </label>
+                                <input type="text" class="form-control" name="zipCode" 
+                                       placeholder="Enter ZIP code" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-map-signs"></i>
+                                    Ward Number
+                                </label>
+                                <select class="form-select" name="ward" required>
+                                    <option value="">Select Ward</option>
+                                    <option>Ward 1</option>
+                                    <option>Ward 2</option>
+                                    <option>Ward 3</option>
+                                    <option>Ward 4</option>
+                                    <option>Ward 5</option>
+                                    <option>Ward 6</option>
+                                    <option>Ward 7</option>
+                                    <option>Ward 8</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-info-circle"></i>
+                            Additional Location Details
+                        </label>
+                        <textarea class="form-control" name="details" 
+                                  placeholder="Any additional details to help locate the garbage (e.g., near blue house, opposite park)" 
+                                  rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Garbage Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-trash"></i>
+                        Garbage Details
+                    </h3>
+
+                    <!-- Type of Garbage -->
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-list"></i>
+                            Type of Garbage
+                        </label>
+                        <div class="category-grid">
+                            <div class="category-card active" data-type="household" onclick="selectGarbageType(this, 'household')">
+                                <i class="fas fa-home category-icon" style="color: #3498db;"></i>
+                                <div class="category-name">Household Waste</div>
+                            </div>
+                            <div class="category-card" data-type="construction" onclick="selectGarbageType(this, 'construction')">
+                                <i class="fas fa-hard-hat category-icon" style="color: #e67e22;"></i>
+                                <div class="category-name">Construction Debris</div>
+                            </div>
+                            <div class="category-card" data-type="plastic" onclick="selectGarbageType(this, 'plastic')">
+                                <i class="fas fa-recycle category-icon" style="color: #9b59b6;"></i>
+                                <div class="category-name">Plastic/Dry Waste</div>
+                            </div>
+                            <div class="category-card" data-type="wet" onclick="selectGarbageType(this, 'wet')">
+                                <i class="fas fa-apple-alt category-icon" style="color: #e74c3c;"></i>
+                                <div class="category-name">Wet Waste</div>
+                            </div>
+                            <div class="category-card" data-type="overflowing" onclick="selectGarbageType(this, 'overflowing')">
+                                <i class="fas fa-trash-restore category-icon" style="color: #f39c12;"></i>
+                                <div class="category-name">Overflowing Dustbin</div>
+                            </div>
+                            <div class="category-card" data-type="other" onclick="selectGarbageType(this, 'other')">
+                                <i class="fas fa-ellipsis-h category-icon" style="color: #7f8c8d;"></i>
+                                <div class="category-name">Other Type</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="garbageType" id="garbageType" value="household">
+                        
+                        <div id="otherGarbageInput" class="other-input" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-edit"></i>
+                                Specify Other Garbage Type
+                            </label>
+                            <input type="text" class="form-control" name="otherGarbageDetail" 
+                                   placeholder="Please describe the garbage type">
+                        </div>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-weight"></i>
+                            Quantity
+                        </label>
+                        <div class="quantity-cards">
+                            <div class="quantity-card active" data-quantity="small" onclick="selectQuantity(this, 'small')">
+                                <i class="fas fa-dumpster" style="color: #2ecc71; font-size: 2rem; margin-bottom: 10px;"></i>
+                                <div class="category-name">Small Pile</div>
+                                <small class="text-muted">Less than 1 meter</small>
+                            </div>
+                            <div class="quantity-card" data-quantity="large" onclick="selectQuantity(this, 'large')">
+                                <i class="fas fa-dumpster-fire" style="color: #e74c3c; font-size: 2rem; margin-bottom: 10px;"></i>
+                                <div class="category-name">Large Heap</div>
+                                <small class="text-muted">More than 1 meter</small>
+                            </div>
+                            <div class="quantity-card" data-quantity="spread" onclick="selectQuantity(this, 'spread')">
+                                <i class="fas fa-road" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+                                <div class="category-name">Spread Across Road</div>
+                                <small class="text-muted">Covering road area</small>
+                            </div>
+                        </div>
+                        <input type="hidden" name="quantity" id="quantity" value="small">
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-clock"></i>
+                            Duration (Days)
+                        </label>
+                        <select class="form-select" name="duration" required>
+                            <option value="">Select Duration</option>
+                            <option value="1">1 Day</option>
+                            <option value="2">2 Days</option>
+                            <option value="3">3 Days</option>
+                            <option value="4">4 Days</option>
+                            <option value="5">5 Days</option>
+                            <option value="6">6 Days</option>
+                            <option value="7">1 Week</option>
+                            <option value="14">2 Weeks</option>
+                            <option value="30">1 Month</option>
+                            <option value="more">More than 1 Month</option>
+                        </select>
+                        <small class="form-text text-muted">Since how many days garbage is lying there?</small>
+                    </div>
+
+                    <!-- Issue Type -->
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Issue Type
+                        </label>
+                        <div class="category-grid">
+                            <div class="category-card active" data-issue="not_collected" onclick="selectIssueType(this, 'not_collected')">
+                                <i class="fas fa-truck-loading category-icon" style="color: #3498db;"></i>
+                                <div class="category-name">Garbage Not Collected</div>
+                            </div>
+                            <div class="category-card" data-issue="irregular" onclick="selectIssueType(this, 'irregular')">
+                                <i class="fas fa-calendar-times category-icon" style="color: #e67e22;"></i>
+                                <div class="category-name">Irregular Collection</div>
+                            </div>
+                            <div class="category-card" data-issue="illegal" onclick="selectIssueType(this, 'illegal')">
+                                <i class="fas fa-ban category-icon" style="color: #e74c3c;"></i>
+                                <div class="category-name">Illegal Dumping</div>
+                            </div>
+                            <div class="category-card" data-issue="smell" onclick="selectIssueType(this, 'smell')">
+                                <i class="fas fa-skull-crossbones category-icon" style="color: #8e44ad;"></i>
+                                <div class="category-name">Bad Smell/Health Risk</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="issueType" id="issueType" value="not_collected">
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-comment-alt"></i>
+                            Detailed Description
+                        </label>
+                        <textarea class="form-control" name="description" rows="3"
+                            placeholder="Please describe the garbage issue in detail..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- Media Upload Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-camera"></i>
+                        Photo/Video Evidence
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-calendar"></i>
+                                    Date Photo Taken
+                                </label>
+                                <input type="date" class="form-control" name="photoDate" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-clock"></i>
+                                    Time Photo Taken
+                                </label>
+                                <input type="time" class="form-control" name="photoTime" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Upload Photo/Video (Optional)
+                        </label>
+                        <div class="upload-area" onclick="document.getElementById('mediaInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h5>Click to Upload</h5>
+                            <p class="text-muted mb-0">Upload photos or videos of the garbage</p>
+                            <small class="text-muted">Maximum 5 files, 10MB each</small>
+                        </div>
+                        <input type="file" name="media" id="mediaInput" multiple accept="image/*,video/*" 
+                               class="d-none" onchange="handleMediaUpload(event)">
+                        
+                        <div id="mediaPreview" class="media-preview"></div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Contact Information
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-user"></i>
+                                    Your Name
+                                </label>
+                                <input type="text" class="form-control" name="fullName"
+                                    placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" class="form-control" name="phone" pattern="[0-9]{10}"
+                                    placeholder="Enter 10-digit mobile number" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email Address (Optional)
+                        </label>
+                        <input type="email" class="form-control" name="email"
+                            placeholder="Enter email address for updates">
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-section text-center">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Complaint
+                    </button>
+                    <p class="text-muted mt-3 mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        We'll resolve your complaint within 48 hours
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h4>Complaint Submitted!</h4>
+            <p>Your complaint ID: <strong id="complaintId"></strong></p>
+            <p class="text-muted mb-3">We'll clean the area within 48 hours</p>
+            <button class="btn btn-primary" onclick="resetForm()">
+                <i class="fas fa-redo me-2"></i>Submit Another
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle text-success"></i>
+        <span id="notificationText">Notification text</span>
+    </div>
+
+    <script>
+        // Global variables
+        let uploadedMedia = [];
+
+        // Create enhanced garbage animation
+        function createGarbageAnimation() {
+            const container = document.getElementById('garbageAnimation');
+            if (!container) return;
+            
+            // Clear existing animation
+            container.innerHTML = '';
+            
+            // Create trash bags
+            for (let i = 0; i < 15; i++) {
+                const bag = document.createElement('div');
+                bag.className = 'trash-bag';
+                
+                const size = Math.random() * 50 + 30;
+                bag.style.width = `${size}px`;
+                bag.style.height = `${size * 1.2}px`;
+                bag.style.left = `${Math.random() * 100}%`;
+                bag.style.animationDelay = `${Math.random() * 6}s`;
+                bag.style.animationDuration = `${Math.random() * 4 + 4}s`;
+                
+                container.appendChild(bag);
+            }
+            
+            // Create leaves
+            for (let i = 0; i < 10; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                
+                const size = Math.random() * 30 + 10;
+                leaf.style.width = `${size}px`;
+                leaf.style.height = `${size}px`;
+                leaf.style.left = `${Math.random() * 100}%`;
+                leaf.style.animationDelay = `${Math.random() * 8}s`;
+                leaf.style.animationDuration = `${Math.random() * 4 + 6}s`;
+                
+                container.appendChild(leaf);
+            }
+            
+            // Create floating bubbles
+            for (let i = 0; i < 8; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'new-animation bubble';
+                
+                const size = Math.random() * 100 + 50;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(bubble);
+            }
+        }
+
+        // FIXED: Garbage type selection
+        function selectGarbageType(cardEl, type) {
+            // Update hidden input
+            const garbageTypeInput = document.getElementById('garbageType');
+            if (garbageTypeInput) {
+                garbageTypeInput.value = type;
+            }
+            
+            // Remove active class from ALL category cards in the entire form
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            cardEl.classList.add('active');
+            
+            // Handle "other" type input
+            const otherInput = document.getElementById('otherGarbageInput');
+            const otherGarbage = document.querySelector('input[name="otherGarbageDetail"]');
+            if (type === 'other') {
+                if (otherInput) otherInput.style.display = 'block';
+                if (otherGarbage) otherGarbage.required = true;
+            } else {
+                if (otherInput) otherInput.style.display = 'none';
+                if (otherGarbage) otherGarbage.required = false;
+            }
+            
+            // Show feedback
+            showNotification(`Selected: ${type} garbage type`, 'success');
+        }
+
+        // FIXED: Quantity selection
+        function selectQuantity(cardEl, type) {
+            // Update hidden input
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput) {
+                quantityInput.value = type;
+            }
+            
+            // Remove active class from ALL quantity cards
+            document.querySelectorAll('.quantity-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            cardEl.classList.add('active');
+            
+            // Show feedback
+            showNotification(`Selected: ${type} quantity`, 'success');
+        }
+
+        // FIXED: Issue type selection
+        function selectIssueType(cardEl, type) {
+            // Update hidden input
+            const issueTypeInput = document.getElementById('issueType');
+            if (issueTypeInput) {
+                issueTypeInput.value = type;
+            }
+            
+            // Remove active class from ALL issue type cards
+            document.querySelectorAll('[data-issue]').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            cardEl.classList.add('active');
+            
+            // Show feedback
+            showNotification(`Selected: ${type} issue type`, 'success');
+        }
+
+        // Media upload functions
+        function handleMediaUpload(event) {
+            const files = Array.from(event.target.files);
+            
+            if (uploadedMedia.length + files.length > 5) {
+                showNotification('Maximum 5 files allowed!', 'error');
+                return;
+            }
+            
+            files.forEach(file => {
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification(`"${file.name}" is too large (max 10MB)`, 'error');
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+                    showNotification(`"${file.name}" is not an image or video file`, 'error');
+                    return;
+                }
+                
+                uploadedMedia.push(file);
+                displayMediaPreview(file);
+            });
+            
+            event.target.value = '';
+            showNotification(`Added ${files.length} file(s)`, 'success');
+        }
+
+        function displayMediaPreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('mediaPreview');
+                if (!preview) return;
+                
+                const mediaId = `media-${Date.now()}`;
+                
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.id = mediaId;
+                
+                if (file.type.startsWith('image/')) {
+                    mediaItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Photo">
+                        <button class="remove-btn" onclick="removeMedia('${mediaId}')">×</button>
+                    `;
+                } else {
+                    mediaItem.innerHTML = `
+                        <video src="${e.target.result}" controls></video>
+                        <button class="remove-btn" onclick="removeMedia('${mediaId}')">×</button>
+                    `;
+                }
+                
+                mediaItem.dataset.filename = file.name;
+                preview.appendChild(mediaItem);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeMedia(mediaId) {
+            const mediaItem = document.getElementById(mediaId);
+            if (!mediaItem) return;
+            
+            const filename = mediaItem.dataset.filename;
+            
+            uploadedMedia = uploadedMedia.filter(file => file.name !== filename);
+            mediaItem.remove();
+            showNotification('File removed', 'info');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            if (!notification || !text) return;
+            
+            // Set icon and color based on type
+            let icon = 'fa-info-circle';
+            let color = 'var(--primary)';
+            
+            switch(type) {
+                case 'success':
+                    icon = 'fa-check-circle';
+                    color = '#27ae60';
+                    break;
+                case 'error':
+                    icon = 'fa-exclamation-circle';
+                    color = '#e74c3c';
+                    break;
+                case 'warning':
+                    icon = 'fa-exclamation-triangle';
+                    color = '#f39c12';
+                    break;
+            }
+            
+            notification.innerHTML = `<i class="fas ${icon}" style="color: ${color}"></i><span>${message}</span>`;
+            notification.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Form submission
+        document.getElementById('garbageComplaintForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Basic validation
+            const requiredFields = [
+                { selector: 'input[name="fullName"]', message: 'Please enter your name' },
+                { selector: 'input[name="phone"]', message: 'Please enter phone number' },
+                { selector: 'textarea[name="description"]', message: 'Please enter description' },
+                { selector: 'select[name="duration"]', message: 'Please select duration' },
+                { selector: 'input[name="photoDate"]', message: 'Please select photo date' },
+                { selector: 'input[name="photoTime"]', message: 'Please select photo time' }
+            ];
+
+            for (const field of requiredFields) {
+                const element = document.querySelector(field.selector);
+                if (!element.value.trim()) {
+                    showNotification(field.message, 'error');
+                    element.focus();
+                    return;
+                }
+            }
+
+            // Phone validation
+            const phone = document.querySelector('input[name="phone"]').value;
+            if (!/^\d{10}$/.test(phone)) {
+                showNotification('Please enter valid 10-digit phone number!', 'error');
+                document.querySelector('input[name="phone"]').focus();
+                return;
+            }
+
+            // Address validation
+            const street = document.querySelector('input[name="street"]').value.trim();
+            const city = document.querySelector('input[name="city"]').value.trim();
+            const zipCode = document.querySelector('input[name="zipCode"]').value.trim();
+            const ward = document.querySelector('select[name="ward"]').value;
+
+            if (!street || !city || !zipCode || !ward) {
+                showNotification('Please fill all address fields correctly!', 'error');
+                return;
+            }
+
+            // Other garbage type validation if selected
+            const garbageType = document.getElementById('garbageType')?.value;
+            if (garbageType === 'other') {
+                const otherGarbage = document.querySelector('input[name="otherGarbageDetail"]')?.value.trim();
+                if (!otherGarbage) {
+                    showNotification('Please specify the garbage type', 'error');
+                    document.querySelector('input[name="otherGarbageDetail"]')?.focus();
+                    return;
+                }
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            // Prepare form data
+            const formData = new FormData();
+            
+            // Add address fields
+            formData.append('locationMethod', 'address');
+            formData.append('street', document.querySelector('input[name="street"]').value);
+            formData.append('city', document.querySelector('input[name="city"]').value);
+            formData.append('zipCode', document.querySelector('input[name="zipCode"]').value);
+            formData.append('ward', document.querySelector('select[name="ward"]').value);
+            const details = document.querySelector('textarea[name="details"]').value;
+            if (details) {
+                formData.append('details', details);
+            }
+            
+            // Add complaint details
+            formData.append('garbageType', document.getElementById('garbageType').value);
+            
+            // Handle "other" garbage type
+            if (document.getElementById('garbageType').value === 'other') {
+                const otherGarbage = document.querySelector('input[name="otherGarbageDetail"]').value;
+                if (otherGarbage) {
+                    const description = otherGarbage + ". " + document.querySelector('textarea[name="description"]').value;
+                    formData.append('description', description);
+                }
+            } else {
+                formData.append('description', document.querySelector('textarea[name="description"]').value);
+            }
+            
+            formData.append('photoDate', document.querySelector('input[name="photoDate"]').value);
+            formData.append('photoTime', document.querySelector('input[name="photoTime"]').value);
+            formData.append('duration', document.querySelector('select[name="duration"]').value);
+            formData.append('quantity', document.getElementById('quantity').value);
+            formData.append('issueType', document.getElementById('issueType').value);
+            
+            // Add contact information
+            formData.append('fullName', document.querySelector('input[name="fullName"]').value);
+            formData.append('phone', document.querySelector('input[name="phone"]').value);
+            const email = document.querySelector('input[name="email"]').value;
+            if (email) {
+                formData.append('email', email);
+            }
+            
+            // Add media files
+            if (uploadedMedia.length > 0) {
+                uploadedMedia.forEach((file) => {
+                    formData.append('media', file);
+                });
+            }
+            
+            // Add complaint ID
+            const complaintId = 'GC-' + Date.now().toString().slice(-8);
+            formData.append('complaintId', complaintId);
+
+            try {
+                console.log('Sending POST request to /citizen/complaints/garbage');
+                console.log('Form data:', Object.fromEntries(formData));
+                
+                // Send POST request
+                const response = await fetch('/citizen/complaints/garbage', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                
+                // Reset button state
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Form submitted successfully:', result);
+                    
+                    // Show success modal
+                    document.getElementById('complaintId').textContent = complaintId;
+                    document.getElementById('successModal').classList.add('show');
+                    
+                    // Show success notification
+                    showNotification('Complaint submitted successfully! Tracking ID: ' + complaintId, 'success');
+                    
+                    // Reset form after 5 seconds
+                    setTimeout(() => {
+                        resetForm();
+                        document.getElementById('successModal').classList.remove('show');
+                    }, 5000);
+                } else {
+                    const error = await response.text();
+                    console.error('Server error:', error);
+                    throw new Error(`Server error: ${response.status} - ${error}`);
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                
+                // Reset button state
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                
+                // Show error notification
+                showNotification('Failed to submit complaint. ' + error.message, 'error');
+            }
+        });
+
+        // Reset form
+        function resetForm() {
+            // Close success modal
+            const successModal = document.getElementById('successModal');
+            if (successModal) successModal.classList.remove('show');
+            
+            // Reset form
+            const form = document.getElementById('garbageComplaintForm');
+            form.reset();
+            
+            // Reset address section
+            document.querySelector('input[name="street"]').value = '';
+            document.querySelector('input[name="city"]').value = '';
+            document.querySelector('input[name="zipCode"]').value = '';
+            document.querySelector('select[name="ward"]').value = '';
+            document.querySelector('textarea[name="details"]').value = '';
+            
+            // Set household waste as active
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            const householdCard = document.querySelector('[data-type="household"]');
+            if (householdCard) {
+                householdCard.classList.add('active');
+                const garbageTypeInput = document.getElementById('garbageType');
+                if (garbageTypeInput) garbageTypeInput.value = 'household';
+            }
+            
+            // Reset quantity cards
+            document.querySelectorAll('.quantity-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            const smallQuantity = document.querySelector('[data-quantity="small"]');
+            if (smallQuantity) {
+                smallQuantity.classList.add('active');
+                const quantityInput = document.getElementById('quantity');
+                if (quantityInput) quantityInput.value = 'small';
+            }
+            
+            // Reset issue type cards
+            document.querySelectorAll('[data-issue]').forEach(card => {
+                card.classList.remove('active');
+            });
+            const notCollectedIssue = document.querySelector('[data-issue="not_collected"]');
+            if (notCollectedIssue) {
+                notCollectedIssue.classList.add('active');
+                const issueTypeInput = document.getElementById('issueType');
+                if (issueTypeInput) issueTypeInput.value = 'not_collected';
+            }
+            
+            // Clear media
+            uploadedMedia = [];
+            const mediaPreview = document.getElementById('mediaPreview');
+            if (mediaPreview) mediaPreview.innerHTML = '';
+            
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="photoDate"]').value = today;
+            
+            // Set current time
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                               now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('input[name="photoTime"]').value = currentTime;
+            
+            // Hide other garbage input
+            const otherInput = document.getElementById('otherGarbageInput');
+            if (otherInput) otherInput.style.display = 'none';
+            
+            showNotification('Form has been reset. Ready for new complaint.', 'info');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            createGarbageAnimation();
+            
+            // Set today's date and time
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="photoDate"]').value = today;
+            
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                              now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('input[name="photoTime"]').value = timeString;
+            
+            showNotification('Welcome! Please fill in the garbage complaint details.', 'info');
+        });
+    </script>
+</body>
+</html>

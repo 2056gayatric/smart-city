@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Finder - Discover Parks & Gardens Near You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2c1d 0%, #1e4620 30%, #2d7d32 70%, #4caf50 100%);
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientShift 15s ease infinite alternate;
+            background-attachment: fixed;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            animation: slideDown 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .header > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ffffff, #e8f5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9800, #4caf50, #2196f3);
+            border-radius: 3px;
+            animation: lineExpand 1s ease-out 0.5s both;
+        }
+        
+        @keyframes lineExpand {
+            from { width: 0; opacity: 0; }
+            to { width: 150px; opacity: 1; }
+        }
+        
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .park-finder-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 55px;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.2),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
+            margin-bottom: 60px;
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: cardFloat 0.8s ease-out 0.4s both;
+            transform-origin: top;
+        }
+        
+        @keyframes cardFloat {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .location-selector {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 45px;
+            flex-wrap: wrap;
+        }
+        
+        .location-option {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .location-option h3 {
+            margin-bottom: 22px;
+            color: #1a472a;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+        }
+        
+        select {
+            width: 100%;
+            padding: 22px;
+            border: 3px solid rgba(30, 70, 32, 0.1);
+            border-radius: 18px;
+            font-size: 1.3rem;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d7d32' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1.8rem center;
+            background-size: 1.3em;
+            font-weight: 600;
+            color: #1a472a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #2d7d32;
+            box-shadow: 0 0 0 4px rgba(45, 125, 50, 0.15),
+                        0 8px 30px rgba(45, 125, 50, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+            color: white;
+            border: none;
+            padding: 28px 55px;
+            border-radius: 20px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 45px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(255, 152, 0, 0.3);
+        }
+        
+        .search-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.8s;
+        }
+        
+        .search-button:hover::before {
+            left: 100%;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(255, 152, 0, 0.4);
+        }
+        
+        .search-button:active {
+            transform: translateY(-3px);
+        }
+        
+        .search-button .icon {
+            font-size: 2rem;
+            animation: searchPulse 2s infinite;
+        }
+        
+        @keyframes searchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        .selected-city-display {
+            background: linear-gradient(135deg, rgba(232, 245, 233, 0.9) 0%, rgba(200, 230, 201, 0.9) 100%);
+            padding: 35px;
+            border-radius: 22px;
+            margin-top: 30px;
+            border-left: 7px solid #2d7d32;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            animation: slideInFromLeft 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        
+        .selected-city-display.active {
+            display: block;
+        }
+        
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .selected-city-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9800, #2d7d32, #2196f3);
+            border-radius: 3px;
+        }
+        
+        .selected-city-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+        }
+        
+        .city-detail {
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        
+        .city-detail:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            border-color: rgba(45, 125, 50, 0.2);
+        }
+        
+        .city-label {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 600;
+        }
+        
+        .city-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a472a;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .filter-section {
+            margin: 45px 0;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+        
+        .filter-header {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a472a;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .filter-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9800, #2d7d32);
+            border-radius: 3px;
+            animation: lineExpand 0.8s ease-out 0.7s both;
+        }
+        
+        .park-type-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 45px;
+        }
+        
+        .park-type-card {
+            border: 3px solid rgba(30, 70, 32, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+        }
+        
+        .park-type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 30%, rgba(45, 125, 50, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .park-type-card:hover::before {
+            opacity: 1;
+        }
+        
+        .park-type-card:hover {
+            border-color: #2d7d32;
+            transform: translateY(-10px) scale(1.04);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .park-type-card.active {
+            border-color: #2d7d32;
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            color: white;
+            box-shadow: 0 20px 40px rgba(45, 125, 50, 0.3);
+            transform: translateY(-6px);
+        }
+        
+        .park-type-card.active::before {
+            background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 100%);
+            opacity: 1;
+        }
+        
+        .park-type-icon {
+            font-size: 4rem;
+            margin-bottom: 18px;
+            display: inline-block;
+            transition: transform 0.4s;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .park-type-card:hover .park-type-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+        
+        .park-type-name {
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .park-type-desc {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .features-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 22px;
+            margin: 35px 0;
+        }
+        
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        
+        .feature-checkbox:hover {
+            background: rgba(232, 245, 233, 0.9);
+            transform: translateY(-4px);
+            border-color: rgba(45, 125, 50, 0.2);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-checkbox input {
+            width: 26px;
+            height: 26px;
+            accent-color: #2d7d32;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .feature-checkbox input:checked {
+            transform: scale(1.2);
+        }
+        
+        .feature-label {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.15rem;
+        }
+        
+        .activity-filter {
+            display: flex;
+            gap: 18px;
+            margin: 35px 0;
+            padding: 28px;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 20px;
+            flex-wrap: wrap;
+            border: 2px solid rgba(30, 70, 32, 0.1);
+        }
+        
+        .activity-tag {
+            padding: 14px 28px;
+            border: 3px solid rgba(30, 70, 32, 0.1);
+            border-radius: 35px;
+            background: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.15rem;
+        }
+        
+        .activity-tag:hover {
+            border-color: #2d7d32;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(45, 125, 50, 0.2);
+        }
+        
+        .activity-tag.active {
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            color: white;
+            border-color: #2d7d32;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 125, 50, 0.3);
+        }
+        
+        .distance-filter {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin: 45px 0;
+            padding: 28px;
+            background: linear-gradient(135deg, rgba(247, 250, 252, 0.9) 0%, rgba(237, 242, 247, 0.9) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(30, 70, 32, 0.1);
+        }
+        
+        .distance-slider {
+            flex: 1;
+        }
+        
+        .distance-label {
+            font-weight: 800;
+            color: #1a472a;
+            min-width: 180px;
+            font-size: 1.3rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 14px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #2d7d32, #ff9800);
+            border-radius: 8px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            border: 5px solid #2d7d32;
+            transition: all 0.3s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        
+        .distance-value {
+            font-weight: 900;
+            color: #2d7d32;
+            min-width: 80px;
+            text-align: right;
+            font-size: 1.6rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .results-section {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 55px;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.2),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
+            margin-bottom: 60px;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: none;
+        }
+        
+        .results-section.active {
+            display: block;
+            animation: slideUp 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 45px;
+            padding-bottom: 28px;
+            border-bottom: 4px solid rgba(45, 125, 50, 0.15);
+            position: relative;
+        }
+        
+        .results-header::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9800, #2d7d32);
+            border-radius: 3px;
+        }
+        
+        .results-title {
+            font-size: 2.4rem;
+            color: #1a472a;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1a472a, #2d7d32);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .results-count {
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            box-shadow: 0 12px 35px rgba(45, 125, 50, 0.3);
+            animation: bounceIn 0.7s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0%, 20%, 40%, 60%, 80%, 100% {animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);}
+            0% {opacity: 0; transform: scale3d(.3, .3, .3);}
+            20% {transform: scale3d(1.2, 1.2, 1.2);}
+            40% {transform: scale3d(.95, .95, .95);}
+            60% {opacity: 1; transform: scale3d(1.05, 1.05, 1.05);}
+            80% {transform: scale3d(.98, .98, .98);}
+            100% {opacity: 1; transform: scale3d(1, 1, 1);}
+        }
+        
+        .parks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 40px;
+        }
+        
+        .park-card {
+            border: 3px solid rgba(30, 70, 32, 0.1);
+            border-radius: 22px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            position: relative;
+            animation: cardAppear 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(25px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        @keyframes cardAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .park-card:hover {
+            border-color: #2d7d32;
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 35px 70px rgba(0,0,0,0.25);
+        }
+        
+        .park-image {
+            height: 280px;
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .park-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.25), transparent);
+        }
+        
+        .park-type {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 28px;
+            border-radius: 35px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #2d7d32;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            animation: slideInRight 0.6s ease-out 0.2s both;
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-25px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .park-distance {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 35px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            backdrop-filter: blur(5px);
+            animation: slideInLeft 0.6s ease-out 0.2s both;
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(25px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .park-content {
+            padding: 35px;
+        }
+        
+        .park-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .park-name {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #1a472a;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .park-size {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #2d7d32;
+            background: rgba(232, 245, 233, 0.8);
+            padding: 12px 28px;
+            border-radius: 18px;
+            white-space: nowrap;
+            box-shadow: 0 6px 20px rgba(45, 125, 50, 0.2);
+        }
+        
+        .park-address {
+            color: #718096;
+            font-size: 1.15rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .park-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stars {
+            color: #ffb74d;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+        }
+        
+        .rating-value {
+            font-weight: 800;
+            color: #2d3748;
+            font-size: 1.4rem;
+        }
+        
+        .review-count {
+            color: #718096;
+            font-size: 1.15rem;
+        }
+        
+        .park-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 28px 0;
+        }
+        
+        .feature {
+            background: rgba(232, 245, 233, 0.8);
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-3px);
+            background: rgba(200, 230, 201, 0.9);
+        }
+        
+        .park-activities {
+            background: rgba(247, 250, 252, 0.8);
+            padding: 22px;
+            border-radius: 18px;
+            margin: 25px 0;
+            border-left: 6px solid #ff9800;
+        }
+        
+        .activities-title {
+            font-weight: 800;
+            color: #1a472a;
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+        
+        .activities-list {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        
+        .activity-item {
+            background: white;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            border: 2px solid rgba(30, 70, 32, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .activity-item:hover {
+            border-color: #2d7d32;
+            transform: translateY(-3px);
+        }
+        
+        .park-timing {
+            color: #718096;
+            font-size: 1.15rem;
+            margin: 18px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 12px;
+        }
+        
+        .park-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 28px;
+            border-top: 3px solid rgba(247, 250, 252, 0.8);
+        }
+        
+        .park-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-open {
+            color: #2d7d32;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-open::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background: #2d7d32;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-closed {
+            color: #f44336;
+            font-weight: 900;
+        }
+        
+        .visit-button {
+            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+        }
+        
+        .visit-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .visit-button:hover::before {
+            width: 250px;
+            height: 250px;
+        }
+        
+        .visit-button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 152, 0, 0.4);
+        }
+        
+        .map-container {
+            height: 550px;
+            background: rgba(232, 245, 233, 0.9);
+            border-radius: 22px;
+            margin-top: 45px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            font-weight: 800;
+            overflow: hidden;
+            position: relative;
+            border: 3px solid rgba(45, 125, 50, 0.15);
+        }
+        
+        .map-header {
+            width: 100%;
+            padding: 28px;
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            color: white;
+            text-align: center;
+            z-index: 2;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .map-placeholder {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tree-animation {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 35px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+            animation: treeWave 5s infinite linear;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 90px 45px;
+            color: #718096;
+            font-size: 1.5rem;
+            background: rgba(247, 250, 252, 0.9);
+            border-radius: 22px;
+            border: 3px dashed #cbd5e0;
+            animation: fadeIn 0.7s ease-out;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 90px;
+            color: #2d7d32;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .loading-spinner {
+            border: 6px solid rgba(243, 243, 243, 0.8);
+            border-top: 6px solid #2d7d32;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 30px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 65px;
+            left: 25px;
+            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 35px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            z-index: 2;
+            animation: bounce 2s infinite;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        
+        .dog-friendly {
+            position: absolute;
+            top: 65px;
+            right: 25px;
+            background: #795548;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            animation: slideInDown 0.6s ease-out 0.3s both;
+        }
+        
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .entry-fee {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            backdrop-filter: blur(5px);
+            animation: slideInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .entry-fee.free {
+            background: rgba(45, 125, 50, 0.9);
+            box-shadow: 0 6px 20px rgba(45, 125, 50, 0.3);
+        }
+        
+        .park-description {
+            color: #718096;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            padding: 18px;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 15px;
+            border-left: 5px solid #2d7d32;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .parks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .parks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 30px;
+            }
+            
+            .park-finder-card, .results-section {
+                padding: 40px;
+            }
+            
+            .header h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.3rem;
+            }
+            
+            .header p {
+                font-size: 1.2rem;
+            }
+            
+            .park-finder-card, .results-section {
+                padding: 24px;
+            }
+            
+            .parks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-filter {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .park-header {
+                flex-direction: column;
+                gap: 18px;
+            }
+            
+            .park-size {
+                align-self: flex-start;
+            }
+            
+            .distance-filter {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 18px;
+            }
+            
+            .distance-label, .distance-value {
+                text-align: center;
+                min-width: auto;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: 25px;
+                text-align: center;
+            }
+            
+            .results-header::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .search-button {
+                padding: 25px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .features-filter {
+                grid-template-columns: 1fr;
+            }
+            
+            .park-type-filter {
+                grid-template-columns: 1fr;
+            }
+            
+            .activity-filter {
+                padding: 20px;
+            }
+            
+            .activity-tag {
+                flex: 1;
+                min-width: 130px;
+                justify-content: center;
+            }
+            
+            .header {
+                padding: 20px 14px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 14px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 7px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #2d7d32 0%, #4caf50 100%);
+            border-radius: 7px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1e4620 0%, #2d7d32 100%);
+        }
+        
+        /* Selection Color */
+        ::selection {
+            background: rgba(45, 125, 50, 0.4);
+            color: #0c2c1d;
+        }
+        
+        /* Smooth transitions */
+        * {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌳 Park Finder - Discover Green Spaces</h1>
+            <p>Find parks, gardens, and recreational areas in major cities across India</p>
+        </div>
+        
+        <div class="park-finder-card">
+            <div class="location-selector">
+                <div class="location-option">
+                    <h3>🏙️ Select Your City</h3>
+                    <select id="citySelect">
+                        <option value="">-- Choose a City --</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="chennai">Chennai</option>
+                        <option value="hyderabad">Hyderabad</option>
+                        <option value="kolkata">Kolkata</option>
+                        <option value="pune">Pune</option>
+                        <option value="jaipur">Jaipur</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="selected-city-display" id="selectedCityDisplay">
+                <div class="selected-city-info">
+                    <div class="city-detail">
+                        <span class="city-label">Selected City</span>
+                        <span class="city-value" id="cityName">--</span>
+                    </div>
+                    <div class="city-detail">
+                        <span class="city-label">Total Parks</span>
+                        <span class="city-value" id="totalParks">0</span>
+                    </div>
+                    <div class="city-detail">
+                        <span class="city-label">Search Area</span>
+                        <span class="city-value" id="searchArea">5 km</span>
+                    </div>
+                    <div class="city-detail">
+                        <span class="city-label">Park Types</span>
+                        <span class="city-value" id="parkTypes">All</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-header">🌿 Select Park Type</div>
+                <div class="park-type-filter">
+                    <div class="park-type-card active" onclick="selectParkType('all')">
+                        <div class="park-type-icon">🌳</div>
+                        <div class="park-type-name">All Parks</div>
+                        <div class="park-type-desc">All green spaces</div>
+                    </div>
+                    <div class="park-type-card" onclick="selectParkType('city')">
+                        <div class="park-type-icon">🏙️</div>
+                        <div class="park-type-name">City Parks</div>
+                        <div class="park-type-desc">Urban green spaces</div>
+                    </div>
+                    <div class="park-type-card" onclick="selectParkType('national')">
+                        <div class="park-type-icon">🌲</div>
+                        <div class="park-type-name">National Parks</div>
+                        <div class="park-type-desc">Protected natural areas</div>
+                    </div>
+                    <div class="park-type-card" onclick="selectParkType('botanical')">
+                        <div class="park-type-icon">🌸</div>
+                        <div class="park-type-name">Botanical Gardens</div>
+                        <div class="park-type-desc">Plant collections</div>
+                    </div>
+                    <div class="park-type-card" onclick="selectParkType('theme')">
+                        <div class="park-type-icon">🎡</div>
+                        <div class="park-type-name">Theme Parks</div>
+                        <div class="park-type-desc">Amusement & entertainment</div>
+                    </div>
+                    <div class="park-type-card" onclick="selectParkType('wildlife')">
+                        <div class="park-type-icon">🦁</div>
+                        <div class="park-type-name">Wildlife Parks</div>
+                        <div class="park-type-desc">Animal habitats</div>
+                    </div>
+                </div>
+                
+                <div class="filter-header">🎯 Filter by Features</div>
+                <div class="features-filter">
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featurePlayground" checked>
+                        <span class="feature-label">🧒 Children's Play Area</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureWalking" checked>
+                        <span class="feature-label">🚶 Walking/Jogging Track</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureBenches">
+                        <span class="feature-label">🪑 Benches & Seating</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureParking">
+                        <span class="feature-label">🅿️ Parking Available</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureRestrooms">
+                        <span class="feature-label">🚻 Restrooms</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureFood">
+                        <span class="feature-label">🍴 Food Stalls/Café</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featurePets">
+                        <span class="feature-label">🐕 Pet Friendly</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureWiFi">
+                        <span class="feature-label">📶 Free WiFi</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureLighting">
+                        <span class="feature-label">💡 Evening Lighting</span>
+                    </label>
+                    <label class="feature-checkbox">
+                        <input type="checkbox" id="featureDisabled">
+                        <span class="feature-label">♿ Disability Access</span>
+                    </label>
+                </div>
+                
+                <div class="filter-header">🎯 Popular Activities</div>
+                <div class="activity-filter">
+                    <div class="activity-tag active" onclick="toggleActivity('all')">
+                        <span>🎯</span> All Activities
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('jogging')">
+                        <span>🏃</span> Jogging
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('cycling')">
+                        <span>🚴</span> Cycling
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('yoga')">
+                        <span>🧘</span> Yoga/Meditation
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('picnic')">
+                        <span>🧺</span> Picnicking
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('bird')">
+                        <span>🐦</span> Bird Watching
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('photography')">
+                        <span>📸</span> Photography
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('fishing')">
+                        <span>🎣</span> Fishing
+                    </div>
+                    <div class="activity-tag" onclick="toggleActivity('boating')">
+                        <span>🚣</span> Boating
+                    </div>
+                </div>
+                
+                <div class="distance-filter">
+                    <div class="distance-label">Search Radius:</div>
+                    <div class="distance-slider">
+                        <input type="range" id="distanceSlider" min="1" max="15" value="5" oninput="updateDistanceValue()">
+                    </div>
+                    <div class="distance-value" id="distanceValue">5 km</div>
+                </div>
+            </div>
+            
+            <button class="search-button" onclick="searchParks()">
+                <span class="icon">🔍</span>
+                Find Parks & Gardens
+            </button>
+        </div>
+        
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="results-title" id="resultsTitle">Parks & Gardens</div>
+                <div class="results-count" id="resultsCount">0 parks found</div>
+            </div>
+            
+            <div id="parksGrid" class="parks-grid">
+                <!-- Parks will be loaded here -->
+            </div>
+            
+            <div class="map-container">
+                <div class="map-header">🗺️ Park Locations Map</div>
+                <div class="map-placeholder">
+                    <div style="text-align: center; position: relative; z-index: 4;">
+                        <div style="font-size: 6rem; margin-bottom: 30px; animation: float 4s ease-in-out infinite;">🌳</div>
+                        <div style="font-size: 1.6rem; margin-bottom: 12px;">Interactive map showing park locations</div>
+                        <div style="font-size: 1.2rem; color: #718096;">Integrated with Google Maps API</div>
+                    </div>
+                    <div class="tree-animation"></div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                Finding parks and gardens in your selected city...
+            </div>
+            <div class="no-results" id="noResults" style="display: none;">
+                🚫 No parks found within your search criteria.
+                Try adjusting filters or selecting a different park type.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript remains exactly the same as your perfect version
+        // No changes needed here
+        const cityParks = {
+            mumbai: [
+                { id: 1, name: "Sanjay Gandhi National Park", type: "national", 
+                  lat: 19.2147, lng: 72.9106, address: "Borivali East, Mumbai", 
+                  size: "104 sq.km", rating: 4.7, distance: 3.2, reviews: 3456,
+                  features: ["playground", "walking", "benches", "parking", "restrooms", "food", "pets"],
+                  activities: ["jogging", "cycling", "picnic", "bird", "photography"],
+                  timing: "7:30 AM - 6:30 PM", status: "open", entryFee: 50,
+                  description: "Largest protected urban national park in the world, home to diverse flora and fauna",
+                  popular: true, dogFriendly: true },
+                { id: 2, name: "Joggers Park", type: "city", 
+                  lat: 19.1209, lng: 72.8312, address: "Juhu Tara Road, Mumbai", 
+                  size: "15 Acres", rating: 4.5, distance: 1.2, reviews: 1789,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "lighting", "disabled"],
+                  activities: ["jogging", "yoga", "photography"],
+                  timing: "5:00 AM - 10:00 PM", status: "open", entryFee: 0,
+                  description: "Popular jogging track with sea breeze and well-maintained pathways",
+                  popular: true, dogFriendly: true },
+                { id: 3, name: "Hanging Gardens", type: "botanical", 
+                  lat: 18.9564, lng: 72.8053, address: "Malabar Hill, Mumbai", 
+                  size: "8 Acres", rating: 4.3, distance: 2.5, reviews: 1234,
+                  features: ["benches", "parking", "restrooms", "food", "disabled"],
+                  activities: ["walking", "photography", "picnic"],
+                  timing: "5:00 AM - 9:00 PM", status: "open", entryFee: 0,
+                  description: "Terraced gardens with topiary work and panoramic views of Arabian Sea",
+                  popular: true, dogFriendly: false },
+                { id: 4, name: "Powai Garden", type: "city", 
+                  lat: 19.1224, lng: 72.9053, address: "Powai, Mumbai", 
+                  size: "10 Acres", rating: 4.2, distance: 3.8, reviews: 987,
+                  features: ["playground", "walking", "benches", "parking", "restrooms"],
+                  activities: ["jogging", "cycling", "yoga", "picnic"],
+                  timing: "6:00 AM - 8:00 PM", status: "open", entryFee: 0,
+                  description: "Scenic garden around Powai Lake with walking tracks and play areas",
+                  popular: false, dogFriendly: true },
+                { id: 5, name: "EsselWorld & Water Kingdom", type: "theme", 
+                  lat: 19.1334, lng: 72.8190, address: "Gorai, Mumbai", 
+                  size: "64 Acres", rating: 4.6, distance: 8.5, reviews: 4567,
+                  features: ["playground", "parking", "restrooms", "food", "disabled"],
+                  activities: ["picnic", "photography"],
+                  timing: "10:00 AM - 6:00 PM", status: "open", entryFee: 1200,
+                  description: "India's largest theme water park with thrilling rides and attractions",
+                  popular: true, dogFriendly: false }
+            ],
+            delhi: [
+                { id: 6, name: "Lodhi Garden", type: "city", 
+                  lat: 28.5925, lng: 77.2243, address: "Lodhi Road, Delhi", 
+                  size: "90 Acres", rating: 4.6, distance: 1.5, reviews: 2345,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "disabled"],
+                  activities: ["jogging", "yoga", "picnic", "bird", "photography"],
+                  timing: "6:00 AM - 8:00 PM", status: "open", entryFee: 0,
+                  description: "Historic garden with 15th century tombs and lush greenery",
+                  popular: true, dogFriendly: true },
+                { id: 7, name: "Garden of Five Senses", type: "botanical", 
+                  lat: 28.5504, lng: 77.2149, address: "Said-ul-Ajaib, Delhi", 
+                  size: "20 Acres", rating: 4.4, distance: 2.8, reviews: 1567,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "disabled"],
+                  activities: ["walking", "photography", "picnic"],
+                  timing: "9:00 AM - 6:00 PM", status: "open", entryFee: 35,
+                  description: "Theme park designed to stimulate the five senses with unique installations",
+                  popular: true, dogFriendly: false },
+                { id: 8, name: "Deer Park", type: "wildlife", 
+                  lat: 28.5355, lng: 77.2155, address: "Hauz Khas, Delhi", 
+                  size: "60 Acres", rating: 4.3, distance: 2.1, reviews: 1234,
+                  features: ["walking", "benches", "parking", "restrooms"],
+                  activities: ["jogging", "picnic", "bird", "photography"],
+                  timing: "5:00 AM - 7:00 PM", status: "open", entryFee: 0,
+                  description: "Natural habitat for spotted deer with walking trails and ancient monuments",
+                  popular: false, dogFriendly: true }
+            ],
+            bangalore: [
+                { id: 9, name: "Lalbagh Botanical Garden", type: "botanical", 
+                  lat: 12.9507, lng: 77.5848, address: "Lalbagh, Bangalore", 
+                  size: "240 Acres", rating: 4.8, distance: 1.2, reviews: 3456,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "disabled"],
+                  activities: ["walking", "photography", "bird", "picnic"],
+                  timing: "6:00 AM - 7:00 PM", status: "open", entryFee: 25,
+                  description: "Historic botanical garden with rare plant species and glass house",
+                  popular: true, dogFriendly: false },
+                { id: 10, name: "Cubbon Park", type: "city", 
+                  lat: 12.9767, lng: 77.5928, address: "Sampangi Rama Nagar, Bangalore", 
+                  size: "300 Acres", rating: 4.7, distance: 0.8, reviews: 2789,
+                  features: ["playground", "walking", "benches", "parking", "restrooms", "food", "wifi", "disabled"],
+                  activities: ["jogging", "cycling", "yoga", "picnic", "photography"],
+                  timing: "6:00 AM - 8:00 PM", status: "open", entryFee: 0,
+                  description: "Green lung of Bangalore with walking paths, museums, and play areas",
+                  popular: true, dogFriendly: true },
+                { id: 11, name: "Bannerghatta National Park", type: "national", 
+                  lat: 12.8000, lng: 77.5775, address: "Bannerghatta, Bangalore", 
+                  size: "260 sq.km", rating: 4.5, distance: 12.5, reviews: 1987,
+                  features: ["walking", "parking", "restrooms", "food"],
+                  activities: ["walking", "photography", "picnic"],
+                  timing: "9:30 AM - 5:00 PM", status: "open", entryFee: 80,
+                  description: "Biological reserve with zoo, safari, and butterfly park",
+                  popular: true, dogFriendly: false }
+            ],
+            chennai: [
+                { id: 12, name: "Guindy National Park", type: "national", 
+                  lat: 13.0067, lng: 80.2206, address: "Guindy, Chennai", 
+                  size: "2.7 sq.km", rating: 4.4, distance: 2.3, reviews: 1456,
+                  features: ["walking", "parking", "restrooms"],
+                  activities: ["jogging", "bird", "photography"],
+                  timing: "9:00 AM - 5:30 PM", status: "open", entryFee: 30,
+                  description: "Only national park within city limits with diverse wildlife",
+                  popular: true, dogFriendly: false },
+                { id: 13, name: "Semmozhi Poonga", type: "botanical", 
+                  lat: 13.0528, lng: 80.2539, address: "Thyagaraya Nagar, Chennai", 
+                  size: "20 Acres", rating: 4.3, distance: 1.8, reviews: 987,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "disabled"],
+                  activities: ["walking", "photography", "picnic"],
+                  timing: "10:00 AM - 8:00 PM", status: "open", entryFee: 10,
+                  description: "Thematic garden with medicinal plants and water features",
+                  popular: false, dogFriendly: false }
+            ],
+            hyderabad: [
+                { id: 14, name: "KBR National Park", type: "national", 
+                  lat: 17.4333, lng: 78.4072, address: "Jubilee Hills, Hyderabad", 
+                  size: "390 Acres", rating: 4.6, distance: 2.1, reviews: 1678,
+                  features: ["walking", "parking", "restrooms"],
+                  activities: ["jogging", "bird", "photography"],
+                  timing: "5:30 AM - 10:00 AM, 4:00 PM - 7:00 PM", status: "open", entryFee: 20,
+                  description: "Urban national park with rich biodiversity and walking trails",
+                  popular: true, dogFriendly: false },
+                { id: 15, name: "Lumbini Park", type: "city", 
+                  lat: 17.4239, lng: 78.4738, address: "Tank Bund, Hyderabad", 
+                  size: "7.5 Acres", rating: 4.2, distance: 1.5, reviews: 1234,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "lighting"],
+                  activities: ["walking", "boating", "photography"],
+                  timing: "9:00 AM - 9:00 PM", status: "open", entryFee: 20,
+                  description: "Beautifully landscaped park with musical fountain and boat rides",
+                  popular: true, dogFriendly: false }
+            ],
+            kolkata: [
+                { id: 16, name: "Maidan", type: "city", 
+                  lat: 22.5626, lng: 88.3430, address: "Esplanade, Kolkata", 
+                  size: "400 Acres", rating: 4.5, distance: 1.2, reviews: 1890,
+                  features: ["walking", "benches", "restrooms", "food"],
+                  activities: ["jogging", "cycling", "yoga", "picnic", "photography"],
+                  timing: "Open 24 hours", status: "open", entryFee: 0,
+                  description: "Largest urban park in Kolkata, often called the lungs of the city",
+                  popular: true, dogFriendly: true },
+                { id: 17, name: "Indian Botanic Garden", type: "botanical", 
+                  lat: 22.5589, lng: 88.2892, address: "Shibpur, Howrah", 
+                  size: "273 Acres", rating: 4.7, distance: 4.5, reviews: 1456,
+                  features: ["walking", "benches", "parking", "restrooms", "food"],
+                  activities: ["walking", "photography", "bird", "picnic"],
+                  timing: "10:00 AM - 5:00 PM", status: "open", entryFee: 10,
+                  description: "Oldest botanical garden in India with 250-year-old banyan tree",
+                  popular: true, dogFriendly: false }
+            ],
+            pune: [
+                { id: 18, name: "Empress Garden", type: "botanical", 
+                  lat: 18.5314, lng: 73.8446, address: "Shivaji Nagar, Pune", 
+                  size: "39 Acres", rating: 4.4, distance: 1.8, reviews: 1234,
+                  features: ["walking", "benches", "parking", "restrooms", "food"],
+                  activities: ["walking", "photography", "picnic"],
+                  timing: "9:30 AM - 6:30 PM", status: "open", entryFee: 15,
+                  description: "Victorian-era botanical garden with rare plant species",
+                  popular: true, dogFriendly: false },
+                { id: 19, name: "Peshwe Park", type: "theme", 
+                  lat: 18.5082, lng: 73.8268, address: "Shivaji Nagar, Pune", 
+                  size: "7 Acres", rating: 4.1, distance: 2.3, reviews: 987,
+                  features: ["playground", "walking", "benches", "parking", "restrooms", "food"],
+                  activities: ["walking", "picnic"],
+                  timing: "9:00 AM - 8:00 PM", status: "open", entryFee: 10,
+                  description: "Zoo and amusement park combined with green spaces",
+                  popular: false, dogFriendly: false }
+            ],
+            jaipur: [
+                { id: 20, name: "Central Park", type: "city", 
+                  lat: 26.9124, lng: 75.7873, address: "Jawaharlal Nehru Marg, Jaipur", 
+                  size: "291 Acres", rating: 4.5, distance: 2.1, reviews: 1345,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "lighting"],
+                  activities: ["jogging", "cycling", "yoga", "picnic", "photography"],
+                  timing: "5:00 AM - 9:00 PM", status: "open", entryFee: 0,
+                  description: "Largest park in Jaipur with musical fountain and walking tracks",
+                  popular: true, dogFriendly: true },
+                { id: 21, name: "Jawahar Circle Garden", type: "city", 
+                  lat: 26.8287, lng: 75.8036, address: "Mansarovar, Jaipur", 
+                  size: "60 Acres", rating: 4.3, distance: 3.5, reviews: 876,
+                  features: ["walking", "benches", "parking", "restrooms", "food", "wifi"],
+                  activities: ["jogging", "walking", "photography"],
+                  timing: "6:00 AM - 10:00 PM", status: "open", entryFee: 0,
+                  description: "Circular garden with jogging track and musical fountain",
+                  popular: false, dogFriendly: true }
+            ]
+        };
+
+        const parkTypeInfo = {
+            city: { icon: "🏙️", name: "City Park", desc: "Urban green spaces" },
+            national: { icon: "🌲", name: "National Park", desc: "Protected natural areas" },
+            botanical: { icon: "🌸", name: "Botanical Garden", desc: "Plant collections" },
+            theme: { icon: "🎡", name: "Theme Park", desc: "Amusement & entertainment" },
+            wildlife: { icon: "🦁", name: "Wildlife Park", desc: "Animal habitats" }
+        };
+
+        const featureIcons = {
+            playground: "🧒",
+            walking: "🚶",
+            benches: "🪑",
+            parking: "🅿️",
+            restrooms: "🚻",
+            food: "🍴",
+            pets: "🐕",
+            wifi: "📶",
+            lighting: "💡",
+            disabled: "♿"
+        };
+
+        const activityIcons = {
+            jogging: "🏃",
+            cycling: "🚴",
+            yoga: "🧘",
+            picnic: "🧺",
+            bird: "🐦",
+            photography: "📸",
+            fishing: "🎣",
+            boating: "🚣"
+        };
+
+        let selectedCity = null;
+        let selectedParkType = 'all';
+        let searchRadius = 5;
+        let selectedActivities = ['all'];
+
+        function updateDistanceValue() {
+            searchRadius = document.getElementById('distanceSlider').value;
+            document.getElementById('distanceValue').textContent = `${searchRadius} km`;
+            document.getElementById('searchArea').textContent = `${searchRadius} km`;
+        }
+
+        document.getElementById('citySelect').addEventListener('change', function(e) {
+            selectedCity = e.target.value;
+            
+            if (selectedCity) {
+                const cityDisplay = document.getElementById('selectedCityDisplay');
+                const cityName = document.getElementById('citySelect').selectedOptions[0].text;
+                const cityParksCount = cityParks[selectedCity] ? cityParks[selectedCity].length : 0;
+                
+                document.getElementById('cityName').textContent = cityName;
+                document.getElementById('totalParks').textContent = cityParksCount;
+                document.getElementById('searchArea').textContent = `${searchRadius} km`;
+                document.getElementById('parkTypes').textContent = selectedParkType === 'all' ? 'All Types' : parkTypeInfo[selectedParkType].name;
+                
+                cityDisplay.classList.add('active');
+            } else {
+                document.getElementById('selectedCityDisplay').classList.remove('active');
+            }
+        });
+
+        function selectParkType(type) {
+            selectedParkType = type;
+            
+            document.querySelectorAll('.park-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            if (selectedCity) {
+                document.getElementById('parkTypes').textContent = type === 'all' ? 'All Types' : parkTypeInfo[type].name;
+            }
+            
+            if (document.getElementById('resultsSection').classList.contains('active')) {
+                searchParks();
+            }
+        }
+
+        function toggleActivity(activity) {
+            if (activity === 'all') {
+                selectedActivities = ['all'];
+                document.querySelectorAll('.activity-tag').forEach(tag => {
+                    tag.classList.remove('active');
+                });
+                event.currentTarget.classList.add('active');
+            } else {
+                selectedActivities = selectedActivities.filter(a => a !== 'all');
+                
+                const index = selectedActivities.indexOf(activity);
+                if (index === -1) {
+                    selectedActivities.push(activity);
+                    event.currentTarget.classList.add('active');
+                } else {
+                    selectedActivities.splice(index, 1);
+                    event.currentTarget.classList.remove('active');
+                }
+                
+                if (selectedActivities.length === 0) {
+                    selectedActivities = ['all'];
+                    document.querySelector('.activity-tag').classList.add('active');
+                }
+            }
+            
+            if (document.getElementById('resultsSection').classList.contains('active')) {
+                searchParks();
+            }
+        }
+
+        function getSelectedFeatures() {
+            const features = [];
+            const checkboxes = [
+                'featurePlayground', 'featureWalking', 'featureBenches', 'featureParking',
+                'featureRestrooms', 'featureFood', 'featurePets', 'featureWiFi',
+                'featureLighting', 'featureDisabled'
+            ];
+            
+            checkboxes.forEach(id => {
+                if (document.getElementById(id).checked) {
+                    features.push(id.replace('feature', '').toLowerCase());
+                }
+            });
+            
+            return features;
+        }
+
+        function searchParks() {
+            if (!selectedCity) {
+                alert('Please select a city first.');
+                return;
+            }
+            
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('parksGrid').innerHTML = '';
+            
+            let parks = [];
+            if (selectedCity && cityParks[selectedCity]) {
+                parks = [...cityParks[selectedCity]];
+            }
+            
+            setTimeout(() => {
+                displayParks(parks);
+            }, 800);
+        }
+
+        function displayParks(parks) {
+            const parksGrid = document.getElementById('parksGrid');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('noResults');
+            
+            loading.style.display = 'none';
+            parksGrid.innerHTML = '';
+            
+            const filteredParks = parks.filter(park => park.distance <= searchRadius);
+            
+            let typeFiltered = filteredParks;
+            if (selectedParkType !== 'all') {
+                typeFiltered = filteredParks.filter(park => park.type === selectedParkType);
+            }
+            
+            const selectedFeatures = getSelectedFeatures();
+            let featureFiltered = typeFiltered;
+            
+            if (selectedFeatures.length > 0) {
+                featureFiltered = typeFiltered.filter(park => {
+                    return selectedFeatures.every(feature => park.features.includes(feature));
+                });
+            }
+            
+            let activityFiltered = featureFiltered;
+            if (!selectedActivities.includes('all') && selectedActivities.length > 0) {
+                activityFiltered = featureFiltered.filter(park => {
+                    return selectedActivities.some(activity => park.activities.includes(activity));
+                });
+            }
+            
+            if (activityFiltered.length === 0) {
+                noResults.style.display = 'block';
+                document.getElementById('resultsCount').textContent = '0 parks found';
+                return;
+            }
+            
+            document.getElementById('resultsCount').textContent = `${activityFiltered.length} parks found`;
+            
+            activityFiltered.sort((a, b) => a.distance - b.distance);
+            
+            activityFiltered.forEach((park, index) => {
+                const parkCard = createParkCard(park);
+                parkCard.style.animationDelay = `${index * 0.1}s`;
+                parksGrid.appendChild(parkCard);
+            });
+            
+            const parkTypeName = selectedParkType === 'all' ? 'Parks & Gardens' : parkTypeInfo[selectedParkType].name;
+            const cityName = document.getElementById('citySelect').selectedOptions[0].text;
+            document.getElementById('resultsTitle').textContent = `${cityName} - ${parkTypeName}`;
+        }
+
+        function createParkCard(park) {
+            const card = document.createElement('div');
+            card.className = 'park-card';
+            
+            const featuresHtml = park.features.map(feature => {
+                const icon = featureIcons[feature] || '✅';
+                const label = feature.charAt(0).toUpperCase() + feature.slice(1);
+                return `<span class="feature">${icon} ${label}</span>`;
+            }).join('');
+            
+            const activitiesHtml = park.activities.map(activity => {
+                const icon = activityIcons[activity] || '✅';
+                const label = activity.charAt(0).toUpperCase() + activity.slice(1);
+                return `<span class="activity-item">${icon} ${label}</span>`;
+            }).join('');
+            
+            card.innerHTML = `
+                <div class="park-image">
+                    ${park.popular ? '<div class="popular-badge">⭐ Popular</div>' : ''}
+                    ${park.dogFriendly ? '<div class="dog-friendly">🐕 Dog Friendly</div>' : ''}
+                    <div class="entry-fee ${park.entryFee === 0 ? 'free' : ''}">${park.entryFee === 0 ? 'Free Entry' : `Entry: ₹${park.entryFee}`}</div>
+                    <div class="park-type">${parkTypeInfo[park.type].icon} ${park.type.toUpperCase()}</div>
+                    <div class="park-distance">${park.distance.toFixed(1)} km</div>
+                </div>
+                <div class="park-content">
+                    <div class="park-header">
+                        <div>
+                            <div class="park-name">${park.name}</div>
+                            <div class="park-address">📍 ${park.address}</div>
+                        </div>
+                        <div class="park-size">${park.size}</div>
+                    </div>
+                    
+                    <div class="park-rating">
+                        <span class="stars">${'★'.repeat(Math.floor(park.rating))}${'☆'.repeat(5 - Math.floor(park.rating))}</span>
+                        <span class="rating-value">${park.rating}</span>
+                        <span class="review-count">(${park.reviews} reviews)</span>
+                    </div>
+                    
+                    <div class="park-description">
+                        ${park.description}
+                    </div>
+                    
+                    <div class="park-features">
+                        ${featuresHtml}
+                    </div>
+                    
+                    <div class="park-activities">
+                        <div class="activities-title">🏃 Popular Activities:</div>
+                        <div class="activities-list">
+                            ${activitiesHtml}
+                        </div>
+                    </div>
+                    
+                    <div class="park-timing">
+                        🕒 Open: ${park.timing}
+                    </div>
+                    
+                    <div class="park-footer">
+                        <div class="park-status">
+                            <span class="${park.status === 'open' ? 'status-open' : 'status-closed'}">
+                                ● ${park.status === 'open' ? 'Open Now' : 'Closed'}
+                            </span>
+                        </div>
+                        <button class="visit-button" onclick="visitPark(${park.id})">
+                            <span>📍</span> Get Directions
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function visitPark(parkId) {
+            let park;
+            for (const city in cityParks) {
+                const found = cityParks[city].find(p => p.id === parkId);
+                if (found) {
+                    park = found;
+                    break;
+                }
+            }
+            
+            if (park) {
+                alert(`📍 Getting Directions to:\n\n` +
+                      `${park.name}\n` +
+                      `Type: ${parkTypeInfo[park.type].name}\n` +
+                      `Size: ${park.size}\n` +
+                      `Entry Fee: ${park.entryFee === 0 ? 'Free' : `₹${park.entryFee}`}\n` +
+                      `Address: ${park.address}\n` +
+                      `Rating: ${park.rating} ⭐\n` +
+                      `Timing: ${park.timing}\n\n` +
+                      `Opening directions in maps...`);
+            }
+        }
+
+        updateDistanceValue();
+    </script>
+</body>
+</html>

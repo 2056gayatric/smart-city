@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Management | CityZen Transport</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --off-white: #f8f8f6;
+            --off-white-card: #fafaf8;
+            --off-white-border: #e8e8e4;
+            --text-dark: #333;
+            --text-muted: #666;
+            
+            /* Beautiful winter sky colors */
+            --winter-sky-1: #e6f0fa;
+            --winter-sky-2: #d4e4f5;
+            --winter-sky-3: #c2d8f0;
+            --winter-sky-4: #b0cceb;
+            --snow-white: #ffffff;
+            --ice-blue: #d9e9fa;
+            --frost-blue: #c9e0f0;
+            --winter-gray: #a0b8cc;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e6f0fa 0%, #d4e4f5 35%, #c2d8f0 70%, #b0cceb 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            background-size: 200% 200%;
+            animation: winterFlow 18s ease infinite;
+        }
+
+        @keyframes winterFlow {
+            0% { background-position: 0% 0%; }
+            25% { background-position: 25% 50%; }
+            50% { background-position: 50% 100%; }
+            75% { background-position: 75% 50%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Snowflakes effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 10px 20px, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(3px 3px at 30px 70px, rgba(255, 255, 255, 0.4) 100%, transparent),
+                radial-gradient(2px 2px at 50px 150px, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(4px 4px at 90px 40px, rgba(255, 255, 255, 0.3) 100%, transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255, 255, 255, 0.4) 100%, transparent),
+                radial-gradient(3px 3px at 180px 120px, rgba(255, 255, 255, 0.5) 100%, transparent),
+                radial-gradient(2px 2px at 220px 190px, rgba(255, 255, 255, 0.3) 100%, transparent),
+                radial-gradient(4px 4px at 260px 50px, rgba(255, 255, 255, 0.4) 100%, transparent),
+                radial-gradient(3px 3px at 300px 220px, rgba(255, 255, 255, 0.5) 100%, transparent);
+            background-repeat: repeat;
+            background-size: 350px 350px;
+            animation: snowfall 25s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        @keyframes snowfall {
+            0% { transform: translateY(-350px) rotate(0deg); opacity: 0.4; }
+            100% { transform: translateY(0) rotate(10deg); opacity: 0.6; }
+        }
+
+        .dash-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(200, 220, 240, 0.5);
+            box-shadow: 0 4px 20px rgba(176, 204, 235, 0.2);
+            animation: headerSlide 0.8s ease-out;
+        }
+
+        @keyframes headerSlide {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .dash-header a {
+            color: #4a6b8f;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dash-header a:hover {
+            color: #2c3e50;
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(5px);
+        }
+
+        .dash-header strong {
+            color: #2c5282;
+            text-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
+            animation: frostGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes frostGlow {
+            0%, 100% { text-shadow: 0 2px 5px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 4px 12px rgba(200, 230, 255, 0.8); }
+        }
+
+        .card-gray {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(176, 204, 235, 0.2);
+            animation: cardFloat 0.9s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        .card-gray:hover {
+            box-shadow: 0 15px 40px rgba(176, 204, 235, 0.3);
+            transform: translateY(-5px);
+        }
+
+        @keyframes cardFloat {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-gray h5 {
+            color: #2c5282;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card-gray h5::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #a0b8cc, #b0cceb);
+            animation: lineGrow 0.8s ease-out forwards;
+        }
+
+        @keyframes lineGrow {
+            0% { width: 0; opacity: 0; }
+            100% { width: 40px; opacity: 1; }
+        }
+
+        .table-gray {
+            color: #2d3e50;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .table-gray thead {
+            background: rgba(176, 204, 235, 0.3);
+            color: #2c5282;
+            border-radius: 15px;
+        }
+
+        .table-gray thead th {
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .table-gray thead th:first-child {
+            border-radius: 15px 0 0 15px;
+        }
+
+        .table-gray thead th:last-child {
+            border-radius: 0 15px 15px 0;
+        }
+
+        .table-gray tbody tr {
+            border-color: rgba(200, 220, 240, 0.3);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            animation: rowSlide 0.5s ease-out forwards;
+            opacity: 0;
+            border-radius: 12px;
+        }
+
+        .table-gray tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .table-gray tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        .table-gray tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        .table-gray tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        .table-gray tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes rowSlide {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .table-gray tbody tr:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(176, 204, 235, 0.2);
+        }
+
+        .table-gray td {
+            border: none;
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .table-gray td:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .table-gray td:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .table-gray input,
+        .table-gray select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4e4f5;
+            border-radius: 10px;
+            color: #2d3e50;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .table-gray input:focus,
+        .table-gray select:focus {
+            border-color: #b0cceb;
+            box-shadow: 0 0 0 3px rgba(176, 204, 235, 0.2);
+            outline: none;
+            transform: scale(1.02);
+            background: white;
+        }
+
+        .table-gray input:hover,
+        .table-gray select:hover {
+            border-color: #a0b8cc;
+            background: white;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #7cb9e8, #4a90e2);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #8ac0f0, #5a9fe8);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-del {
+            background: linear-gradient(135deg, #f5a3a3, #e07c7c);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(224, 124, 124, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-del::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-del:hover {
+            background: linear-gradient(135deg, #f8b5b5, #e58c8c);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(224, 124, 124, 0.3);
+        }
+
+        .btn-del:hover::before {
+            left: 100%;
+        }
+
+        /* Loading animation */
+        .text-muted {
+            animation: snowPulse 2s ease-in-out infinite;
+            color: #4a6b8f !important;
+        }
+
+        @keyframes snowPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Container animation */
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e6f0fa;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #b0cceb, #a0b8cc);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #a0b8cc, #8aa5c0);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .dash-header {
+                padding: 1rem;
+            }
+            
+            .card-gray {
+                padding: 1rem !important;
+            }
+            
+            .btn-save, .btn-del {
+                padding: 0.4rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dash-header d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/transport"><i class="fas fa-arrow-left me-2"></i>Back</a>
+            <span class="mx-3 text-muted">|</span>
+            <strong><i class="fas fa-bus me-2"></i>Bus Management Dashboard</strong>
+        </div>
+        <a href="/login/logout"><i class="fas fa-sign-out-alt"></i></a>
+    </div>
+
+    <div class="container mt-4">
+        <div class="card card-gray p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Bus Timetable</h5>
+                <button class="btn btn-save" id="btnAdd"><i class="fas fa-plus me-1"></i>Create Bus Route</button>
+            </div>
+
+            <table class="table table-gray table-bordered">
+                <thead>
+                    <tr>
+                        <th>Route No</th>
+                        <th>Vehicle Count</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="routesBody">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API = '/transport/api/bus/routes';
+        async function load() {
+            try {
+                const r = await fetch(API, { credentials: 'include' });
+                const d = await r.json();
+                const routes = d.routes || [];
+                const tbody = document.getElementById('routesBody');
+                if (routes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No routes. Click "Create Bus Route" to add.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = routes.map(r => `
+                    <tr data-id="${r._id}">
+                        <td><input class="form-control form-control-sm routeNo" value="${r.routeNo || ''}"></td>
+                        <td><input type="number" class="form-control form-control-sm vehicleCount" value="${r.vehicleCount ?? ''}"></td>
+                        <td><input type="time" class="form-control form-control-sm departure" value="${r.departure || ''}"></td>
+                        <td><input type="time" class="form-control form-control-sm arrival" value="${r.arrival || ''}"></td>
+                        <td>
+                            <button class="btn btn-save btn-sm me-1 btnUpdate">Save</button>
+                            <button class="btn btn-del btn-sm btnDelete">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+                bindRowEvents();
+            } catch (e) {
+                document.getElementById('routesBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>';
+            }
+        }
+        function bindRowEvents() {
+            document.querySelectorAll('.btnUpdate').forEach(btn => {
+                btn.onclick = async () => {
+                    const row = btn.closest('tr');
+                    const id = row.dataset.id;
+                    const payload = {
+                        routeNo: row.querySelector('.routeNo').value,
+                        vehicleCount: parseInt(row.querySelector('.vehicleCount').value) || 0,
+                        departure: row.querySelector('.departure').value,
+                        arrival: row.querySelector('.arrival').value
+                    };
+                    const r = await fetch(API + '/' + id, { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (r.ok) load();
+                };
+            });
+            document.querySelectorAll('.btnDelete').forEach(btn => {
+                btn.onclick = async () => {
+                    if (!confirm('Delete this route?')) return;
+                    const id = btn.closest('tr').dataset.id;
+                    const r = await fetch(API + '/' + id, { method: 'DELETE', credentials: 'include' });
+                    if (r.ok) load();
+                };
+            });
+        }
+        document.getElementById('btnAdd').onclick = async () => {
+            const routeNo = prompt('Route No (e.g. Bus-101):');
+            if (!routeNo) return;
+            const payload = { routeNo, vehicleCount: 0, departure: '', arrival: '' };
+            const r = await fetch(API, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (r.ok) load();
+        };
+        load();
+    </script>
+</body>
+
+</html>

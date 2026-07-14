@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services - Police Assistance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header with Satya Meva Jayate emblem */
+        .header {
+            position: relative;
+            background: linear-gradient(rgba(0, 30, 80, 0.85), rgba(0, 20, 60, 0.9)),
+                url('https://images.unsplash.com/photo-1590253852985-b66750b5a610?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 350px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            overflow: hidden;
+            animation: fadeIn 1.2s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 30, 80, 0.2);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="8" fill="rgba(255,255,255,0.03)" text-anchor="middle" dominant-baseline="middle">सत्यमेव जयते</text></svg>');
+            background-size: 200px;
+            opacity: 0.1;
+        }
+
+        .emblem {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            animation: emblemAppear 1.5s ease-out;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffcc00;
+        }
+
+        .emblem i {
+            font-size: 4rem;
+            color: #003366;
+            animation: emblemPulse 2s infinite;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            animation: slideDown 1s ease-out 0.5s both;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .header .motto {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.8s both;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 1s both;
+            padding: 0 20px;
+        }
+
+        /* Emergency Contacts */
+        .contacts-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 30, 80, 0.1);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            border-top: 5px solid #003366;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            color: #003366;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: #e74c3c;
+            border-radius: 2px;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .contact-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .contact-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .contact-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #003366, #3498db);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 30, 80, 0.15);
+        }
+
+        .contact-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .contact-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #003366;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .contact-desc {
+            color: #5a6c7d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Emergency Section */
+        .emergency-section {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 30, 80, 0.1);
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            border-top: 5px solid #e74c3c;
+        }
+
+        .emergency-title {
+            font-family: 'Montserrat', sans-serif;
+            color: #003366;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            font-weight: 700;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .emergency-instruction {
+            color: #5a6c7d;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        /* Emergency Form */
+        .emergency-form {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: left;
+            animation: fadeInUp 0.8s ease-out;
+            border-left: 5px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #003366;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #a0aec0;
+        }
+
+        /* Emergency Button inside form */
+        .emergency-button {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 25px 60px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 30px 0 10px;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .emergency-button:not(:disabled) {
+            animation: buttonPulse 2s infinite;
+        }
+
+        .emergency-button:disabled {
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .emergency-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .emergency-button:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .emergency-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .emergency-button:active:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        /* Location Info */
+        .location-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+            display: none;
+            animation: slideInUp 0.8s ease-out;
+            border-left: 5px solid #3498db;
+        }
+
+        .location-info.show {
+            display: block;
+        }
+
+        .location-title {
+            font-family: 'Montserrat', sans-serif;
+            color: #003366;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .location-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .location-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .location-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .location-label {
+            font-size: 0.95rem;
+            color: #5a6c7d;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .location-value {
+            font-weight: 600;
+            color: #003366;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 30px;
+            color: #5a6c7d;
+            font-size: 0.95rem;
+            margin-top: 60px;
+            border-top: 1px solid #e9ecef;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .footer-logo {
+            color: #003366;
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes emblemAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-180deg);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.1) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        @keyframes emblemPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes buttonPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 10px 40px rgba(231, 76, 60, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        /* Loading */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .loader.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(52, 152, 219, 0.2);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(to right, #d5edda, #c3e6cb);
+            color: #155724;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: none;
+            animation: slideInUp 0.8s ease-out;
+            border-left: 5px solid #28a745;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: linear-gradient(to right, #f8d7da, #f5c6cb);
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-left: 4px solid #dc3545;
+            text-align: center;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .emblem {
+                width: 100px;
+                height: 100px;
+            }
+
+            .emblem i {
+                font-size: 3.5rem;
+            }
+
+            .emergency-button {
+                padding: 20px 40px;
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                height: 300px;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .motto {
+                font-size: 1.2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .emergency-button {
+                padding: 18px 30px;
+                font-size: 1.4rem;
+            }
+
+            .contacts-section,
+            .emergency-section {
+                padding: 30px 25px;
+            }
+
+            .emergency-form {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .emblem {
+                width: 80px;
+                height: 80px;
+            }
+
+            .emblem i {
+                font-size: 2.8rem;
+            }
+
+            .emergency-button {
+                padding: 15px 20px;
+                font-size: 1.2rem;
+            }
+
+            .location-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header with Satya Meva Jayate -->
+        <div class="header">
+            <div class="emblem">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>POLICE EMERGENCY SERVICES</h1>
+            <div class="motto">सत्यमेव जयते</div>
+            <p>24/7 Immediate Police Assistance. Your safety and security is our highest priority.</p>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="contacts-section">
+            <h2 class="section-title">Emergency Contact Numbers</h2>
+            <div class="contacts-grid">
+                <div class="contact-card">
+                    <div class="contact-number">112</div>
+                    <div class="contact-desc">National Emergency Number</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-number">100</div>
+                    <div class="contact-desc">Police Emergency</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-number">181</div>
+                    <div class="contact-desc">Women Helpline</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-number">1098</div>
+                    <div class="contact-desc">Child Helpline</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Section -->
+        <div class="emergency-section">
+            <h2 class="emergency-title">Immediate Police Assistance</h2>
+            <p class="emergency-instruction">
+                Enter your emergency location details below and click the emergency button. Police authorities will be
+                immediately notified of your emergency at the specified location.
+            </p>
+
+            <!-- Emergency Form -->
+            <form class="emergency-form" id="emergencyForm" method="post" action="/citizen/emergency/police">
+                <h3 class="location-title" style="margin-bottom: 30px;">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Emergency Location Details
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="address">Full Address *</label>
+                    <textarea class="form-input" id="address" name="address" rows="4" 
+                        placeholder="Enter complete address including street, area, landmarks, etc." 
+                        required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="city">City/Town *</label>
+                    <input type="text" class="form-input" id="city" name="city" 
+                        placeholder="Enter your city or town" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="landmark">Nearest Landmark (Optional)</label>
+                    <input type="text" class="form-input" id="landmark" name="landmark" 
+                        placeholder="e.g., Near Central Mall, Opposite Police Station">
+                </div>
+
+                <!-- Error Message -->
+                <div id="formError" class="error-message"></div>
+
+                <!-- Emergency Button -->
+                <button type="submit" class="emergency-button" id="emergencyBtn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    EMERGENCY ALERT
+                </button>
+            </form>
+
+            <!-- Loading -->
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p style="color: #003366; font-weight: 500;">Sending emergency alert to police authorities...</p>
+            </div>
+
+            <!-- Location Info -->
+            <div class="location-info" id="locationInfo">
+                <h3 class="location-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Emergency Details Submitted
+                </h3>
+                <div class="location-details">
+                    <div class="location-item">
+                        <div class="location-label">Address</div>
+                        <div class="location-value" id="addressDisplay">--</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">City/Town</div>
+                        <div class="location-value" id="cityDisplay">--</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">Alert ID</div>
+                        <div class="location-value" id="alertId">--</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">Status</div>
+                        <div class="location-value" id="status">Processing...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <h3 style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle"></i>
+                    Emergency Alert Sent Successfully!
+                </h3>
+                <p style="margin-bottom: 15px;">Police authorities have been notified of your emergency. Help is on the
+                    way to your location.</p>
+                <div class="location-details">
+                    <div class="location-item">
+                        <div class="location-label">Response Time</div>
+                        <div class="location-value" id="responseTime">--</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">Nearest Police Station</div>
+                        <div class="location-value" id="policeStation">Contacting...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">POLICE EMERGENCY SERVICES</div>
+            <p>सत्यमेव जयते - Truth Alone Triumphs</p>
+            <p>24/7 Emergency Response System | Your Safety is Our Priority</p>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: #6c757d;">
+                <i class="fas fa-info-circle"></i> Provide accurate address details for faster emergency response.
+                Your data is protected and used only for emergency response purposes.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

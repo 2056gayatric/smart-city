@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Appointment · Judicial System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Roboto, Georgia, 'Times New Roman', serif;
+        }
+
+        body {
+            background: #f2f0eb;
+            background-image: radial-gradient(circle at 10% 30%, rgba(200, 180, 140, 0.08) 0%, transparent 30%),
+                              linear-gradient(145deg, #ece8e0 0%, #dad6cd 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        /* main card – like a formal dossier */
+        .court-dossier {
+            max-width: 980px;
+            width: 100%;
+            background: #fefcf5;          /* warm off-white, archival paper */
+            border-radius: 28px;
+            box-shadow: 0 30px 50px -20px rgba(40, 35, 25, 0.45),
+                        0 8px 0 0 #b59d7e inset,
+                        0 -2px 0 0 #e1d6c4 inset;  /* subtle gilt edge */
+            border: 1px solid #cfbda4;
+            transition: all 0.2s;
+        }
+
+        /* header with judicial drape */
+        .header-roll {
+            background: #1e3c4f;           /* deep teal-ink, authoritative */
+            background: linear-gradient(155deg, #173e4f 0%, #22536a 100%);
+            color: white;
+            padding: 2rem 2.5rem 1.6rem;
+            border-top-left-radius: 27px;
+            border-top-right-radius: 27px;
+            border-bottom: 6px solid #dbbf8c;
+            box-shadow: 0 6px 12px rgba(0,20,10,0.1);
+            position: relative;
+        }
+
+        .header-roll h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            font-family: 'Cormorant Garamond', 'Georgia', serif;
+            text-transform: uppercase;
+            word-spacing: 6px;
+            text-shadow: 3px 3px 0 #0f2a36;
+        }
+
+        .header-roll .seal {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .header-roll .seal span {
+            font-size: 1.2rem;
+            background: rgba(255,250,230,0.15);
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            border-left: 4px solid #e6c27a;
+            font-weight: 400;
+            color: #f6efd9;
+        }
+
+        .header-roll .seal em {
+            font-style: normal;
+            font-size: 1rem;
+            color: #dfd2b6;
+            padding-right: 0.5rem;
+        }
+
+        /* form area – structured with gentle dividers */
+        .form-panel {
+            padding: 2.5rem 2.8rem 2.8rem;
+            background: #fefcf5;
+            border-bottom-left-radius: 28px;
+            border-bottom-right-radius: 28px;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 500;
+            color: #2b4b5e;
+            border-left: 8px solid #c5a156;
+            padding-left: 1.3rem;
+            margin-bottom: 2rem;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.3px;
+        }
+
+        .field-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .field-group {
+            flex: 1 1 240px;
+            min-width: 220px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #3f4a53;
+            margin-bottom: 6px;
+        }
+
+        .required-asterisk label::after {
+            content: " *";
+            color: #b13e3e;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: #ffffff;
+            border: 1.5px solid #dad1c0;
+            border-radius: 18px;
+            font-size: 1rem;
+            color: #1d2b36;
+            transition: 0.15s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #8f7a5c;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(170, 145, 105, 0.2);
+        }
+
+        /* id card area – clean with subtle background */
+        .id-vault {
+            background: #f2ede2;
+            border-radius: 24px;
+            padding: 2rem 2rem 1rem;
+            margin: 1.8rem 0 1.2rem;
+            border: 1px solid #d8cdb8;
+            box-shadow: inset 0 0 0 1px #fffcf5, 0 8px 14px -10px #a28d71;
+        }
+
+        .id-vault .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+        }
+
+        .id-vault .field-group {
+            flex: 1 1 200px;
+        }
+
+        /* radio / checkbox groups – elegant */
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .option-chip {
+            display: flex;
+            align-items: center;
+            background: #f3efe7;
+            padding: 0.5rem 1.4rem 0.5rem 1rem;
+            border-radius: 36px;
+            border: 1.5px solid #d9cebc;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+
+        .option-chip:hover {
+            background: #e8dfd1;
+            border-color: #b09674;
+        }
+
+        .option-chip input[type="radio"],
+        .option-chip input[type="checkbox"] {
+            width: 1.3rem;
+            height: 1.3rem;
+            margin-right: 0.7rem;
+            accent-color: #2f5f74;
+            box-shadow: none;
+        }
+
+        /* time slots – like judicial session selectors */
+        .session-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+
+        .session-btn {
+            position: relative;
+            flex: 1 1 140px;
+        }
+
+        .session-btn input[type="radio"] {
+            display: none;
+        }
+
+        .session-btn label {
+            display: block;
+            background: white;
+            border: 2px solid #d3c6b2;
+            border-radius: 40px;
+            padding: 1rem 0.2rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2e4a5b;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px #e2d9cb;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        .session-btn label span {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #6b6257;
+            margin-top: 5px;
+        }
+
+        .session-btn input[type="radio"]:checked + label {
+            background: #22536a;
+            border-color: #ad8f62;
+            color: white;
+            box-shadow: 0 12px 18px -8px #305f6e;
+            transform: scale(1.02);
+        }
+
+        .session-btn input[type="radio"]:checked + label span {
+            color: #f3e3c9;
+        }
+
+        /* two-column for small groups */
+        .double-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.8rem;
+        }
+
+        /* submit button — gavel style */
+        .submit-gavel {
+            background: #2b5e6b;
+            background: linear-gradient(135deg, #235b6b 0%, #1d4357 100%);
+            border: none;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 600;
+            padding: 1.2rem 1.8rem;
+            border-radius: 60px;
+            width: 100%;
+            max-width: 380px;
+            margin: 2.5rem auto 1rem;
+            display: block;
+            cursor: pointer;
+            box-shadow: 0 25px 25px -18px #102b33, 0 3px 0 0 #bdaa86 inset;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 2px;
+            transition: 0.15s;
+            border: 1px solid #f5e7cf;
+        }
+
+        .submit-gavel:hover {
+            background: #1d4f60;
+            background: linear-gradient(135deg, #1c5668 0%, #11343f 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 32px 28px -18px #14323b;
+        }
+
+        .submit-gavel:active {
+            transform: translateY(2px);
+            box-shadow: 0 12px 20px -12px #1f404b;
+        }
+
+        .footnote {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #716b5f;
+            margin-top: 2rem;
+            border-top: 1px dashed #cbbca5;
+            padding-top: 1.8rem;
+        }
+
+        .footer-seal {
+            background: #1f3c45;
+            color: #ede5d4;
+            padding: 1.6rem;
+            text-align: center;
+            border-radius: 0 0 28px 28px;
+            font-size: 0.95rem;
+            border-top: 4px solid #ab946e;
+        }
+
+        .footer-seal p:first-child {
+            font-weight: 500;
+            color: #f0e1c6;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #cfbda4;
+            margin: 1.5rem 0;
+        }
+
+        /* mobile fine-tune */
+        @media (max-width: 680px) {
+            .form-panel { padding: 1.8rem; }
+            .header-roll h1 { font-size: 1.7rem; }
+            .session-btn { flex-basis: 100%; }
+            .option-chip { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="court-dossier">
+    <div class="header-roll">
+        <h1>⚖️ JUDICIAL APPOINTMENT</h1>
+        <div class="seal">
+            <span>COURT OF RECORD · Form J-23</span>
+            <em>authorised by district judiciary</em>
+        </div>
+    </div>
+
+    <div class="form-panel">
+        <div class="section-title">Appointment request · official record</div>
+
+        <form id="appointmentForm" action="/citizen/appointments/court" method="POST">
+            <!-- full name & dob row -->
+            <div class="double-col">
+                <div class="field-group required-asterisk">
+                    <label for="fullName">Full name (legal)</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="As per official ID" required>
+                </div>
+                <div class="field-group required-asterisk">
+                    <label for="dob">Date of birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+            </div>
+
+            <!-- gender & id type (radio elegant) -->
+            <div class="double-col" style="margin-bottom: 0.5rem;">
+                <div class="field-group required-asterisk">
+                    <label>Gender</label>
+                    <div class="options-grid">
+                        <label class="option-chip">
+                            <input type="radio" name="gender" value="male" required> Male
+                        </label>
+                        <label class="option-chip">
+                            <input type="radio" name="gender" value="female"> Female
+                        </label>
+                        <label class="option-chip">
+                            <input type="radio" name="gender" value="other"> Other
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field-group required-asterisk">
+                    <label>ID type</label>
+                    <div class="options-grid">
+                        <label class="option-chip">
+                            <input type="radio" name="idType" value="aadhaar" required> Aadhaar
+                        </label>
+                        <label class="option-chip">
+                            <input type="radio" name="idType" value="pan"> PAN
+                        </label>
+                        <label class="option-chip">
+                            <input type="radio" name="idType" value="passport"> Passport
+                        </label>
+                        <label class="option-chip">
+                            <input type="radio" name="idType" value="other"> Other
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ID vault: numbers -->
+            <div class="id-vault">
+                <div class="flex-row">
+                    <div class="field-group">
+                        <label for="aadhaarNumber">Aadhaar number</label>
+                        <input type="text" id="aadhaarNumber" name="aadhaarNumber" placeholder="12-digit">
+                    </div>
+                    <div class="field-group">
+                        <label for="panNumber">PAN</label>
+                        <input type="text" id="panNumber" name="panNumber" placeholder="e.g. ABCDE1234F">
+                    </div>
+                </div>
+                <div class="flex-row" style="margin-top: 1rem;">
+                    <div class="field-group">
+                        <label for="passportNumber">Passport</label>
+                        <input type="text" id="passportNumber" name="passportNumber" placeholder="passport number">
+                    </div>
+                    <div class="field-group">
+                        <label for="otherIdNumber">Other ID detail</label>
+                        <input type="text" id="otherIdNumber" name="otherIdNumber" placeholder="describe / number">
+                    </div>
+                </div>
+            </div>
+
+            <!-- mobile, email, address -->
+            <div class="double-col">
+                <div class="field-group required-asterisk">
+                    <label for="mobile">Mobile</label>
+                    <input type="text" id="mobile" name="mobile" placeholder="10-digit" required>
+                </div>
+                <div class="field-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com">
+                </div>
+            </div>
+
+            <div class="field-group required-asterisk">
+                <label for="address">Full address</label>
+                <textarea id="address" name="address" rows="3" placeholder="Street, city, PIN …" required></textarea>
+            </div>
+
+            <!-- case type & purpose (checkbox chips) -->
+            <div class="double-col">
+                <div class="field-group">
+                    <label>Case type</label>
+                    <div class="options-grid">
+                        <label class="option-chip">
+                            <input type="checkbox" name="caseTypes" value="civil"> Civil
+                        </label>
+                        <label class="option-chip">
+                            <input type="checkbox" name="caseTypes" value="criminal"> Criminal
+                        </label>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Purpose</label>
+                    <div class="options-grid">
+                        <label class="option-chip">
+                            <input type="checkbox" name="purpose" value="hearing"> Hearing
+                        </label>
+                        <label class="option-chip">
+                            <input type="checkbox" name="purpose" value="fileNew"> File new
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- appointment date & time slot (custom) -->
+            <div class="double-col" style="margin-top: 1.8rem;">
+                <div class="field-group required-asterisk">
+                    <label for="appointmentDate">Appointment date</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                </div>
+
+                <div class="field-group required-asterisk">
+                    <label>Time slot</label>
+                    <div class="session-grid">
+                        <!-- each slot uses hidden radio + styled label -->
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="9-10" id="slot9" required>
+                            <label for="slot9">9–10 AM <span>morning</span></label>
+                        </div>
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="10-11" id="slot10">
+                            <label for="slot10">10–11 AM <span>morning</span></label>
+                        </div>
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="11-12" id="slot11">
+                            <label for="slot11">11–12 PM <span>late morning</span></label>
+                        </div>
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="2-3" id="slot14">
+                            <label for="slot14">2–3 PM <span>afternoon</span></label>
+                        </div>
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="3-4" id="slot15">
+                            <label for="slot15">3–4 PM <span>afternoon</span></label>
+                        </div>
+                        <div class="session-btn">
+                            <input type="radio" name="timeSlot" value="4-5" id="slot16">
+                            <label for="slot16">4–5 PM <span>late</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- asterisk note & submit -->
+            <p style="margin: 1.2rem 0 -0.5rem; color: #a6553a; font-size: 0.9rem; font-style: italic;">* required fields</p>
+            <button type="submit" class="submit-gavel">✍️ confirm appointment</button>
+        </form>
+
+        <div class="footnote">
+            <p>All information is protected under judicial confidentiality rules.</p>
+        </div>
+    </div>
+
+    <div class="footer-seal">
+        <p>© COURT APPOINTMENT SYSTEM · VERIFICATION PENDING ADMINISTRATIVE REVIEW</p>
+        <p style="opacity: 0.8; font-size: 0.8rem; margin-top: 0.5rem;">Official Secrets Act · digital submission equivalent to affadavit</p>
+    </div>
+</div>
+
+<!-- tiny script to keep "selected" visual for time slot + alert if missing -->
+<script>
+    (function() {
+        // mark default if any pre-checked (none by default)
+        const form = document.getElementById('appointmentForm');
+
+        // optional: keep radio highlight consistent (already using :checked+label in css)
+        // but we want to ensure that if someone clicks label it's enough – it's native.
+        // additional guard for submission (time slot)
+        form.addEventListener('submit', function(e) {
+            const timeSlotChecked = document.querySelector('input[name="timeSlot"]:checked');
+            if (!timeSlotChecked) {
+                e.preventDefault();
+                alert('Please select a time slot for your court appointment.');
+                return false;
+            }
+            // optional: you could also check mobile pattern etc, but design only.
+        });
+
+        // optional: small interaction to visually hint chosen id type (already fine)
+        // no extra code needed thanks to :checked styling.
+    })();
+</script>
+
+<!-- elegant font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+</body>
+</html>

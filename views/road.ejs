@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Complaint | Smart City</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e67e22;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --dark: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Animation */
+        .road-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .road-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            border-radius: 50%;
+            animation: float 4s infinite ease-in-out;
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) scale(1.3); opacity: 0.6; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            animation: bounce 2s infinite;
+            color: #f1c40f;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Form */
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Issue Cards */
+        .issue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .issue-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .issue-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .issue-card.active {
+            background: rgba(230, 126, 34, 0.1);
+            border-color: var(--primary);
+        }
+
+        .issue-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Selection Cards (for both security and area) */
+        .selection-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .selection-card {
+            flex: 1;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .selection-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .selection-card.active {
+            transform: translateY(-5px);
+            background-color: #e0e7de;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Security level specific colors */
+        .security-minor {
+            border-color: #27ae60;
+        }
+
+        .security-moderate {
+            border-color: #f39c12;
+        }
+
+        .security-dangerous {
+            border-color: #e74c3c;
+        }
+
+        /* Area specific colors */
+        .area-small {
+            border-color: #27ae60;
+        }
+
+        .area-large {
+            border-color: #e74c3c;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #e9ecef;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .success-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: popIn 0.4s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+
+        /* Media Preview */
+        .media-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .media-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .issue-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .selection-container {
+                flex-direction: column;
+            }
+            
+            .form-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .issue-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animation Container -->
+    <div class="road-animation" id="roadAnimation"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-road"></i>
+            Road Complaint Portal
+        </div>
+        <p class="subtitle">Report road issues. Help make our roads safer.</p>
+    </div>
+
+    <!-- Main Form -->
+    <div class="form-container">
+        <div class="form-card">
+            <form id="roadComplaintForm" enctype="multipart/form-data" method="POST" action="/citizen/complaints/roads">
+                <!-- Location Details -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Location Details
+                    </h3>
+
+                    <!-- Basic Address -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Enter Address Details *</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Road/Street Name *</label>
+                                <input type="text" class="form-control" name="roadName" required 
+                                       placeholder="Enter road/street name" id="roadName">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Area/Locality *</label>
+                                <input type="text" class="form-control" name="area" required 
+                                       placeholder="Enter locality/area" id="area">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Ward/Zone *</label>
+                                <select class="form-select" name="ward" required id="ward">
+                                    <option value="">Select Ward/Zone</option>
+                                    <option>Ward 1</option>
+                                    <option>Ward 2</option>
+                                    <option>Ward 3</option>
+                                    <option>Ward 4</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">City *</label>
+                                <input type="text" class="form-control" name="city" value="Mumbai" required id="city">
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Pincode *</label>
+                                <input type="text" class="form-control" name="pincode" pattern="[0-9]{6}" required 
+                                       placeholder="6-digit pincode" id="pincode">
+                            </div>
+                        </div>
+                        
+                        <!-- Landmark Input (Optional) -->
+                        <div class="mb-3">
+                            <label class="form-label">Nearest Landmark (Optional)</label>
+                            <input type="text" class="form-control" name="landmark" 
+                                   placeholder="e.g., Near Main Market, Opposite School etc.">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Road Issue Details -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Road Issue Details
+                    </h3>
+
+                    <!-- Issue Type -->
+                    <div class="mb-4">
+                        <label class="form-label">Type of Road Issue *</label>
+                        <div class="issue-grid">
+                            <div class="issue-card active" onclick="selectIssue('potholes', this)">
+                                <i class="fas fa-crutch issue-icon"></i>
+                                <div>Potholes</div>
+                            </div>
+                            
+                            <div class="issue-card" onclick="selectIssue('damaged_road', this)">
+                                <i class="fas fa-road issue-icon"></i>
+                                <div>Damaged Road</div>
+                            </div>
+                            
+                            <div class="issue-card" onclick="selectIssue('waterlogging', this)">
+                                <i class="fas fa-water issue-icon"></i>
+                                <div>Waterlogging</div>
+                            </div>
+                            
+                            <div class="issue-card" onclick="selectIssue('uneven_surface', this)">
+                                <i class="fas fa-mountain issue-icon"></i>
+                                <div>Uneven Surface</div>
+                            </div>
+                            
+                            <div class="issue-card" onclick="selectIssue('open_manhole', this)">
+                                <i class="fas fa-person-falling issue-icon"></i>
+                                <div>Open Manhole</div>
+                            </div>
+                            
+                            <div class="issue-card" onclick="selectIssue('road_dug', this)">
+                                <i class="fas fa-dig issue-icon"></i>
+                                <div>Road Dug Up</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="issueType" id="issueType" value="potholes">
+                    </div>
+
+                    <!-- Security Level & Area -->
+                    <div class="row mb-4">
+                        <!-- Security Level -->
+                        <div class="col-md-6">
+                            <label class="form-label">Security Level *</label>
+                            <div class="selection-container" id="securityLevelContainer">
+                                <div class="selection-card security-minor" onclick="selectSecurity('minor', this)">
+                                    <i class="fas fa-check-circle" style="color:#27ae60;"></i>
+                                    <div>Minor</div>
+                                </div>
+                                
+                                <div class="selection-card security-moderate active" onclick="selectSecurity('moderate', this)">
+                                    <i class="fas fa-exclamation-triangle" style="color:#f39c12;"></i>
+                                    <div>Moderate</div>
+                                </div>
+                                
+                                <div class="selection-card security-dangerous" onclick="selectSecurity('dangerous', this)">
+                                    <i class="fas fa-skull-crossbones" style="color:#e74c3c;"></i>
+                                    <div>Dangerous</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="securityLevel" id="securityLevel" value="moderate">
+                        </div>
+                        
+                        <!-- Affected Area -->
+                        <div class="col-md-6">
+                            <label class="form-label">Affected Area *</label>
+                            <div class="selection-container" id="affectedAreaContainer">
+                                <div class="selection-card area-small active" onclick="selectAffectedArea('small', this)">
+                                    <i class="fas fa-square" style="color:#27ae60;"></i>
+                                    <div>Small Patch</div>
+                                </div>
+                                
+                                <div class="selection-card area-large" onclick="selectAffectedArea('large', this)">
+                                    <i class="fas fa-road" style="color:#e74c3c;"></i>
+                                    <div>Large Area</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="affectedArea" id="affectedArea" value="small">
+                        </div>
+                    </div>
+
+                    <!-- Duration & Weather -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Since When? *</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" name="durationValue" min="1" value="1" required>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" name="durationUnit" required>
+                                        <option value="days">Days</option>
+                                        <option value="weeks">Weeks</option>
+                                        <option value="months">Months</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-cloud-rain"></i>
+                                Weather Related
+                            </label>
+                            <select class="form-select" name="monsoonIssue">
+                                <option value="">Not related</option>
+                                <option value="rainwater">Rainwater Accumulation</option>
+                                <option value="mud">Mud on Road</option>
+                                <option value="slippery">Slippery Surface</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="mb-3">
+                        <label class="form-label">Additional Details</label>
+                        <textarea class="form-control" name="remarks" rows="3" 
+                                  placeholder="Any special instructions, exact location description, or additional information..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Photo & Video Evidence -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-camera"></i>
+                        Photo & Video Evidence
+                    </h3>
+
+                    <!-- Capture Date & Time -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Capture *</label>
+                            <input type="date" class="form-control" name="captureDate" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Time of Capture *</label>
+                            <input type="time" class="form-control" name="captureTime" required>
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="mb-4">
+                        <label class="form-label">Upload Photos/Videos (Optional)</label>
+                        <div class="upload-area" onclick="document.getElementById('mediaInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p>Click to upload files</p>
+                            <small>Max 5 files, 10MB each</small>
+                        </div>
+                        <input type="file" id="mediaInput" multiple accept="image/*,video/*" 
+                               class="d-none" name="media" onchange="handleMediaUpload(event)">
+                        
+                        <div id="mediaPreview" class="media-preview"></div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Complaint
+                    </button>
+                    <p class="text-muted mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        Complaint will be addressed within 72 hours
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h4>Complaint Submitted!</h4>
+            <p>Your complaint ID: <strong id="complaintId">RC-XXXXXX</strong></p>
+            <p class="text-muted">Road repair team will inspect within 72 hours</p>
+            <button class="btn btn-primary mt-3" onclick="resetForm()">
+                <i class="fas fa-redo me-2"></i>Submit Another
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let uploadedFiles = [];
+
+        // Create simple animation
+        function createAnimation() {
+            const container = document.getElementById('roadAnimation');
+            for(let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'road-dot';
+                dot.style.width = dot.style.height = Math.random() * 10 + 5 + 'px';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(dot);
+            }
+        }
+
+        // Select road issue
+        function selectIssue(type, element) {
+            document.getElementById('issueType').value = type;
+            document.querySelectorAll('.issue-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Select security level
+        function selectSecurity(level, element) {
+            document.getElementById('securityLevel').value = level;
+            
+            // Remove active class from all security level cards
+            document.querySelectorAll('#securityLevelContainer .selection-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            element.classList.add('active');
+            
+            console.log('Security level selected:', level); // For debugging
+        }
+
+        // Select affected area
+        function selectAffectedArea(area, element) {
+            document.getElementById('affectedArea').value = area;
+            
+            // Remove active class from all affected area cards
+            document.querySelectorAll('#affectedAreaContainer .selection-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            element.classList.add('active');
+            
+            console.log('Affected area selected:', area); // For debugging
+        }
+
+        // Handle media upload
+        function handleMediaUpload(event) {
+            const files = Array.from(event.target.files);
+            const preview = document.getElementById('mediaPreview');
+            
+            if (uploadedFiles.length + files.length > 5) {
+                alert('Maximum 5 files allowed');
+                return;
+            }
+            
+            files.forEach(file => {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`"${file.name}" is too large (max 10MB)`);
+                    return;
+                }
+                
+                uploadedFiles.push(file);
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = 'media-item';
+                    
+                    if (file.type.startsWith('image/')) {
+                        mediaItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Evidence">
+                            <button class="remove-btn" onclick="removeMedia(this)">×</button>
+                        `;
+                    } else {
+                        mediaItem.innerHTML = `
+                            <video src="${e.target.result}" controls></video>
+                            <button class="remove-btn" onclick="removeMedia(this)">×</button>
+                        `;
+                    }
+                    
+                    mediaItem.dataset.name = file.name;
+                    preview.appendChild(mediaItem);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            event.target.value = '';
+        }
+
+        // Remove media
+        function removeMedia(btn) {
+            const mediaItem = btn.parentElement;
+            const fileName = mediaItem.dataset.name;
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            mediaItem.remove();
+        }
+
+        // Form submission
+        document.getElementById('roadComplaintForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Basic form validation
+            const requiredFields = ['roadName', 'area', 'ward', 'city', 'pincode'];
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    isValid = false;
+                    element.style.borderColor = '#e74c3c';
+                    setTimeout(() => {
+                        element.style.borderColor = '';
+                    }, 2000);
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill all required fields marked with *');
+                return;
+            }
+            
+            // Validate that selections are made
+            console.log('Security Level:', document.getElementById('securityLevel').value);
+            console.log('Affected Area:', document.getElementById('affectedArea').value);
+            
+            // Generate complaint ID
+            const complaintId = 'RC-' + Date.now().toString().slice(-8);
+            
+            try {
+                // Create FormData object
+                const formData = new FormData();
+                
+                // Add complaint ID
+                formData.append('complaintId', complaintId);
+                
+                // Add address fields
+                formData.append('roadName', document.getElementById('roadName').value);
+                formData.append('area', document.getElementById('area').value);
+                formData.append('ward', document.getElementById('ward').value);
+                formData.append('city', document.getElementById('city').value);
+                formData.append('pincode', document.getElementById('pincode').value);
+                formData.append('landmark', document.querySelector('input[name="landmark"]').value || '');
+                
+                // Add issue fields
+                formData.append('issueType', document.getElementById('issueType').value);
+                formData.append('securityLevel', document.getElementById('securityLevel').value);
+                formData.append('affectedArea', document.getElementById('affectedArea').value);
+                formData.append('durationValue', document.querySelector('input[name="durationValue"]').value);
+                formData.append('durationUnit', document.querySelector('select[name="durationUnit"]').value);
+                formData.append('monsoonIssue', document.querySelector('select[name="monsoonIssue"]').value || '');
+                formData.append('remarks', document.querySelector('textarea[name="remarks"]').value || '');
+                
+                // Add capture fields
+                formData.append('captureDate', document.querySelector('input[name="captureDate"]').value);
+                formData.append('captureTime', document.querySelector('input[name="captureTime"]').value);
+                
+                // Add media files
+                const mediaInput = document.getElementById('mediaInput');
+                for (let i = 0; i < mediaInput.files.length; i++) {
+                    formData.append('media', mediaInput.files[i]);
+                }
+                
+                // Send data to server
+                const response = await fetch('/citizen/complaints/roads', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    document.getElementById('complaintId').textContent = result.complaintId || complaintId;
+                    document.getElementById('successModal').classList.add('show');
+                } else {
+                    alert('Failed to submit complaint: ' + (result.message || result.error || 'Please try again.'));
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to submit complaint. Please try again.');
+            }
+        });
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('successModal').classList.remove('show');
+            document.getElementById('roadComplaintForm').reset();
+            
+            // Reset issue selection
+            document.querySelectorAll('.issue-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector('.issue-card').classList.add('active');
+            document.getElementById('issueType').value = 'potholes';
+            
+            // Reset security level
+            document.querySelectorAll('#securityLevelContainer .selection-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector('#securityLevelContainer .selection-card.security-moderate').classList.add('active');
+            document.getElementById('securityLevel').value = 'moderate';
+            
+            // Reset affected area
+            document.querySelectorAll('#affectedAreaContainer .selection-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector('#affectedAreaContainer .selection-card.area-small').classList.add('active');
+            document.getElementById('affectedArea').value = 'small';
+            
+            // Clear media
+            uploadedFiles = [];
+            document.getElementById('mediaPreview').innerHTML = '';
+            
+            // Set today's date and time
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="captureDate"]').value = today;
+            
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('input[name="captureTime"]').value = time;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createAnimation();
+            
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="captureDate"]').value = today;
+            
+            // Set current time
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('input[name="captureTime"]').value = time;
+            
+            // Log initial values
+            console.log('Initial security level:', document.getElementById('securityLevel').value);
+            console.log('Initial affected area:', document.getElementById('affectedArea').value);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Ticket Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .form-group select, 
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .results-title {
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .results-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .bus-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .bus-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .bus-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .bus-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .bus-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .bus-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .bus-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .bus-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .book-button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .book-button:hover {
+            background: #45a049;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .route-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .time-slot {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .booking-card, .results-section {
+                padding: 20px;
+            }
+            
+            .bus-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚍 Bus Ticket Booking System</h1>
+            <p>Book your bus tickets easily with real-time availability</p>
+        </div>
+        
+        <div class="booking-card">
+            <div class="form-group">
+                <label for="city">Select City</label>
+                <select id="city" onchange="updateStations()">
+                    <option value="">-- Select City --</option>
+                    <option value="pune">Pune</option>
+                    <option value="mumbai">Mumbai</option>
+                    <option value="bangalore">Bangalore</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="fromStation">From Station</label>
+                <select id="fromStation" disabled>
+                    <option value="">-- Select From Station --</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="toStation">To Station</label>
+                <select id="toStation" disabled>
+                    <option value="">-- Select To Station --</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Travel Date</label>
+                <input type="date" id="date" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            
+            <button class="search-button" onclick="searchBuses()">Search Buses</button>
+        </div>
+        
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <div class="results-title">Available Buses</div>
+                <div class="results-count" id="resultsCount">0 buses found</div>
+            </div>
+            
+            <div class="route-info">
+                <div><strong>Route:</strong> <span id="routeInfo"></span></div>
+                <div><strong>Date:</strong> <span id="dateInfo"></span></div>
+                <div><strong>Available Time Slots (Every 30 minutes):</strong></div>
+                <div id="timeSlots"></div>
+            </div>
+            
+            <div id="busResults"></div>
+            <div class="loading" id="loading" style="display: none;">Loading buses...</div>
+            <div class="no-results" id="noResults" style="display: none;">No buses found for this route. Please try different stations.</div>
+        </div>
+    </div>
+
+    <script>
+        // City stations data (20 stations per city as requested)
+        const cityStations = {
+            pune: [
+                "Swargate Bus Stand", "Shivaji Nagar", "Pune Station", "Kothrud", "Hinjewadi",
+                "Wakad", "Baner", "Aundh", "Hadapsar", "Kondhwa",
+                "Katraj", "Nigdi", "Pimpri", "Chinchwad", "Bhosari",
+                "Kharadi", "Viman Nagar", "Kalyani Nagar", "Yerwada", "Deccan Gymkhana"
+            ],
+            mumbai: [
+                "Mumbai Central", "Bandra Terminus", "Dadar", "Borivali", "Andheri",
+                "Ghatkopar", "Kurla", "Thane", "Navi Mumbai", "Chembur",
+                "Malad", "Jogeshwari", "Santacruz", "Churchgate", "Colaba",
+                "Byculla", "Sion", "Mulund", "Bhandup", "Vikhroli"
+            ],
+            bangalore: [
+                "Majestic Bus Stand", "Electronic City", "Whitefield", "Koramangala", "Indiranagar",
+                "Yeshwantpur", "Silk Board", "Marathahalli", "Jayanagar", "BTM Layout",
+                "Banashankari", "Hebbal", "Malleswaram", "Rajajinagar", "HSR Layout",
+                "Bellandur", "KR Puram", "Vijay Nagar", "Yelahanka", "Basavanagudi"
+            ]
+        };
+
+        // Bus types and operators
+        const busOperators = [
+            "Sharma Travels", "Patel Tours", "Royal Express", "City Link", "Star Lines",
+            "Comfort Rides", "Luxury Express", "Swift Travels", "Green Line", "Sky Bus"
+        ];
+
+        const busTypes = ["AC Sleeper", "Non-AC Sleeper", "AC Seater", "Non-AC Seater", "Volvo AC"];
+
+        function updateStations() {
+            const city = document.getElementById('city').value;
+            const fromStation = document.getElementById('fromStation');
+            const toStation = document.getElementById('toStation');
+            
+            if (city) {
+                fromStation.disabled = false;
+                toStation.disabled = false;
+                
+                // Clear existing options
+                fromStation.innerHTML = '<option value="">-- Select From Station --</option>';
+                toStation.innerHTML = '<option value="">-- Select To Station --</option>';
+                
+                // Add new stations
+                cityStations[city].forEach(station => {
+                    const fromOption = document.createElement('option');
+                    fromOption.value = station;
+                    fromOption.textContent = station;
+                    fromStation.appendChild(fromOption);
+                    
+                    const toOption = document.createElement('option');
+                    toOption.value = station;
+                    toOption.textContent = station;
+                    toStation.appendChild(toOption);
+                });
+            } else {
+                fromStation.disabled = true;
+                toStation.disabled = true;
+                fromStation.innerHTML = '<option value="">-- Select From Station --</option>';
+                toStation.innerHTML = '<option value="">-- Select To Station --</option>';
+            }
+        }
+
+        function searchBuses() {
+            const city = document.getElementById('city').value;
+            const fromStation = document.getElementById('fromStation').value;
+            const toStation = document.getElementById('toStation').value;
+            const date = document.getElementById('date').value;
+            
+            // Validation
+            if (!city || !fromStation || !toStation) {
+                alert('Please select city and both stations');
+                return;
+            }
+            
+            if (fromStation === toStation) {
+                alert('From and To stations cannot be the same');
+                return;
+            }
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('busResults').innerHTML = '';
+            
+            // Update route info
+            document.getElementById('routeInfo').textContent = `${fromStation} → ${toStation}`;
+            document.getElementById('dateInfo').textContent = new Date(date).toDateString();
+            
+            // Generate time slots (every 30 minutes from 6:00 AM to 11:30 PM)
+            const timeSlots = [];
+            for (let hour = 6; hour < 24; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    if (hour === 23 && minute === 30) break;
+                    const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    timeSlots.push(time);
+                }
+            }
+            
+            // Display time slots
+            const timeSlotsDiv = document.getElementById('timeSlots');
+            timeSlotsDiv.innerHTML = '';
+            timeSlots.forEach(time => {
+                const span = document.createElement('span');
+                span.className = 'time-slot';
+                span.textContent = time;
+                timeSlotsDiv.appendChild(span);
+            });
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                generateBusResults(city, fromStation, toStation, date, timeSlots);
+            }, 1000);
+        }
+
+        function generateBusResults(city, fromStation, toStation, date, timeSlots) {
+            const busResults = document.getElementById('busResults');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('noResults');
+            
+            loading.style.display = 'none';
+            
+            // Clear previous results
+            busResults.innerHTML = '';
+            
+            // Generate random number of buses (3-8)
+            const numBuses = Math.floor(Math.random() * 6) + 3;
+            
+            if (numBuses === 0) {
+                noResults.style.display = 'block';
+                document.getElementById('resultsCount').textContent = '0 buses found';
+                return;
+            }
+            
+            document.getElementById('resultsCount').textContent = `${numBuses} buses found`;
+            
+            // Generate bus cards
+            for (let i = 0; i < numBuses; i++) {
+                const bus = createRandomBus(i, timeSlots);
+                const busCard = createBusCard(bus);
+                busResults.appendChild(busCard);
+            }
+        }
+
+        function createRandomBus(index, timeSlots) {
+            const randomTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+            const duration = Math.floor(Math.random() * 4) + 2; // 2-5 hours
+            const price = Math.floor(Math.random() * 1000) + 500; // 500-1500
+            
+            // Calculate arrival time
+            const [hours, minutes] = randomTime.split(':').map(Number);
+            const arrivalHours = hours + duration;
+            const arrivalTime = `${arrivalHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            
+            return {
+                id: index + 1,
+                name: busOperators[Math.floor(Math.random() * busOperators.length)],
+                type: busTypes[Math.floor(Math.random() * busTypes.length)],
+                departure: randomTime,
+                arrival: arrivalTime,
+                duration: `${duration} hours`,
+                seats: Math.floor(Math.random() * 10) + 5, // 5-15 seats available
+                price: price,
+                amenities: ['WiFi', 'Water Bottle', 'Charging Point', 'Blanket', 'Snacks'].slice(0, Math.floor(Math.random() * 4) + 2)
+            };
+        }
+
+        function createBusCard(bus) {
+            const card = document.createElement('div');
+            card.className = 'bus-card';
+            
+            card.innerHTML = `
+                <div class="bus-header">
+                    <div class="bus-name">${bus.name} #${bus.id}</div>
+                    <div class="bus-type">${bus.type}</div>
+                </div>
+                
+                <div class="bus-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Departure</span>
+                        <span class="detail-value">${bus.departure}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Arrival</span>
+                        <span class="detail-value">${bus.arrival}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value">${bus.duration}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Seats Available</span>
+                        <span class="detail-value">${bus.seats} seats</span>
+                    </div>
+                </div>
+                
+                <div class="bus-footer">
+                    <div class="price">₹${bus.price}</div>
+                    <button class="book-button" onclick="bookBus(${bus.id})">Book Now</button>
+                </div>
+                
+                <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                    <strong>Amenities:</strong> ${bus.amenities.join(', ')}
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function bookBus(busId) {
+            const fromStation = document.getElementById('fromStation').value;
+            const toStation = document.getElementById('toStation').value;
+            const date = document.getElementById('date').value;
+            
+            alert(`Booking confirmed!\n\nBus ID: #${busId}\nRoute: ${fromStation} to ${toStation}\nDate: ${new Date(date).toDateString()}\n\nPlease proceed to payment.`);
+        }
+
+        // Initialize date to today
+        document.getElementById('date').valueAsDate = new Date();
+    </script>
+</body>
+</html>
