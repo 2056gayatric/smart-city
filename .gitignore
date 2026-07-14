@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Environment variables / secrets
+# Environment variables / Secrets
 .env
 .env.local
 .env.*.local
@@ -9,30 +9,24 @@ node_modules/
 # Logs
 *.log
 npm-debug.log*
-tests_results.txt
 
-# User-uploaded content (complaints, etc.)
-uploads/
+# User uploads
+uploads/*
+!uploads/.gitkeep
+
+# Test output files
+tests_results.txt
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Editor/IDE
+# Editor / IDE
 .vscode/
 .idea/
 *.swp
 
-# Python (for your /tests folder)
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-venv/
-env/
-*.egg-info/
-
-# Build/coverage output
+# Build output
 dist/
 build/
 coverage/
