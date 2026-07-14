@@ -55,10 +55,3 @@ package.json
 - Payment Gateway Integration
 - Role-Based Access Control (RBAC)
 
-## 👩‍💻 Developed By
-
-**Gayatri Chaudhari**  
-B.Tech Computer Science & Engineering  
-COEP Technological University, Pune
-
-⭐ If you like this project, don't forget to star the repository!
