@@ -194,10 +194,3 @@ SmartOS/
 
 ---
 
-## Authors
-
-### Anushka Wagh
-### Chinmay patil
-### Mrunal Gurhale
-### Ashitosh Shirsath
-
